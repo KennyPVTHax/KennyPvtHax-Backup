@@ -1,0 +1,28 @@
+# Reference frames and temporary verification output
+.reference/
+.build/
+.verification/
+
+# Generated output and supplied binary libraries
+obj/
+libs/
+build/
+*.o
+*.a
+*.so
+*.lib
+*.apk
+*.aab
+*.zip
+*.mp4
+
+# Local credentials, configuration, and original backup copies
+.env
+.env.*
+local.properties
+*.keystore
+*.jks
+*.pem
+*.key
+jni/Helper/Login.h
+*.bak
