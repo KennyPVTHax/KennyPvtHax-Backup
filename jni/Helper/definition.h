@@ -1322,7 +1322,7 @@ void RenderESPPRIVATE(AHUD* HUD, int ScreenWidth, int ScreenHeight)
         if (!tslFont || !robotoTinyFont) return;
 		
         tslFont->LegacyFontSize = 25;
-        DrawOutlinedText(HUD, FString("Anoy"), {glWidth / 2.0f, 65}, COLOR_RED, COLOR_BLACK, true);
+        DrawOutlinedText(HUD, FString("KennyPvtHax"), {glWidth / 2.0f, 65}, COLOR_RED, COLOR_BLACK, true);
         tslFont->LegacyFontSize = TSL_FONT_DEFAULT_SIZE;
         
         

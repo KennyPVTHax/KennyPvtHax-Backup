@@ -1026,7 +1026,7 @@ EGLBoolean _eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
             ImGuiWindowFlags_NoCollapse  | ImGuiWindowFlags_NoScrollbar;
 
         // Sentence-case title. No version/build spam in the chrome.
-        if (ImGui::Begin("Anoy Hax", &opened, winFlags)) {
+        if (ImGui::Begin("KennyPvtHax", &opened, winFlags)) {
 
             // ---------------- Left nav ----------------
             ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, Claude::RadiusCard);
