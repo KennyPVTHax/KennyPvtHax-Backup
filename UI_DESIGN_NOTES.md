@@ -1,6 +1,6 @@
 # KennyPvtHax — source map and reference design
 
-Stage 1 inspection, 10 October 2026 (Asia/Calcutta). This document records observations and implementation decisions; later stages remain unimplemented.
+Stage 1 inspection and Stage 2 implementation, 10 October 2026 (Asia/Calcutta). The original observations below remain the design specification. Completed Stage 2 changes and validation are recorded at the end; Stages 3–6 remain unimplemented.
 
 ## Source baseline
 
@@ -92,3 +92,33 @@ No feature configuration save/load implementation or preset UI was found in the 
 ## Git/checkpoint policy
 
 A local Git repository was initialized because the upload had none. The baseline commit selectively tracks the three branding-bearing sources, existing theme header, build makefiles, and `.gitignore`; other original sources remain on disk and in the original archive. Future stages should explicitly add only the files they modify. The login header, original backups, static libraries, generated artifacts, and reference images are excluded. Do not use `git add .` across the unreviewed legacy source tree.
+
+## Stage 2 implementation — completed
+
+- `jni/ClaudeTheme.h` now provides the black/lavender palette, neutral hover feedback, horizontal `NavItem` buttons, and reusable outlined `PillTab` buttons. The existing namespace/file is retained to avoid introducing competing themes.
+- `jni/KennyMenu.h` owns window measurement, viewport constraints, header dragging/close control, navigation state, animated selection underline, secondary pills, and a separate scrollable content container. It only uses application styling and the bundled ImGui API; there is no SDK/platform/backend dependency in the shell.
+- `jni/main.cpp` integrates the shell through `KennyMenu::Draw` and supplies its original five panel branches as a callback. Their tokens, 37 control call arguments, conditional FOV controls, and `ResetLogin` callback are unchanged. EGL frame order, Android input handlers, startup defaults, and the existing Menu/Close toggle logic remain unchanged.
+- `Settings::Tab` retains values 1–5. The primary category is independent UI state: Visual remembers 1/2, Aim selects 3, Misc remembers 4/5. Style/Settings retain the last feature tab but render only their reserved containers, so no feature controls leak into those sections and no new backend tab values are created.
+- Style has an Appearance container; Settings has a General container. Both clearly state that no settings are available yet, with no fabricated save/load or appearance actions.
+- At 1920×872, the default shell is approximately 1,133×715, centered near `(394,78)`, with a 34 px radius, 100 px primary header, and 74 px secondary band. This closely follows the reference's shell geometry; it is not a claim that unfinished panel/control styling matches the final reference.
+- The full KennyPvtHax name occupies the left header area, so the primary tabs begin farther right than the reference's logo-only layout. Navigation uses the existing Font Awesome glyphs rather than copying the reference logo/assets.
+- Compact layouts split branding/close and primary navigation into two header rows. Both primary and secondary controls have bounded interactive areas; content scrolling leaves navigation fixed. The window is initially centered and retains its dragged position on subsequent frames/reopens, constrained when the viewport changes.
+- This ImGui version multiplies a child font scale by its parent's. The root uses `2.0 * layout.scale`; the content child uses `1.0` to inherit it without multiplying twice. Global font scaling and ESP text colors are not changed.
+- Navigation padding is smaller than settings-control padding so the Settings label fits even at the smallest tested viewport. The selection underline uses a single time-based interpolation value with no animation dependency or per-tab state allocation.
+
+### Stage 2 validation and visual evidence
+
+The local `.verification/` directory contains a host harness, extracted UI/configuration fixture, cached core object files, indexed draw data/font atlas, and a small CPU rasterizer. All are ignored by Git. The harness compiles the **production** `KennyMenu::Draw`, bundled ImGui core, and original panel statements with their SDK-independent configuration declarations. It excludes Android/game integration; the destructive reset is a fail-fast test boundary and was never invoked. It does not replace SDK headers or alter application callbacks.
+
+- PASS: actual button input routes through all five primary categories and all five original panels, with remembered secondary tabs and reserved sections preserving backend tab values.
+- PASS: header drag changes and retains window position; close changes the existing `opened` state; reopening the shell retains navigation state.
+- PASS: original checkbox and FOV controls change their bound variables, FOV-dependent content appears, and an original slider changes its bound value within the preserved range.
+- PASS: content scrolls while the root/navigation position remains fixed; all pushed ImGui style/color entries are balanced.
+- PASS: viewport bounds and primary-label fit at 2340×1080, 1280×720, 960×540, and 640×360, plus initial rendering at 1920×872.
+- PASS: static comparison with commit `8bffdcd` shows all 37 original control calls/ranges/formats unchanged and complete feature-panel bodies preserved modulo indentation. Code outside the main window is unchanged apart from the new header include and theme comment.
+- PASS: new shell/theme header syntax checked with `g++ -std=c++17 -Wall -Wextra -Werror -fsyntax-only`; host ImGui shell build and interaction harness executed successfully; `git diff --check` passed.
+- Inspected actual ImGui draw-output previews at `.verification/visual-1920.png`, `aim-1920.png`, `visual-1280.png`, and `visual-640.png`, compared with cached frame 05. These are CPU rasterizations of the shell and original controls using the supplied fonts, on a neutral background, without the game or floating toggle. Corrected inconsistent font scaling and narrow-tab text padding before finishing.
+- Original embedded `fontAwesome.hpp` emits malformed/redefined-macro warnings in the host fixture; the file remains untouched. The new SDK-independent shell header passes its strict syntax check without warnings.
+- Still blocked/unverified: complete Android native compilation/linking (missing SDK and NDK), device touch integration, live game overlay, GPU appearance, runtime frame rate, and final visual fidelity. No package/environment installation was performed.
+
+For local reproduction while `.verification/` exists: run `python .verification/make_harness.py`, compile `.verification/menu_check.cpp` with the four bundled ImGui core `.cpp` files and `-I jni -I .verification`, run the resulting binary with `timeout 30s`, and rasterize its `.draw` files using `.verification/rasterize.py`. Generated objects/binaries, fixture files, and previews are not application dependencies.

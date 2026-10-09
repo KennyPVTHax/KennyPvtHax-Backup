@@ -9,7 +9,8 @@
 #include <fstream>
 #include <unistd.h>
 #include <string>
-#include "ClaudeTheme.h"    // correct
+#include "ClaudeTheme.h"
+#include "KennyMenu.h"
 #include "Lua_Buffer.cpp"
 
 
@@ -969,7 +970,7 @@ EGLBoolean _eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
         cfg.SizePixels = ((float)density / 20.0f);
         io.Fonts->AddFontDefault(&cfg);
 
-        // Apply the Claude-style theme
+        // Apply the KennyPvtHax black/lavender theme
         Claude::Apply();
 
         ImGui_ImplAndroid_Init();
@@ -1017,107 +1018,71 @@ EGLBoolean _eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
     // Main window
     // ----------------------------------------------------------------
     if (ShowMenu) {
-        ImGui::SetNextWindowSize(
-            ImVec2((float)glWidth * 0.46f, (float)glHeight * 0.58f),
-            ImGuiCond_Once);
-
-        static const ImGuiWindowFlags winFlags =
-            ImGuiWindowFlags_NoResize    | ImGuiWindowFlags_NoSavedSettings |
-            ImGuiWindowFlags_NoCollapse  | ImGuiWindowFlags_NoScrollbar;
-
-        // Sentence-case title. No version/build spam in the chrome.
-        if (ImGui::Begin("KennyPvtHax", &opened, winFlags)) {
-
-            // ---------------- Left nav ----------------
-            ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, Claude::RadiusCard);
-            ImGui::PushStyleColor(ImGuiCol_ChildBg, Claude::Dark::surface);
-            ImGui::BeginChild("##nav", ImVec2(Claude::NavWidth, 0), true);
-            {
-                Claude::SectionHeader("Sections");
-                if (Claude::NavItem("Player ESP",     Settings::Tab == 1)) Settings::Tab = 1;
-                if (Claude::NavItem("World ESP",      Settings::Tab == 2)) Settings::Tab = 2;
-                if (Claude::NavItem("Aimbot",         Settings::Tab == 3)) Settings::Tab = 3;
-                if (Claude::NavItem("Bullet track",   Settings::Tab == 4)) Settings::Tab = 4;
-                if (Claude::NavItem("Extra features", Settings::Tab == 5)) Settings::Tab = 5;
+        static KennyMenu::State menuState;
+        KennyMenu::Draw(menuState, opened, Settings::Tab,
+                        ImVec2(static_cast<float>(glWidth), static_cast<float>(glHeight)), [] {
+            if (Settings::Tab == 1) {
+                Claude::SectionHeader("Player ESP");
+                ImGui::Checkbox("ESP line",     &Cheat::Esp::Line);
+                ImGui::Checkbox("ESP name",     &Cheat::Esp::Name);
+                ImGui::Checkbox("ESP distance", &Cheat::Esp::Distance);
+                ImGui::Checkbox("ESP health",   &Cheat::Esp::Health);
+                ImGui::Checkbox("ESP skeleton", &Cheat::Esp::Skeleton);
+                ImGui::Checkbox("ESP box",      &Cheat::Esp::Box);
+                ImGui::Checkbox("Alert",        &Cheat::Esp::Alert);
+                ImGui::Checkbox("Loot box",     &Cheat::Esp::LootBox);
+                ImGui::Checkbox("Counter",      &Cheat::Esp::Counter);
+                ImGui::Checkbox("Vehicle name", &Cheat::Esp::Vehicle::Name);
             }
-            ImGui::EndChild();
-            ImGui::PopStyleColor();
-            ImGui::PopStyleVar();
-
-            ImGui::SameLine();
-
-            // ---------------- Right content ----------------
-            ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, Claude::RadiusCard);
-            ImGui::PushStyleColor(ImGuiCol_ChildBg, Claude::Dark::surface);
-            ImGui::BeginChild("##content", ImVec2(0, 0), true);
-            {
-                if (Settings::Tab == 1) {
-                    Claude::SectionHeader("Player ESP");
-                    ImGui::Checkbox("ESP line",     &Cheat::Esp::Line);
-                    ImGui::Checkbox("ESP name",     &Cheat::Esp::Name);
-                    ImGui::Checkbox("ESP distance", &Cheat::Esp::Distance);
-                    ImGui::Checkbox("ESP health",   &Cheat::Esp::Health);
-                    ImGui::Checkbox("ESP skeleton", &Cheat::Esp::Skeleton);
-                    ImGui::Checkbox("ESP box",      &Cheat::Esp::Box);
-                    ImGui::Checkbox("Alert",        &Cheat::Esp::Alert);
-                    ImGui::Checkbox("Loot box",     &Cheat::Esp::LootBox);
-                    ImGui::Checkbox("Counter",      &Cheat::Esp::Counter);
-                    ImGui::Checkbox("Vehicle name", &Cheat::Esp::Vehicle::Name);
-                }
-                else if (Settings::Tab == 2) {
-                    Claude::SectionHeader("World ESP");
-                    ImGui::Checkbox("Throwable",    &Cheat::Esp::Throwable);
-                    ImGui::Checkbox("Enemy weapon", &Cheat::Esp::WeaponName);
-                    ImGui::Checkbox("Target line",  &Cheat::Esp::Target);
-                }
-                else if (Settings::Tab == 3) {
-                    Claude::SectionHeader("Aimbot");
-                    ImGui::Checkbox("Enable aimbot", &Cheat::Aimbot::Enable);
-                    ImGui::Checkbox("Enable FOV",    &Cheat::Aimbot::EnableFov);
-                    if (Cheat::Aimbot::EnableFov) {
-                        ImGui::SliderFloat("Aim FOV",      &Cheat::Aimbot::Radius, 0.0f, 400.0f, "%.0f");
-                        ImGui::Checkbox("Show FOV circle", &Cheat::Aimbot::ShowFovCircle);
-                    }
-                    ImGui::SliderFloat("Aim range",           &Cheat::Aimbot::Range,     0.0f, 400.0f, "%.0f m");
-                    ImGui::SliderFloat("Aim smoothing",       &Cheat::Aimbot::Smoothing, 1.0f, 4.0f,   "%.0f");
-                    ImGui::SliderFloat("Recoil compensation", &Cheat::Aimbot::RecoilSet, 0.0f, 2.0f);
-                    ImGui::Checkbox("Visibility check", &Cheat::Aimbot::VisCheck);
-                    ImGui::Checkbox("Ignore knocked",   &Cheat::Aimbot::IgnoreKnock);
-                    ImGui::Checkbox("Ignore bot",       &Cheat::Aimbot::IgnoreBot);
-                }
-                else if (Settings::Tab == 4) {
-                    Claude::SectionHeader("Bullet track");
-                    ImGui::Checkbox("Enable bullet track", &Cheat::BulletTrack::Enable);
-                    ImGui::Checkbox("Enable FOV",          &Cheat::Aimbot::EnableFov);
-                    if (Cheat::Aimbot::EnableFov) {
-                        ImGui::SliderFloat("Aim FOV",      &Cheat::Aimbot::Radius, 0.0f, 400.0f, "%.0f");
-                        ImGui::Checkbox("Show FOV circle", &Cheat::Aimbot::ShowFovCircle);
-                    }
-                    ImGui::SliderFloat("Aim range",              &Cheat::Aimbot::Range, 0.0f, 400.0f, "%.0f m");
-                    ImGui::Checkbox("Force headshot on full",    &Cheat::BulletTrack::ForceHeadshotWhenFull);
-                    ImGui::SliderInt("Tracking accuracy",        &Cheat::BulletTrack::TrackingAccuracy, 1, 3, "%d/3");
-                    ImGui::Checkbox("Visibility check",          &Cheat::Aimbot::VisCheck);
-                    ImGui::Checkbox("Ignore knocked",            &Cheat::Aimbot::IgnoreKnock);
-                    ImGui::Checkbox("Ignore bot",                &Cheat::Aimbot::IgnoreBot);
-                }
-                else if (Settings::Tab == 5) {
-                    Claude::SectionHeader("Extra features");
-                    ImGui::Checkbox("Small cross",  &Cheat::Memory::Small);
-                    ImGui::Checkbox("X-hit effect", &Cheat::Memory::Hit);
-                    ImGui::Checkbox("iPad view",    &Cheat::Memory::IPad);
-                    ImGui::Checkbox("6-hour fixer", &Cheat::Memory::IslandBp);
-                    
-                    if (ImGui::Button("Guest Reset"))
-                      {
-                      ResetLogin();
-                      }
-                }
+            else if (Settings::Tab == 2) {
+                Claude::SectionHeader("World ESP");
+                ImGui::Checkbox("Throwable",    &Cheat::Esp::Throwable);
+                ImGui::Checkbox("Enemy weapon", &Cheat::Esp::WeaponName);
+                ImGui::Checkbox("Target line",  &Cheat::Esp::Target);
             }
-            ImGui::EndChild();
-            ImGui::PopStyleColor();
-            ImGui::PopStyleVar();
-        }
-        ImGui::End();
+            else if (Settings::Tab == 3) {
+                Claude::SectionHeader("Aimbot");
+                ImGui::Checkbox("Enable aimbot", &Cheat::Aimbot::Enable);
+                ImGui::Checkbox("Enable FOV",    &Cheat::Aimbot::EnableFov);
+                if (Cheat::Aimbot::EnableFov) {
+                    ImGui::SliderFloat("Aim FOV",      &Cheat::Aimbot::Radius, 0.0f, 400.0f, "%.0f");
+                    ImGui::Checkbox("Show FOV circle", &Cheat::Aimbot::ShowFovCircle);
+                }
+                ImGui::SliderFloat("Aim range",           &Cheat::Aimbot::Range,     0.0f, 400.0f, "%.0f m");
+                ImGui::SliderFloat("Aim smoothing",       &Cheat::Aimbot::Smoothing, 1.0f, 4.0f,   "%.0f");
+                ImGui::SliderFloat("Recoil compensation", &Cheat::Aimbot::RecoilSet, 0.0f, 2.0f);
+                ImGui::Checkbox("Visibility check", &Cheat::Aimbot::VisCheck);
+                ImGui::Checkbox("Ignore knocked",   &Cheat::Aimbot::IgnoreKnock);
+                ImGui::Checkbox("Ignore bot",       &Cheat::Aimbot::IgnoreBot);
+            }
+            else if (Settings::Tab == 4) {
+                Claude::SectionHeader("Bullet track");
+                ImGui::Checkbox("Enable bullet track", &Cheat::BulletTrack::Enable);
+                ImGui::Checkbox("Enable FOV",          &Cheat::Aimbot::EnableFov);
+                if (Cheat::Aimbot::EnableFov) {
+                    ImGui::SliderFloat("Aim FOV",      &Cheat::Aimbot::Radius, 0.0f, 400.0f, "%.0f");
+                    ImGui::Checkbox("Show FOV circle", &Cheat::Aimbot::ShowFovCircle);
+                }
+                ImGui::SliderFloat("Aim range",              &Cheat::Aimbot::Range, 0.0f, 400.0f, "%.0f m");
+                ImGui::Checkbox("Force headshot on full",    &Cheat::BulletTrack::ForceHeadshotWhenFull);
+                ImGui::SliderInt("Tracking accuracy",        &Cheat::BulletTrack::TrackingAccuracy, 1, 3, "%d/3");
+                ImGui::Checkbox("Visibility check",          &Cheat::Aimbot::VisCheck);
+                ImGui::Checkbox("Ignore knocked",            &Cheat::Aimbot::IgnoreKnock);
+                ImGui::Checkbox("Ignore bot",                &Cheat::Aimbot::IgnoreBot);
+            }
+            else if (Settings::Tab == 5) {
+                Claude::SectionHeader("Extra features");
+                ImGui::Checkbox("Small cross",  &Cheat::Memory::Small);
+                ImGui::Checkbox("X-hit effect", &Cheat::Memory::Hit);
+                ImGui::Checkbox("iPad view",    &Cheat::Memory::IPad);
+                ImGui::Checkbox("6-hour fixer", &Cheat::Memory::IslandBp);
+
+                if (ImGui::Button("Guest Reset"))
+                  {
+                  ResetLogin();
+                  }
+            }
+        });
     }
 
     ImGui::Render();
