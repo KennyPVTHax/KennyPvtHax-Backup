@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cmath>
 #include "ClaudeTheme.h"
+#include "KennyAppearance.h"
 #include "ANOY/font_awesome_5.h"
 
 // Application-owned window chrome. Feature controls are supplied by main.cpp;
@@ -20,6 +21,8 @@ struct State {
     int miscTab = 4;
     bool initialized = false;
     float indicator = -1.0f;
+    KennyAppearance::Preferences appearance;
+    bool centerRequested = false;
 
     void Select(Category next, int& tab) {
         category = next;
@@ -27,7 +30,7 @@ struct State {
         case Category::Visual: tab = visualTab; break;
         case Category::Aim: tab = 3; break;
         case Category::Misc: tab = miscTab; break;
-        default: break; // Reserved containers never create backend tab values.
+        default: break; // Presentation panels never create backend tab values.
         }
     }
 
@@ -77,12 +80,17 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
     if (Font) ImGui::PushFont(Font);
     ImGui::SetNextWindowSize(l.size, ImGuiCond_Always);
     ImGui::SetNextWindowPos(ImVec2((viewport.x - l.size.x) * 0.5f,
-                                 (viewport.y - l.size.y) * 0.5f), ImGuiCond_FirstUseEver);
+                                 (viewport.y - l.size.y) * 0.5f),
+                            state.centerRequested ? ImGuiCond_Always : ImGuiCond_FirstUseEver);
+    state.centerRequested = false;
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, Claude::RadiusWindow * l.scale);
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(12.0f * l.scale, 7.0f * l.scale));
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(8.0f * l.scale, 12.0f * l.scale));
     ImGui::PushStyleVar(ImGuiStyleVar_ScrollbarSize, std::max(8.0f, 8.0f * l.scale));
+    ImVec4 background = Claude::Dark::bg;
+    background.w = std::clamp(state.appearance.opacity, 85.0f, 100.0f) * 0.01f;
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, background);
     const ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings |
         ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoTitleBar;
     if (ImGui::Begin("KennyPvtHax", nullptr, flags)) {
@@ -159,8 +167,8 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
         float x = (l.size.x - total) * 0.5f;
         for (int i = 0; i < count; ++i) {
             ImGui::SetCursorPos(ImVec2(x, l.header + (l.secondary - pillHeight) * 0.5f));
-            const bool reserved = state.category == Category::Style || state.category == Category::Settings;
-            if (Claude::PillTab(secondary[i], reserved || tab == values[i], ImVec2(widths[i], pillHeight)) && !reserved) {
+            const bool presentation = state.category == Category::Style || state.category == Category::Settings;
+            if (Claude::PillTab(secondary[i], presentation || tab == values[i], ImVec2(widths[i], pillHeight)) && !presentation) {
                 tab = values[i];
                 if (state.category == Category::Visual) state.visualTab = tab;
                 if (state.category == Category::Misc) state.miscTab = tab;
@@ -179,11 +187,13 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
                              l.size.y - contentY - 36.0f * l.scale), false)) {
             // This ImGui version multiplies a child's scale by its parent's.
             ImGui::SetWindowFontScale(0.875f);
-            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(8.0f * l.scale, 10.0f * l.scale));
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing,
+                                ImVec2(8.0f * l.scale, (state.appearance.compactRows ? 6.0f : 10.0f) * l.scale));
             ImGui::PushItemWidth(std::min(420.0f * l.scale, ImGui::GetContentRegionAvail().x * 0.58f));
-            if (state.category == Category::Style || state.category == Category::Settings) {
-                Claude::SectionHeader(state.category == Category::Style ? "Appearance" : "General");
-                ImGui::TextDisabled("No settings are available in this section yet.");
+            if (state.category == Category::Style) {
+                KennyAppearance::DrawStyle(state.appearance);
+            } else if (state.category == Category::Settings) {
+                KennyAppearance::DrawSettings(state.appearance, state.centerRequested);
             } else {
                 renderPanel();
             }
@@ -195,6 +205,7 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
         ImGui::PopStyleVar();
     }
     ImGui::End();
+    ImGui::PopStyleColor();
     ImGui::PopStyleVar(5);
     if (Font) ImGui::PopFont();
 }

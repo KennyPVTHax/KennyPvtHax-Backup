@@ -1,6 +1,6 @@
 # KennyPvtHax — source map and reference design
 
-Stages 1–3 completed, 10 October 2026 (Asia/Calcutta). **Current theme: black/crimson/fire-red**, explicitly requested for Stage 3. This supersedes the historical lavender implementation palette below; the video still governs geometry, spacing, and visual hierarchy. Stage 3 grouped panels and controls are recorded at the end. Stages 4–6 remain unimplemented.
+Stages 1–4 completed, 10 October 2026 (Asia/Calcutta). **Current theme: black/crimson/fire-red**, explicitly requested for Stage 3. This supersedes the historical lavender implementation palette below; the video still governs geometry, spacing, and visual hierarchy. Stage 4 completes Misc, Style, and Settings using the Stage 3 components. Stages 5–6 remain unimplemented.
 
 ## Source baseline
 
@@ -86,6 +86,7 @@ No feature configuration save/load implementation or preset UI was found in the 
 
 - No Android NDK / `ndk-build` is available in the current workspace. Host `g++`, Git, FFmpeg, and FFprobe are available.
 - The supplied archive lacks the entire `jni/SDK/` directory, including `PUBGM_BangJO.hpp` required by `SDK.hpp` and six `.cpp` files explicitly listed in `Android.mk`. A complete native build cannot succeed from this upload alone.
+- Stage 4 clarification from the user: the SDK was intentionally excluded to reduce upload size. Keep every integration intact; native compilation will use the user's original SDK and compatible NDK later.
 - Existing menu-close flow resets `opened` and hides the menu on the following frame. Global and render-local `ShowMenu`/`opened` names overlap. Retained in Stage 1; validate behavior carefully when implementing Stage 2.
 - No device/emulator overlay preview or real application runtime verification was performed in Stage 1. Recorded dimensions are design targets, not validated final layout measurements.
 
@@ -173,3 +174,45 @@ There are no particle systems, new opening animations, gameplay changes, configu
 - Still blocked: missing `jni/SDK/` and Android NDK; no full native application compilation/linking, device touch/overlay behavior, GPU appearance/performance, or final on-device fidelity verification. Original font-header macro warnings remain unrelated and untouched. A temporary edit-tool transport error recovered on retry; no source work was lost.
 
 Local Stage 3 reproduction, while the ignored verification files exist: run `python .verification/stage3_fixture.py`; compile `.verification/stage3_check.cpp` with the cached four ImGui core objects (or the real bundled core `.cpp` sources), `-std=c++17 -I jni -I .verification`; run `timeout 30s .verification/stage3_check`; rasterize `.verification/stage3-*.draw` through `.verification/rasterize.py`. Its `atlas.rgba` is the current Stage 3 atlas. The old Stage 2 harness/draw output are historical; regenerate their matching atlas with their original executable if needed. Neither harness is part of the Android build.
+
+## Stage 4 — completed: Misc, Style, and Settings
+
+Resumed verified commit `f744bc4` without reverting earlier work, extracting the archive, or repeating video processing. Existing Stage 3 previews and these design notes guided the implementation. The user clarified that `jni/SDK/` was intentionally excluded: all SDK/gameplay integrations stay untouched and full native compilation remains deferred to their original SDK/compatible NDK.
+
+### Misc inventory and layout
+
+- Bullet track uses the existing `KennyPanels` equal-width layout: **Tracking** (enable, force headshot on full, tracking accuracy), **Filtering** (visibility, ignore knocked/bot), **Field of view** (enable FOV, conditional radius/show circle, range). All ten original call sites remain in tab 4 with their exact pointers, ranges, and formats. The FOV/filter/range controls still share the original Aimbot variables. No feature behavior was changed.
+- Wide reference-size and 1280×720 windows show three balanced sections. Responsive column measurement now optionally accounts for the widest checkbox's actual text, native touch target, and table padding; Bullet track supplies its long original label to prevent narrow-column clipping. Existing Visual/Aim calls retain their original default measurement and bodies.
+- Extra features uses **Presentation** (small cross, X-hit, iPad view) and **Utilities** (6-hour fixer, Guest Reset). All four original checkbox bindings and the original `ResetLogin()` callback remain in tab 5. Guest Reset is rendered through the shared pill-button helper; its callback and activation semantics are unchanged and it was never invoked during host verification.
+- New `KennyControls::Button` and `Choice` reuse the existing `Claude::PillTab` native-button implementation. Action pills fill their group column; two-option choices have equal width, native IDs/focus/activation, clear selected states, and a minimum 36 px height. `KennyPanels::Note` wraps secondary text within the same column.
+
+### Style and Settings contain working presentation functionality
+
+`KennyAppearance.h` is application-owned, SDK-independent UI code. `Preferences` resides in the existing static menu state, separate from every feature/configuration variable. It is session-only: changes persist through navigation and menu close/reopen, and restart restores defaults. No file I/O, feature persistence changes, new configuration keys, or save/load buttons were introduced.
+
+| Panel / group | Item | Actual effect |
+| --- | --- | --- |
+| Style / Surface | Menu opacity, 85–100%, default 97% | Scoped root-window background alpha. Text/control alpha and the global overlay palette are unchanged. Native numeric entry is bounded for this new preference only. |
+| Style / Layout | Standard / Compact row spacing | Content row spacing changes from `10 * layout.scale` to `6 * layout.scale`. Checkbox/slider/button touch targets remain at least 36 px. Default Standard preserves Stage 3 spacing. |
+| Settings / Menu | Center window | Requests centered positioning on the following frame, using the existing viewport measurement/constraints; navigation and appearance remain intact. |
+| Settings / Menu | Reset appearance | Restores only 97% opacity and Standard spacing. Original feature states, callback behavior, and menu position remain intact. |
+| Settings / About | KennyPvtHax, Crimson / Fire Red, Android landscape interface | Minimal read-only application information. No fabricated version, license, account state, or backend feature. |
+
+Style and Settings render inside the existing fixed-navigation/scrollable-content shell and never invoke the feature callback or create backend tab values. The Appearance/General secondary containers remain. Existing header drag/close, sizing, fonts, red theme, icons, selection interpolation, and feature routing are retained. Empty space below these deliberately small genuine panels is retained rather than filled with dummy settings.
+
+### Verification and preview evidence
+
+- Strict SDK-independent C++17 header syntax check passed with `-Wall -Wextra -Werror`; `KennyMenu.h` transitively compiles the new appearance/panel/control helpers.
+- Compiled and ran `.verification/stage4_check.cpp` against the real bundled ImGui core with `IMGUI_ENABLE_TEST_ENGINE`. Its built-in item hooks observe actual native item registration for new buttons/choices/opacity input; they are verification-only, not application dependencies. Exact feature statements are extracted from current `main.cpp` with their original SDK-independent configuration declarations. No SDK replacements were created.
+- Passed retained Stage 3 host checks: all five categories/five feature panels, tab memory, all 30 original checkbox call sites toggling/restoring bound variables through labels at 640×360 after scrolling, float endpoints (range/FOV 0–400, smoothing 1–4, recoil 0–2), integer endpoints 1–3, native checkbox navigation activation and Ctrl-click numeric entry, drag/close/reopen, scrolling, balanced stacks, viewport bounds and primary label fit.
+- Passed Stage 4-specific checks: Bullet track FOV-dependent visibility, shared range variable retained across Misc/Aim, native Guest Reset item accessible with preserved minimum height, live opacity 85/100 endpoints and scoped background alpha, both spacing choices changing actual content spacing, numeric-entry bounds, Center window after dragging, Reset appearance preserving a snapshot of every original feature variable, and appearance state surviving close/reopen.
+- Native item rectangles fit their table columns horizontally; all four new panels and both spacing modes preserve navigation/accessibility at 1920×872, 2340×1080, 1280×720, 960×540, and 640×360. At small sizes content scrolls below the visible region, with both navigation rows fixed. Wrapped informational text stays within its column.
+- Static comparison against `f744bc4` passed for all 37 original control arguments, per-panel membership, ranges/formats/bindings, exact unchanged Visual/World/Aim branches and all `main.cpp` code outside Misc, retained Guest Reset callback, and unchanged configuration/default declarations, branding, build files, SDK integrations, and crimson palette.
+- Visually inspected all four final 1920×872 previews, Bullet track at 1280×720, and all four panels at 640×360. No new visible horizontal clipping or overlap found. Host previews do not establish final Android/reference/GPU fidelity.
+- `previews/stage4/` contains `bullet-1920.png`, `extra-1920.png`, `style-1920.png`, `settings-1920.png`, five smaller PNGs, self-contained `index.html`, `verification.json`, `README.md`, and `stage4-previews.zip`. Nine PNG signatures/chunk CRCs/Pillow integrity/full decodes, eight byte-exact viewer image/download embeds, and ZIP integrity passed. Earlier Stage 2/3 PNG hashes were verified unchanged.
+- Preview provenance: production `KennyMenu::Draw`, `KennyAppearance`, actual extracted feature panels, shared controls/layout, original configuration declarations, bundled fonts/ImGui, host test state, and CPU rasterization of emitted indexed draw data/font atlas. These are actual-source UI renders, not AI imagery or a standalone mock UI. Game, floating toggle, Android platform callbacks, GPU rendering, and runtime frame rate are excluded.
+- Full Android compilation/linking/device touch/overlay/GPU/performance remain unverified because this workspace intentionally lacks the SDK and has no NDK/device environment. No installation was attempted. The original font-header macro warnings remain untouched.
+
+Reproduction while ignored host files remain: `python .verification/stage4_fixture.py`; compile `.verification/stage4_check.cpp` together with `jni/imgui/{imgui,imgui_draw,imgui_widgets,imgui_tables}.cpp`, `-std=c++17 -O1 -g -DIMGUI_ENABLE_TEST_ENGINE -I jni -I .verification`, output `.verification/stage4_check`; run `timeout 30s .verification/stage4_check`; rasterize its `.draw` files with `.verification/stage4_rasterize.py` using its matching `stage4-atlas.rgba`. Existing Stage 3 harness/atlas/artifacts remain intact. Generated fixtures, executables, draw data, and previews are ignored by Git.
+
+Next authorized stage: **Stage 5 — Advanced Crimson Visual Effects, Animations, and Final UI Polish**. Stage 4 does not add advanced particles, ambient/opening animations, or new gameplay functionality. Wait for the user before implementing Stage 5.

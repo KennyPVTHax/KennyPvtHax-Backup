@@ -1092,31 +1092,43 @@ EGLBoolean _eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
                 }
             }
             else if (Settings::Tab == 4) {
-                Claude::SectionHeader("Bullet track");
-                KennyControls::Checkbox("Enable bullet track", &Cheat::BulletTrack::Enable);
-                KennyControls::Checkbox("Enable FOV",          &Cheat::Aimbot::EnableFov);
-                if (Cheat::Aimbot::EnableFov) {
-                    KennyControls::SliderFloat("Aim FOV",      &Cheat::Aimbot::Radius, 0.0f, 400.0f, "%.0f");
-                    KennyControls::Checkbox("Show FOV circle", &Cheat::Aimbot::ShowFovCircle);
+                if (KennyPanels::Begin("##tracking", 3, 10.0f, "Force headshot on full")) {
+                    KennyPanels::Section("Tracking");
+                    KennyControls::Checkbox("Enable bullet track", &Cheat::BulletTrack::Enable);
+                    KennyControls::Checkbox("Force headshot on full", &Cheat::BulletTrack::ForceHeadshotWhenFull);
+                    KennyControls::SliderInt("Tracking accuracy", &Cheat::BulletTrack::TrackingAccuracy, 1, 3, "%d/3");
+                    KennyPanels::EndSection();
+                    KennyPanels::Section("Filtering");
+                    KennyControls::Checkbox("Visibility check", &Cheat::Aimbot::VisCheck);
+                    KennyControls::Checkbox("Ignore knocked", &Cheat::Aimbot::IgnoreKnock);
+                    KennyControls::Checkbox("Ignore bot", &Cheat::Aimbot::IgnoreBot);
+                    KennyPanels::EndSection();
+                    KennyPanels::Section("Field of view");
+                    KennyControls::Checkbox("Enable FOV", &Cheat::Aimbot::EnableFov);
+                    if (Cheat::Aimbot::EnableFov) {
+                        KennyControls::SliderFloat("Aim FOV", &Cheat::Aimbot::Radius, 0.0f, 400.0f, "%.0f");
+                        KennyControls::Checkbox("Show FOV circle", &Cheat::Aimbot::ShowFovCircle);
+                    }
+                    KennyControls::SliderFloat("Aim range", &Cheat::Aimbot::Range, 0.0f, 400.0f, "%.0f m");
+                    KennyPanels::EndSection();
+                    KennyPanels::End();
                 }
-                KennyControls::SliderFloat("Aim range",              &Cheat::Aimbot::Range, 0.0f, 400.0f, "%.0f m");
-                KennyControls::Checkbox("Force headshot on full",    &Cheat::BulletTrack::ForceHeadshotWhenFull);
-                KennyControls::SliderInt("Tracking accuracy",        &Cheat::BulletTrack::TrackingAccuracy, 1, 3, "%d/3");
-                KennyControls::Checkbox("Visibility check",          &Cheat::Aimbot::VisCheck);
-                KennyControls::Checkbox("Ignore knocked",            &Cheat::Aimbot::IgnoreKnock);
-                KennyControls::Checkbox("Ignore bot",                &Cheat::Aimbot::IgnoreBot);
             }
             else if (Settings::Tab == 5) {
-                Claude::SectionHeader("Extra features");
-                KennyControls::Checkbox("Small cross",  &Cheat::Memory::Small);
-                KennyControls::Checkbox("X-hit effect", &Cheat::Memory::Hit);
-                KennyControls::Checkbox("iPad view",    &Cheat::Memory::IPad);
-                KennyControls::Checkbox("6-hour fixer", &Cheat::Memory::IslandBp);
-
-                if (ImGui::Button("Guest Reset"))
-                  {
-                  ResetLogin();
-                  }
+                if (KennyPanels::Begin("##extras", 2, 12.0f)) {
+                    KennyPanels::Section("Presentation");
+                    KennyControls::Checkbox("Small cross", &Cheat::Memory::Small);
+                    KennyControls::Checkbox("X-hit effect", &Cheat::Memory::Hit);
+                    KennyControls::Checkbox("iPad view", &Cheat::Memory::IPad);
+                    KennyPanels::EndSection();
+                    KennyPanels::Section("Utilities");
+                    KennyControls::Checkbox("6-hour fixer", &Cheat::Memory::IslandBp);
+                    if (KennyControls::Button("Guest Reset")) {
+                        ResetLogin();
+                    }
+                    KennyPanels::EndSection();
+                    KennyPanels::End();
+                }
             }
         });
     }

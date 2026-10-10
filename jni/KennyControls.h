@@ -9,6 +9,35 @@ namespace KennyControls {
 
 inline float Scale() { return ImGui::GetFontSize() / 32.0f; }
 
+// Full-width action with the same rounded artwork as secondary navigation.
+// The native button owns activation and retains the caller's label ID.
+inline bool Button(const char* label) {
+    return Claude::PillTab(label, false, ImVec2(ImGui::GetContentRegionAvail().x,
+                                              std::max(36.0f, ImGui::GetFrameHeight())));
+}
+
+inline bool Choice(const char* label, bool* value, const char* first, const char* second) {
+    ImGui::BeginGroup();
+    ImGui::TextUnformatted(label);
+    const float gap = ImGui::GetStyle().ItemSpacing.x;
+    const float width = (ImGui::GetContentRegionAvail().x - gap) * 0.5f;
+    const float height = std::max(36.0f, ImGui::GetFrameHeight());
+    bool changed = false;
+    ImGui::PushID(label);
+    if (Claude::PillTab(first, !*value, ImVec2(width, height)) && *value) {
+        *value = false;
+        changed = true;
+    }
+    ImGui::SameLine(0, gap);
+    if (Claude::PillTab(second, *value, ImVec2(width, height)) && !*value) {
+        *value = true;
+        changed = true;
+    }
+    ImGui::PopID();
+    ImGui::EndGroup();
+    return changed;
+}
+
 // Native ImGui owns IDs, label hit areas, focus, edits, and input semantics.
 // Only its square artwork is replaced by a circle on the same registered item.
 inline bool Checkbox(const char* label, bool* value) {

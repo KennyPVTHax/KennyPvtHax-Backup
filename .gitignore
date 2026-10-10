@@ -4,6 +4,7 @@
 .verification/
 previews/stage2/
 previews/stage3/
+previews/stage4/
 
 # Generated output and supplied binary libraries
 obj/

@@ -3,9 +3,16 @@
 
 namespace KennyPanels {
 
-inline bool Begin(const char* id, int maximumColumns, float minimumEm = 10.0f) {
+inline bool Begin(const char* id, int maximumColumns, float minimumEm = 10.0f,
+                  const char* widestCheckbox = nullptr) {
     const float width = ImGui::GetContentRegionAvail().x;
-    const int columns = std::clamp(static_cast<int>(width / (ImGui::GetFontSize() * minimumEm)), 1, maximumColumns);
+    float minimumWidth = ImGui::GetFontSize() * minimumEm;
+    if (widestCheckbox) {
+        const float controlWidth = ImGui::CalcTextSize(widestCheckbox).x +
+            std::max(36.0f, ImGui::GetFrameHeight()) + ImGui::GetStyle().ItemInnerSpacing.x;
+        minimumWidth = std::max(minimumWidth, controlWidth + 28.0f * KennyControls::Scale() + 1.0f);
+    }
+    const int columns = std::clamp(static_cast<int>(width / minimumWidth), 1, maximumColumns);
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding,
                         ImVec2(14.0f * KennyControls::Scale(), 10.0f * KennyControls::Scale()));
     ImGui::PushStyleColor(ImGuiCol_TableBorderLight, Claude::Hex(0x7A1C24, 0.3f));
@@ -37,5 +44,11 @@ inline void Section(const char* label) {
 
 inline void EndSection() { ImGui::PopItemWidth(); }
 inline void End() { ImGui::EndTable(); ImGui::PopStyleColor(); ImGui::PopStyleVar(); }
+
+inline void Note(const char* text) {
+    ImGui::PushStyleColor(ImGuiCol_Text, Claude::Dark::textSecondary);
+    ImGui::TextWrapped("%s", text);
+    ImGui::PopStyleColor();
+}
 
 } // namespace KennyPanels
