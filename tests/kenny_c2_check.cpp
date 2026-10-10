@@ -62,7 +62,7 @@ int main(){
     assert(allocations.load()==allocated); // cached dispatch/render never load or allocate
     registry->ClearTextures();assert(releases==2&&!c->artworkTexture.Valid());p.theme=KennyAppearance::Theme::Anime;registry->Prepare(p,&audio);assert(uploads==4);registry->ClearTextures(true);assert(releases==2);
     // Missing production pack routes to the original C1 tone, never a voice.
-    auto missing=std::make_unique<Registry>();missing->Configure(".");assert(missing->count==1&&!missing->characters[0].Installed());
+    auto missing=std::make_unique<Registry>();missing->Configure(".verification/c2-missing");assert(missing->count==1&&!missing->characters[0].Installed());
     missing->Prepare(p,&audio);assert(audio.Emit(KennyAudio::Event::MenuOpen,p,21000));mixer.Render(block.data(),block.size());assert(!mixer.character);
     bool fallback=false;for(auto sample:block)fallback|=sample!=0;assert(fallback);
     char pattern[]="/tmp/kenny-c2-prefs-XXXXXX";const char* path=mkdtemp(pattern);assert(path);KennyAppearance::Store store;store.Configure(path,p);

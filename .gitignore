@@ -42,3 +42,6 @@ assets/anime/**/*.webp
 assets/anime/**/*.wav
 assets/anime/**/*.mp3
 assets/anime/**/*.ogg
+
+# C3 private renderer previews and asset review
+previews/phase_c3/

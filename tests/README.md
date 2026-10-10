@@ -1,3 +1,42 @@
+# Phase C3 acquisition and actual-pack verification
+
+C3 adds private CC0 Cici Fyre alternative voice **data**, without modifying any
+application `jni/` source. No Rias artwork/original voice was installed. Permission
+review and content/quality limits: [C3_ASSET_VALIDATION.md](../C3_ASSET_VALIDATION.md).
+Run from the repository root with the current private assets retained:
+
+```sh
+timeout 30s python3 tests/kenny_host_fixture.py
+timeout 30s python3 tests/kenny_c2_fixtures.py
+timeout 120s g++ -std=c++17 -O1 -Wall -Wextra -Werror -I jni tests/kenny_c3_check.cpp -lz -o .verification/c3_check
+timeout 30s .verification/c3_check
+timeout 60s python3 tests/kenny_c3_validate.py
+timeout 120s g++ -std=c++17 -O1 -DIMGUI_ENABLE_TEST_ENGINE -I jni -I .verification tests/kenny_c3_capture.cpp jni/imgui/imgui.cpp jni/imgui/imgui_draw.cpp jni/imgui/imgui_widgets.cpp jni/imgui/imgui_tables.cpp -lz -o .verification/c3_capture
+timeout 60s .verification/c3_capture
+timeout 60s g++ -std=c++17 -O2 -Wall -Wextra -Werror tests/kenny_host_rasterize.cpp -o .verification/kenny_host_rasterize
+timeout 60s python3 tests/kenny_c3_package.py
+```
+
+The integrity script needs `.verification/c3-review/` original licensed archive/
+WAVs and `/workspace/attachments/` uploaded OGGs; override with `--review-root`
+and `--uploads-root`. It validates file content, not legal permission. The
+alternative PCM clips are ignored/private and must be preserved separately from
+the Git checkpoint. Packaging compares actual retained C2 baseline PNGs; it
+neither regenerates nor overwrites them. All `jni/` files remain byte-identical
+to `6f300ae`, so existing compiled regressions were rerun against unchanged code.
+The strict C2 loader test was rebuilt after isolating its negative empty root;
+diagnostic manifests retain only diagnostic packs. No assertion was weakened.
+
+C3 checks actual five-file/seven-event decode/routing/cooldown/mute/volume and
+fresh-store pack/preferences restoration. Native C3 captures additionally test
+the installed selector, voice controls, no slider sound events, missing artwork
+and 640 viewport. Eleven actual PNGs, genuine C1 PCM demo, self-contained viewer,
+hash provenance and 15-entry ZIP live privately in `previews/phase_c3/`. Normal
+captures expose unavailable Android audio; `host-pcm-test-settings.png` is
+explicitly a real portable-mixer test sink. English speech labels corroborated
+by offline machine recognition, not human audition. No Android/OGG playback or
+Rias artwork/voice claim. Existing C1/menu/theme/Aurora/effect/C2 tests below pass.
+
 # Phase C2 host verification
 
 C2 reuses the actual C1 mixer/backend. No permitted Rias media was acquired.

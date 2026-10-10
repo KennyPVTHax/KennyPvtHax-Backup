@@ -44,9 +44,50 @@
           "voice/error.wav"
         ]
       }
+    },
+    {
+      "id": "cici_fyre_mature_female",
+      "name": "Cici Fyre - English alternative",
+      "performer": "Cici Fyre",
+      "authentic_rias_voice": false,
+      "license": "CC0-1.0",
+      "events": {
+        "launcher_open": [
+          "voice/cici_hello.wav"
+        ],
+        "launcher_close": [
+          "voice/cici_see_you_later.wav"
+        ],
+        "menu_navigation": [
+          "voice/cici_okay_normal.wav"
+        ],
+        "feature_enabled": [
+          "voice/cici_okay_happy.wav"
+        ],
+        "feature_disabled": [
+          "voice/cici_okay_normal.wav"
+        ],
+        "bullet_track_enabled": [
+          "voice/cici_okay_happy.wav"
+        ],
+        "confirmation": [
+          "voice/cici_no_problem.wav"
+        ]
+      }
     }
   ],
-  "asset_status": "missing; no permitted media acquired",
-  "sources": [],
+  "asset_status": "Partial: licensed English alternative voice installed; Rias artwork, launcher and original voice unverified/missing",
+  "sources": [
+    {
+      "asset": "Cici Fyre - English alternative voice",
+      "url": "https://cicifyre.itch.io/free-voice-clips-pack-mature-female",
+      "creator": "Cici Fyre",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "original_archive_sha256": "95a49656814102ec0abb1a69cd6d50c4756983053ef3a24d759e23a65627bd4b",
+      "credit": "Voice clips by Cici Fyre. Not Rias Gremory / Yoko Hikasa recordings.",
+      "restrictions": "Keep private per project instructions; no GitHub media upload."
+    }
+  ],
   "usage": "Install only assets whose rights permit your intended use; no runtime downloads."
 }

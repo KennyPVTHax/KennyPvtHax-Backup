@@ -1,0 +1,351 @@
+{
+  "schema": 1,
+  "project": "KennyPvtHax",
+  "phase": "C3",
+  "parent_commit": "6f300ae",
+  "review_date": "2026-10-10",
+  "review_timezone": "Asia/Calcutta",
+  "artwork_candidates": [
+    {
+      "candidate": "hiclipart-yzkdp",
+      "url": "https://www.hiclipart.com/free-transparent-background-png-clipart-yzkdp",
+      "terms_url": "https://www.hiclipart.com/terms-of-use",
+      "advertised_dimensions": [
+        640,
+        800
+      ],
+      "advertised_aspect_ratio": 0.8,
+      "dimensions_basis": "Page metadata only; not validated from original image bytes",
+      "site_use_statement": "Noncommercial use listed; creator/rights-holder authorization not established",
+      "creator": "unverified",
+      "rights_status": "unclear; user review required",
+      "downloaded": false,
+      "alpha_verified": false,
+      "quality_verified": false,
+      "selected_for_installation": false,
+      "runtime_size_note": "Advertised dimensions fit native size limits; alpha/quality/rights still unverified"
+    },
+    {
+      "candidate": "pngwing-pzcwe",
+      "url": "https://www.pngwing.com/en/free-png-pzcwe",
+      "terms_url": "https://www.pngwing.com/terms-of-use",
+      "advertised_dimensions": [
+        576,
+        778
+      ],
+      "advertised_aspect_ratio": 0.7403598971722365,
+      "dimensions_basis": "Page metadata only; not validated from original image bytes",
+      "site_use_statement": "Noncommercial use listed; creator/rights-holder authorization not established",
+      "creator": "unverified",
+      "rights_status": "unclear; user review required",
+      "downloaded": false,
+      "alpha_verified": false,
+      "quality_verified": false,
+      "selected_for_installation": false,
+      "runtime_size_note": "Advertised dimensions fit native size limits; alpha/quality/rights still unverified"
+    },
+    {
+      "candidate": "pngwing-nvfcl",
+      "url": "https://www.pngwing.com/en/free-png-nvfcl",
+      "terms_url": "https://www.pngwing.com/terms-of-use",
+      "advertised_dimensions": [
+        3920,
+        6000
+      ],
+      "advertised_aspect_ratio": 0.6533333333333333,
+      "dimensions_basis": "Page metadata only; not validated from original image bytes",
+      "site_use_statement": "Noncommercial use listed; creator/rights-holder authorization not established",
+      "creator": "unverified",
+      "rights_status": "unclear; user review required",
+      "downloaded": false,
+      "alpha_verified": false,
+      "quality_verified": false,
+      "selected_for_installation": false,
+      "runtime_size_note": "Advertised dimensions exceed native per-side/pixel limits; would need a permitted resized derivative"
+    }
+  ],
+  "inline_reference": {
+    "status": "Visual reference only; original image file/alpha not available for byte inspection; not installed"
+  },
+  "rias_voice_source": {
+    "url": "https://sounds.spriters-resource.com/mobile/senrankaguranewlink/asset/501255/",
+    "terms_url": "https://sounds.spriters-resource.com/page/tou/",
+    "help_url": "https://sounds.spriters-resource.com/page/help/",
+    "game": "Senran Kagura: New Link",
+    "archive_name": "Rias Gremory (High School DxD)",
+    "uploader": "Gacha Grabber",
+    "performer_attribution_on_page": "Yoko Hikasa",
+    "permissions": "Site permits unpublished noncommercial uses but says it does not own or license the original copyrighted resources. Rights-holder permission for embedding remains unverified.",
+    "downloaded_archive": false,
+    "installed_original_voice": false
+  },
+  "uploaded_audio": [
+    {
+      "filename": "VOICE_ADV_PL125_16_001.ogg",
+      "sha256": "2d7ae84de9b23ca8fb012002c53c87e147d321953c02066c82f325987baf0f35",
+      "bytes": 30461,
+      "decoded": true,
+      "rights_status": "unverified user upload; not embedded",
+      "spoken_content_status": "not transcribed; no speech recognition runtime installed",
+      "event": null,
+      "codec": "vorbis",
+      "sample_rate": 44100,
+      "channels": 1,
+      "duration": 2.032449,
+      "native_ogg_supported": false,
+      "within_voice_duration_limit": true,
+      "source_attribution": "User upload; filenames also listed at supplied Sounds Resource archive; bytes/authenticity/permission not independently matched to archive"
+    },
+    {
+      "filename": "VOICE_SYS_PL125_11_03_002.ogg",
+      "sha256": "81f71aaa83e12084a8186608ddab43dadae1a4d1bf45a13a5369001f42a25f59",
+      "bytes": 55060,
+      "decoded": true,
+      "rights_status": "unverified user upload; not embedded",
+      "spoken_content_status": "not transcribed; no speech recognition runtime installed",
+      "event": null,
+      "codec": "vorbis",
+      "sample_rate": 44100,
+      "channels": 1,
+      "duration": 3.436327,
+      "native_ogg_supported": false,
+      "within_voice_duration_limit": true,
+      "source_attribution": "User upload; filenames also listed at supplied Sounds Resource archive; bytes/authenticity/permission not independently matched to archive"
+    },
+    {
+      "filename": "VOICE_SYS_PL125_02_02_002.ogg",
+      "sha256": "abe7d918a10ce979e14e779bf0e153de43f4c36f5d1d8a9f9f26f29b19b00cf3",
+      "bytes": 115555,
+      "decoded": true,
+      "rights_status": "unverified user upload; not embedded",
+      "spoken_content_status": "not transcribed; no speech recognition runtime installed",
+      "event": null,
+      "codec": "vorbis",
+      "sample_rate": 44100,
+      "channels": 1,
+      "duration": 8.162948,
+      "native_ogg_supported": false,
+      "within_voice_duration_limit": false,
+      "source_attribution": "User upload; filenames also listed at supplied Sounds Resource archive; bytes/authenticity/permission not independently matched to archive"
+    },
+    {
+      "filename": "VOICE_ADV_PL125_03_001.ogg",
+      "sha256": "66c04674fd40bf4a18c071a87babfd784fe53bc532bf7a66bf59863a9e9684a4",
+      "bytes": 11493,
+      "decoded": true,
+      "rights_status": "unverified user upload; not embedded",
+      "spoken_content_status": "not transcribed; no speech recognition runtime installed",
+      "event": null,
+      "codec": "vorbis",
+      "sample_rate": 44100,
+      "channels": 1,
+      "duration": 0.589773,
+      "native_ogg_supported": false,
+      "within_voice_duration_limit": true,
+      "source_attribution": "User upload; filenames also listed at supplied Sounds Resource archive; bytes/authenticity/permission not independently matched to archive"
+    },
+    {
+      "filename": "VOICE_ADV_PL125_02_002.ogg",
+      "sha256": "3fd7f106f3f3b493fc2120141144653250a39db14f33fe6e935dc44032275cca",
+      "bytes": 20910,
+      "decoded": true,
+      "rights_status": "unverified user upload; not embedded",
+      "spoken_content_status": "not transcribed; no speech recognition runtime installed",
+      "event": null,
+      "codec": "vorbis",
+      "sample_rate": 44100,
+      "channels": 1,
+      "duration": 1.324807,
+      "native_ogg_supported": false,
+      "within_voice_duration_limit": true,
+      "source_attribution": "User upload; filenames also listed at supplied Sounds Resource archive; bytes/authenticity/permission not independently matched to archive"
+    },
+    {
+      "filename": "VOICE_ADV_PL125_01_001.ogg",
+      "sha256": "e4765b9b7289448ad209c708c739cfb2a439fdc7fd538d2c0c1501cf417ebaf8",
+      "bytes": 11669,
+      "decoded": true,
+      "rights_status": "unverified user upload; not embedded",
+      "spoken_content_status": "not transcribed; no speech recognition runtime installed",
+      "event": null,
+      "codec": "vorbis",
+      "sample_rate": 44100,
+      "channels": 1,
+      "duration": 0.616281,
+      "native_ogg_supported": false,
+      "within_voice_duration_limit": true,
+      "source_attribution": "User upload; filenames also listed at supplied Sounds Resource archive; bytes/authenticity/permission not independently matched to archive"
+    }
+  ],
+  "licensed_alternative": {
+    "url": "https://cicifyre.itch.io/free-voice-clips-pack-mature-female",
+    "creator": "Cici Fyre",
+    "license": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "credit_required": false,
+    "credit_provided": "Voice clips by Cici Fyre; English alternative, not Rias / Yoko Hikasa dialogue.",
+    "download_method": "Normal creator free-download UI endpoints; no payment/login/challenge or quarantine bypass",
+    "original_archive_sha256": "95a49656814102ec0abb1a69cd6d50c4756983053ef3a24d759e23a65627bd4b",
+    "original_file_count": 57,
+    "original_format": "PCM32 float, stereo, 48000 Hz",
+    "integrated_files": [
+      {
+        "path": "assets/anime/highschool_dxd_rias/voice/cici_hello.wav",
+        "original_file": "greetings/hello.wav",
+        "source_sha256": "b56b3c1a1e9457e6305cc81075540fcfc4c3825caa9f597c018136a6de1f38e7",
+        "sha256": "de79185672eb973c67329bb42a24d7837d7a200ddc9030b22bc6748090530a5b",
+        "bytes": 88718,
+        "frames": 44337,
+        "rate": 48000,
+        "channels": 1,
+        "codec": "pcm_s16le",
+        "duration": 0.9236875,
+        "spoken_content": "hello",
+        "content_verification": "Creator labels corroborated by unconstrained FFmpeg/PocketSphinx English recognition; not human listening",
+        "max_error_s16_units": 1.45703125,
+        "conversion": "Full-length stereo arithmetic downmix, PCM16 triangular dithering; no normalization, cropping, pitch/speed changes"
+      },
+      {
+        "path": "assets/anime/highschool_dxd_rias/voice/cici_see_you_later.wav",
+        "original_file": "greetings/see_you_later.wav",
+        "source_sha256": "bcc5ed032e1aaa40fb3288e641c5faf99ab83d29c7e1c634a22286763cd7a7d2",
+        "sha256": "16024ba571bb78b86230594aca317f52c4f819f59397ca82eb42970cf26aaabf",
+        "bytes": 126896,
+        "frames": 63426,
+        "rate": 48000,
+        "channels": 1,
+        "codec": "pcm_s16le",
+        "duration": 1.321375,
+        "spoken_content": "see you later",
+        "content_verification": "Creator labels corroborated by unconstrained FFmpeg/PocketSphinx English recognition; not human listening",
+        "max_error_s16_units": 1.46484375,
+        "conversion": "Full-length stereo arithmetic downmix, PCM16 triangular dithering; no normalization, cropping, pitch/speed changes"
+      },
+      {
+        "path": "assets/anime/highschool_dxd_rias/voice/cici_okay_happy.wav",
+        "original_file": "short_replies/okay_happy.wav",
+        "source_sha256": "6ac7412a6e992d7a4db057b00373cd199c63019157d6258264950026f486c9b4",
+        "sha256": "fa05db02a1a82164f7c19a3e91f123e24fb9f52776a55b247aadcbe82adc0763",
+        "bytes": 105960,
+        "frames": 52958,
+        "rate": 48000,
+        "channels": 1,
+        "codec": "pcm_s16le",
+        "duration": 1.1032916666666666,
+        "spoken_content": "okay",
+        "content_verification": "Creator labels corroborated by unconstrained FFmpeg/PocketSphinx English recognition; not human listening",
+        "max_error_s16_units": 1.47265625,
+        "conversion": "Full-length stereo arithmetic downmix, PCM16 triangular dithering; no normalization, cropping, pitch/speed changes"
+      },
+      {
+        "path": "assets/anime/highschool_dxd_rias/voice/cici_okay_normal.wav",
+        "original_file": "short_replies/okay_normal.wav",
+        "source_sha256": "e75897f8b7cff403d59f5b72949d1e4db024a2807c44c521898213e3af7a85fe",
+        "sha256": "8d90600aa3b8738616ff85669b2dd15cf9c35a37d0ef2624c53fe46287c88def",
+        "bytes": 89950,
+        "frames": 44953,
+        "rate": 48000,
+        "channels": 1,
+        "codec": "pcm_s16le",
+        "duration": 0.9365208333333334,
+        "spoken_content": "okay",
+        "content_verification": "Creator labels corroborated by unconstrained FFmpeg/PocketSphinx English recognition; not human listening",
+        "max_error_s16_units": 1.4453125,
+        "conversion": "Full-length stereo arithmetic downmix, PCM16 triangular dithering; no normalization, cropping, pitch/speed changes"
+      },
+      {
+        "path": "assets/anime/highschool_dxd_rias/voice/cici_no_problem.wav",
+        "original_file": "short_replies/no_problem.wav",
+        "source_sha256": "5ef4569463db6725f6db2b6ca1e4c13d87d545c8ab43196ca50fb08de29a3017",
+        "sha256": "9a596c74ba05cc5844f1dbd430f5eb2885f2c3c4fb2c9ab453fac6610a94dee8",
+        "bytes": 99802,
+        "frames": 49879,
+        "rate": 48000,
+        "channels": 1,
+        "codec": "pcm_s16le",
+        "duration": 1.0391458333333334,
+        "spoken_content": "no problem",
+        "content_verification": "Creator labels corroborated by unconstrained FFmpeg/PocketSphinx English recognition; not human listening",
+        "max_error_s16_units": 1.48828125,
+        "conversion": "Full-length stereo arithmetic downmix, PCM16 triangular dithering; no normalization, cropping, pitch/speed changes"
+      }
+    ],
+    "speech_review": [
+      {
+        "file": "greetings/hello.wav",
+        "status": 0,
+        "recognized": [
+          "hello"
+        ],
+        "method": "unconstrained FFmpeg/PocketSphinx English ASR; not human listening"
+      },
+      {
+        "file": "greetings/goodbye.wav",
+        "status": 0,
+        "recognized": [
+          "good good"
+        ],
+        "method": "unconstrained FFmpeg/PocketSphinx English ASR; not human listening"
+      },
+      {
+        "file": "greetings/see_you_later.wav",
+        "status": 0,
+        "recognized": [
+          "see you later"
+        ],
+        "method": "unconstrained FFmpeg/PocketSphinx English ASR; not human listening"
+      },
+      {
+        "file": "short_replies/okay_happy.wav",
+        "status": 0,
+        "recognized": [
+          "okay"
+        ],
+        "method": "unconstrained FFmpeg/PocketSphinx English ASR; not human listening"
+      },
+      {
+        "file": "short_replies/okay_normal.wav",
+        "status": 0,
+        "recognized": [
+          "okay"
+        ],
+        "method": "unconstrained FFmpeg/PocketSphinx English ASR; not human listening"
+      },
+      {
+        "file": "short_replies/alright.wav",
+        "status": 0,
+        "recognized": [
+          "oh really"
+        ],
+        "method": "unconstrained FFmpeg/PocketSphinx English ASR; not human listening"
+      },
+      {
+        "file": "short_replies/no_problem.wav",
+        "status": 0,
+        "recognized": [
+          "no problem"
+        ],
+        "method": "unconstrained FFmpeg/PocketSphinx English ASR; not human listening"
+      },
+      {
+        "file": "short_replies/thanks_normal.wav",
+        "status": 0,
+        "recognized": [
+          "thanks"
+        ],
+        "method": "unconstrained FFmpeg/PocketSphinx English ASR; not human listening"
+      }
+    ],
+    "speech_limits": "Machine recognition, not human listening. Only exact agreement with creator labels was mapped. Conflicting/unrecognized clips excluded. Originals retained privately; no ASR model added to the application.",
+    "original_preservation": "Original ZIP and all 57 original files are private under .verification/c3-review/; selected derivatives are full length, 48kHz PCM16 mono with documented arithmetic downmix/triangular dither."
+  },
+  "final_selection": {
+    "character_artwork": null,
+    "launcher_artwork": null,
+    "authentic_rias_voice": null,
+    "alternative_voice_pack": "cici_fyre_mature_female",
+    "integrated_file_count": 5,
+    "fully_installed_rias": false
+  },
+  "privacy": "No third-party media committed or uploaded; all media and asset-bearing previews remain private and ignored."
+}

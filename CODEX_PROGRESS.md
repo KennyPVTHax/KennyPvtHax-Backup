@@ -1,6 +1,103 @@
 PROJECT: KennyPvtHax
 
 CURRENT STAGE:
+Phase C3 — Asset Acquisition and Validation — completed feasible integration,
+host-verified. Parent: 6f300ae. Rias rights/content/artwork unresolved; original
+Rias media are NOT fully installed. Historical checkpoints below are preserved.
+
+COMPLETED:
+- Reviewed all three supplied artwork pages, Sounds Resource terms/help and Cici
+  Fyre creator/license statements. Recorded exact URLs/credits/limits without
+  treating mirror noncommercial labels as underlying authorization.
+- Artwork/launcher acquisition deferred: permissions unresolved, no original PNG
+  alpha/quality available. Advertised dimensions/aspect ratios recorded honestly.
+- All six uploaded OGGs full-decode, with exact bytes/SHA-256 retained. No guessed
+  transcripts/mappings, no conversion/shortening. 8.162948-second clip exceeds the
+  existing four-second runtime limit; original recordings remain outside assets.
+- Downloaded Cici Fyre's CC0 pack normally, checked ZIP CRC/safe extraction and
+  fully decoded all 57 unchanged originals. No access-control/CAPTCHA bypass.
+- Installed five full-length 48 kHz PCM16 mono derivatives as explicitly labeled
+  Cici Fyre - English alternative, NOT authentic Rias/Yoko Hikasa. Seven existing
+  event mappings; English labels corroborated with unconstrained recognition,
+  conflicting results excluded. Original float32/stereo files retained privately.
+- Existing C2 registry, Settings, C1 mixer and appearance store work unchanged.
+  Original Rias manifest references/fallbacks remain. No source/GitHub publication.
+- Generated and inspected nine actual C++/ImGui screenshots, contact sheet and
+  C2 comparison, plus actual C1 mixer WAV, offline viewer and private ZIP.
+
+MODIFIED FILES:
+- assets/anime/highschool_dxd_rias/manifest.json
+- assets/anime/highschool_dxd_rias/ASSET_VALIDATION.json (new)
+- assets/anime/highschool_dxd_rias/ASSET_SOURCES.md
+- tests/kenny_c2_check.cpp; tests/kenny_c2_fixtures.py (isolated missing/diagnostic roots)
+- tests/kenny_c3_check.cpp; tests/kenny_c3_validate.py;
+  tests/kenny_c3_capture.cpp; tests/kenny_c3_package.py (new)
+- tests/README.md; .gitignore
+- C3_ASSET_VALIDATION.md (new); ANIME_CHARACTER_ASSETS.md;
+  UI_DESIGN_NOTES.md; CODEX_PROGRESS.md
+- Private ignored runtime media: voice/cici_hello.wav, cici_see_you_later.wav,
+  cici_okay_happy.wav, cici_okay_normal.wav, cici_no_problem.wav under the Rias pack.
+  Media, archives, models and generated previews are NOT committed.
+
+VERIFICATION:
+- PASS all 24 tracked jni files byte-identical to 6f300ae; approved Aurora/Classic/
+  C1/C2/SDK/gameplay untouched. Exact 37 bindings/ranges/formats and original
+  callback extraction pass against 58cbf6c.
+- PASS strict C3 C++17/-Wall/-Wextra/-Werror build: actual five clips/seven mappings,
+  truthful partial pack, missing original/event, C1 PCM mix, cooldown/mute/volume,
+  100 theme cancellations and fresh-store selected-pack/preferences round-trip.
+- PASS six unchanged uploaded OGGs, 57 originals, five derivatives: full decodes,
+  hashes/archive CRC, unchanged full frame counts; downmix error below two PCM16
+  units. Permission review is manual, not inferred by automated integrity checks.
+- PASS rebuilt strict C2 loader/registry/migration tests with isolated missing
+  root: alpha/corruption/paths/audio/resource bounds, 500 switches and 10,000
+  allocation-free cached dispatch/mix iterations.
+- PASS existing menu, C1 launcher/audio, theme/store, Aurora and effects suites:
+  controls/navigation/drag/close/reopen/scroll/viewport, real event dispatch,
+  persistence, 1,000 warmed menu frames, 20,000 allocation-free audio iterations,
+  50,000 concurrent queue submissions, unchanged Aurora physics/draw and clipping.
+- PASS native C3 selector/voice enable/0–100 volume/global mute, 36-pixel small
+  selector and unchanged original feature snapshots. Corrected test's outside
+  right-edge click, without changing application slider code.
+- PASS eleven PNG integrity/full decodes, source/output hashes, actual C1 ten-second
+  mixer WAV, self-contained viewer and 15-entry ZIP. Both matched Aurora and
+  Classic screenshots are pixel-identical to C2. Visuals inspected.
+
+KNOWN LIMITATIONS:
+- Rias artwork, alpha/quality, transparent launcher, authentic recordings and
+  uploaded spoken content/underlying permissions remain unverified. Candidate
+  mirror/archive permissions are reported for user review; no response assumed.
+- Runtime requires PCM16 WAV <=4 seconds; uploaded OGGs are unsupported, longest
+  exceeds the duration cap. None is silently converted/truncated/embedded.
+- Speech verification is machine recognition, not human audition. Cici Fyre is
+  clearly an English alternative; character remains partially installed.
+- Media are ignored/private: a Git checkout alone does not include recordings.
+  Preserve this workspace voice directory for the original app's packaging.
+- Intentionally omitted SDK, unavailable NDK/device: Android compile/link,
+  OpenSL playback, GLES alpha/resource lifecycle, APK staging/private restart,
+  touch/performance remain UNVERIFIED. Host screenshots/PCM are not device tests.
+
+NEXT ACTION:
+STOP after C3. Inspect previews/phase_c3/index.html and C3_ASSET_VALIDATION.md.
+Obtain permitted original RGBA artwork/launcher files and rights-holder permission
+plus verified transcripts for uploaded recordings before original Rias mapping.
+Retain private installed alternative clips. Do not begin key-entry, Android
+release or Stage 6 automatically. Get focused checkpoint with git log -1.
+
+REFERENCE NOTES:
+- previews/phase_c3/: anime-style.png, anime-player.png, anime-settings.png,
+  anime-voice.png, host-pcm-test-settings.png, anime-launcher-fallback.png,
+  anime-voice-640.png, aurora-player.png, classic-player.png, contact-sheet.png,
+  non-regression.png; cici-c1-mixer-demo.wav; index.html; verification.json;
+  README.txt; kennypvthax-c3-previews.zip. All private/local, no upload.
+- ASSET_VALIDATION.json records original and derivative SHA-256, source URLs,
+  precise durations, speech review, conversion limits and permission status.
+- Original archive/57 WAVs and temporary official ASR model remain ignored under
+  .verification/c3-review/. Six uploads remain privately under /workspace/attachments/.
+
+---
+
+CURRENT STAGE:
 Phase C2 — Anime Character Integration — COMPLETE infrastructure (host-verified).
 Parent checkpoint: c5e9ef0. Actual Rias artwork/launcher/recordings remain missing.
 All earlier implementation and Git history preserved. Historical checkpoints follow.

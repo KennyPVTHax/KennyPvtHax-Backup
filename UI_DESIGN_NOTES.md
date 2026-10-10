@@ -1,5 +1,24 @@
 # KennyPvtHax — source map and reference design
 
+## Current C3 — asset validation, 10 October 2026
+
+No UI redesign: all 24 tracked `jni/` files remain byte-identical to `6f300ae`.
+Five real CC0 Cici Fyre clips now populate a separately named English alternative
+voice pack using the existing C2 registry/Settings/C1 mixer. They are not original
+Rias dialogue. Seven existing event mappings, independent gain/mute/cooldown and
+schema-3 persistence work without additional application code. Rias artwork,
+launcher and original voices remain missing/unverified. No alpha or quality
+claim is made for undownloaded candidate images; K/artwork fallbacks remain.
+
+Actual C++/ImGui host captures under `previews/phase_c3/` show the available pack,
+explicit missing artwork and disabled Android playback state. Separate host-PCM
+controls and WAV demonstrate the actual portable mixer, not Android audio.
+Matched Aurora and Classic are pixel-identical to C2. Contact sheet/Settings/
+small scrolling/K fallback inspected; no unrelated layout change needed.
+See [C3_ASSET_VALIDATION.md](C3_ASSET_VALIDATION.md) for sources, rights review,
+machine speech verification, full-length conversion and remaining requirements.
+No private media publication; stop after C3, Android verification deferred.
+
 Stages 1–5.5 and Stage 5.6 Phase A completed, 10 October 2026 UTC. **Current identity: Crimson Eclipse; Phase B adds Aurora / Anime / Classic themes.** Aurora remains the default across all seven panels. Phase C1 adds the K launcher and UI audio. Phase C2 adds local character packs, transparent PNG rendering and optional character voices through that same audio engine. Rias media remain missing; Stage 6 remains deferred. Earlier sections describe historical checkpoints.
 
 ## Phase C2 — character integration, 10 October 2026 UTC

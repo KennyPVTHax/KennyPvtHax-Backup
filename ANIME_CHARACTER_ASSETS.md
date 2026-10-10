@@ -1,4 +1,29 @@
-# Anime character integration — Phase C2
+# Anime character integration — current C3 asset status
+
+Parent `6f300ae`, reviewed 10 October 2026. Five real **CC0 Cici Fyre English
+alternative** clips are installed privately under the existing Rias directory,
+pack `cici_fyre_mature_female`, mapping seven existing events. They are **not
+authentic Rias / Yoko Hikasa recordings**. All tracked `jni/` source files,
+Settings, C1 playback and schema-3 persistence remain unchanged. Alternative
+pack/voice preferences round-trip through the existing private store.
+
+Rias artwork/launcher/original voices remain uninstalled. Six uploaded OGGs
+fully decode unchanged; permission and transcripts remain unresolved. One is
+8.162948 seconds, exceeding the four-second limit; none was shortened. The
+character correctly reports partial status and uses the K/artwork fallbacks.
+
+See [C3_ASSET_VALIDATION.md](C3_ASSET_VALIDATION.md) for candidate sources,
+permissions, mappings and quality limits, and the pack's `ASSET_VALIDATION.json`
+for hashes. English content was corroborated by unconstrained recognition, not
+human listening. Originals are retained as float32 stereo/48 kHz; installed
+clips are full-length dithered PCM16 mono/48 kHz.
+
+Current evidence: `previews/phase_c3/`, eleven PNGs, actual C1 mixer WAV, viewer
+and ZIP. Aurora/Classic match C2 pixels exactly. Android build/OpenSL/GLES/device
+checks remain unverified. Media are Git-ignored: preserve the private voice
+directory when transferring/packaging. Nothing published. Stop after C3.
+
+## Historical C2 implementation and asset state
 
 Initial pack: **Rias Gremory**, **High School DxD**, ID `highschool_dxd_rias`.
 Parent checkpoint: `c5e9ef0`. This is a private, offline integration. No media or
@@ -119,8 +144,9 @@ resource behavior remains unverified.
 | `skins_enabled` | Explicit integration hook only; no new trigger |
 | `error` | Explicit integration hook only; no new trigger |
 
-The manifest references `voice/<event>.wav` for every row. No listed recording
-exists yet. Variants are arrays of up to three approved local filenames.
+The original Rias manifest pack references `voice/<event>.wav` for every row.
+None of those original recordings exists yet. C3 adds the separately labeled
+licensed English alternative above. Variants allow up to three local filenames.
 `Registry::Emit` supplies explicit hooks for future existing actions without
 fabricating login, skins, errors or validation behavior.
 

@@ -13,10 +13,12 @@ for name,frequency in [('a',330),('b',550)]:
   out.setnchannels(2);out.setsampwidth(2);out.setframerate(24000)
   out.writeframes(b''.join(struct.pack('<hh',int(math.sin(i*frequency*math.tau/24000)*5000),int(math.sin(i*frequency*math.tau/24000)*5000)) for i in range(4800)))
 manifest=json.loads(Path('assets/anime/highschool_dxd_rias/manifest.json').read_text())
+manifest['voice_packs']=manifest['voice_packs'][:1] # fixtures never depend on installed optional production packs
 for event in manifest['voice_packs'][0]['events']:manifest['voice_packs'][0]['events'][event]=['voice/a.wav','voice/b.wav']
 alternate=json.loads(json.dumps(manifest['voice_packs'][0]));alternate['id']='alternate';alternate['name']='Diagnostic alternate';manifest['voice_packs'].append(alternate)
 (pack/'manifest.json').write_text(json.dumps(manifest))
 # No additional real character is installed. This ID is a registry-only unit test.
 future=root/'assets/anime/test_registry_extension';future.mkdir(exist_ok=True)
 (future/'manifest.json').write_text(json.dumps({'schema':1,'id':'test_registry_extension','name':'Test registry entry','series':'Diagnostic only'}))
+Path('.verification/c2-missing').mkdir(exist_ok=True)
 print('Diagnostic transparent pixels/tone fixtures generated under ignored .verification only; no character media generated.')
