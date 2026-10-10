@@ -1,6 +1,6 @@
 # KennyPvtHax — source map and reference design
 
-Stages 1–4 completed, 10 October 2026 (Asia/Calcutta). **Current theme: black/crimson/fire-red**, explicitly requested for Stage 3. This supersedes the historical lavender implementation palette below; the video still governs geometry, spacing, and visual hierarchy. Stage 4 completes Misc, Style, and Settings using the Stage 3 components. Stages 5–6 remain unimplemented.
+Stages 1–5 completed, 10 October 2026 (Asia/Calcutta). **Current theme: black/crimson/fire-red**, explicitly requested for Stage 3. This supersedes the historical lavender implementation palette below; the video still governs geometry, spacing, and visual hierarchy. Stage 4 completes Misc, Style, and Settings using the Stage 3 components. Stage 5 adds restrained crimson atmosphere and presentation transitions. Stage 6 remains unimplemented.
 
 ## Source baseline
 
@@ -216,3 +216,39 @@ Style and Settings render inside the existing fixed-navigation/scrollable-conten
 Reproduction while ignored host files remain: `python .verification/stage4_fixture.py`; compile `.verification/stage4_check.cpp` together with `jni/imgui/{imgui,imgui_draw,imgui_widgets,imgui_tables}.cpp`, `-std=c++17 -O1 -g -DIMGUI_ENABLE_TEST_ENGINE -I jni -I .verification`, output `.verification/stage4_check`; run `timeout 30s .verification/stage4_check`; rasterize its `.draw` files with `.verification/stage4_rasterize.py` using its matching `stage4-atlas.rgba`. Existing Stage 3 harness/atlas/artifacts remain intact. Generated fixtures, executables, draw data, and previews are ignored by Git.
 
 Next authorized stage: **Stage 5 — Advanced Crimson Visual Effects, Animations, and Final UI Polish**. Stage 4 does not add advanced particles, ambient/opening animations, or new gameplay functionality. Wait for the user before implementing Stage 5.
+
+
+## Stage 5 — completed: restrained cinematic crimson presentation
+
+The cached video frames 05/18 still govern the rounded proportions, quiet dark center, corner illumination, sparse points and compact horizontal navigation. Stage 5 changes presentation only; the Stage 4 window measurements, typography, responsive tables, content spacing and every main.cpp feature statement remain unchanged. No new gameplay or appearance controls were introduced.
+
+### Actual rendering and timing
+
+- `KennyEffects.h` draws two soft crimson blooms through the existing ImGui draw list/atlas white pixel. A fixed 24×24 triangle grid (625 mesh vertices) uses denser quarter-circle sampling near corners and a 0.25 px conservative inset, avoiding both the first preview's diagonal corner cutoff and floating-point boundary excursions. Colors remain deep red over a nearly black center; no blur passes or textures are created.
+- 48 constexpr fixed seeds produce tiny gently drifting ember/star points, faint halos and occasional muted-white cores. Analytic positions avoid particle containers/physics allocations. Visibility testing includes the halo plus antialias fringe against the rounded shell, in addition to draw-list rectangular clipping; core and halo geometry stay inside it. Three low-alpha inward boundary strokes provide depth without drawing over the underlying application outside the menu.
+- The visible-only double clock is bounded to 4,096 seconds and only advances when consecutive menu frames are rendered. Hidden frames do no atmosphere rendering or catch-up. Opening/reopening restarts a short exponential atmosphere reveal; layout, text and all interaction remain immediate. Cached effects use the existing frame delta, safely clamped to 0–0.1 seconds; bad timing does not enter animation state.
+- The mesh, seeds and animation cache have fixed bounds. Row curve geometry is calculated once per row, not per mesh vertex. Existing ImGui buffers may reserve during warmup and then reuse capacity. No framework/resource creation or unrelated dependency was added.
+
+### Shared transitions and controls
+
+- `KennyMotion.h` supplies color mixing and exponential interpolation. Its fixed 192-entry cache uses widget IDs plus independent channels, resets context/stale items, handles same-frame samples consistently and snaps newly visible controls. Storage is 3,072 bytes. It never stores configuration or native input state.
+- Primary navigation uses eased crimson icon/text emphasis and hover surfaces. The existing shared active underline keeps its dimensions, adds a faint halo, and moves without overshoot during rapid category changes. On reopening it snaps to the current category rather than animating across hidden history.
+- Secondary pills, action buttons and Style choices ease selected fills, borders and hover feedback using native ImGui buttons with unchanged sizes/IDs/return values. The existing floating toggle becomes rounded with eased surface color; its 84×36 interaction rectangle, release activation and disabled semantics remain native.
+- Circular checkboxes ease only fill, outline emphasis, halo and checkmark opacity. Native checkbox hit areas, focus/navigation and immediate bound-value changes are retained. All colors respect the existing style alpha.
+- Sliders ease inactive artwork toward programmatic/shared-value changes; active edits snap the handle directly to the native value. The header number always represents the actual value. Track size, ranges, formats, native drag/keyboard/temporary input and call-site bindings are unchanged. Hover/active glow is modest and smoothly decays.
+- The title uses a restrained blend of light text and fire red. Ambient depth balances sparse World/Extra/Settings areas without fake options or additional decoration. Original rounded groups, thin separators, fonts, row spacing, crimson defaults, navigation and real Style/Settings actions remain intact.
+
+### Verification and preview provenance
+
+- Strict SDK-independent C++17 header syntax checks and focused production-header tests pass. `tests/kenny_effects_check.cpp` and tests/README.md make the math, input, clipping and buffer-stability checks reproducible with the supplied ImGui core; no SDK substitutes are used.
+- The expanded local `.verification/stage5_check.cpp` fixture extracts the unchanged real main.cpp panel statements and original configuration declarations, loads original embedded fonts, and observes native ImGui item registration. All earlier checkbox/slider/range/navigation/appearance/drag/close/scroll checks pass at five viewports and both spacing modes; all 37 call sites and the entire main.cpp remain byte-identical to 457a6f5.
+- Rapid real category targets at varied 30/60/120 Hz remain finite/bounded and preserve feature snapshots. Tests distinguish inactive slider artwork from immediate actual values, verify 120 hidden frames submit no menu geometry/callbacks/clock updates, and check reopen recovery.
+- Focused tests cover frame-rate-independent interpolation, invalid/large timing, 2,000 rapid targets, cache pressure over 9,999 IDs, native floating-toggle hitbox/release/disabled input, stale/hidden-control recovery, every actual generated vertex in 500 atmosphere samples/five scales, and stable warmed effect allocations/vertex/index capacities over 1,000 frames. Observed maximum effect geometry is 2,425 vertices / 10,584 indices. This is a host bound/stability result, not a mobile FPS claim.
+- Actual indexed UI triangles/atlas are CPU rasterized into 21 PNGs in `previews/stage5/`: all seven panels at 1920×872 and 640×360, plus seven Player samples at visible clock 2–8 seconds with fixed configuration. All major/small captures and later samples were visually inspected; corrected corner defects are absent in the final files. Native small-viewport vertical clipping is intentional scrolling; horizontal labels/items remain within their columns.
+- Offline index.html embeds all 21 exact PNGs with panel/viewport selection, download link and one-second captured-sample playback. It displays actual images; it does not recreate the application UI. 23 embedded data URIs match their PNG bytes, all PNGs pass CRC/decode/dimension checks, viewer selection/play-pause works under Node DOM emulation, and the 24-entry ZIP passes integrity checks. Stage 2/3/4 image hashes remain unchanged. Metadata records source/image hashes and implementation commit.
+
+### Stage 6 handoff and limits
+
+The SDK is intentionally excluded and the Android NDK/device/GPU environment is unavailable. No native build, overlay/touch/keyboard runtime, device blending/AA/appearance or FPS was verified. Host previews use illustrative test values on a neutral backdrop; they omit the game, floating toggle and platform backend, and may differ from actual GPU output. One-second sample playback shows changing real renderer lights/points, not full-speed native interaction animation. Guest Reset remains bound to original ResetLogin but was not invoked. Session-only appearance preferences and original embedded font macro warnings remain unchanged.
+
+Next stage, only after user instruction: **Stage 6 — Final Source Audit, Android Build Validation, and Visual Verification**. Restore the original SDK/compatible NDK, audit all bindings/source integration, build the real Android component, verify device inputs/overlay/GPU/performance and compare against cached references. Do not restart earlier stages or invent SDK replacements. Stage 5 stops at its focused checkpoint.

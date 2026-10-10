@@ -41,6 +41,7 @@ inline bool Choice(const char* label, bool* value, const char* first, const char
 // Native ImGui owns IDs, label hit areas, focus, edits, and input semantics.
 // Only its square artwork is replaced by a circle on the same registered item.
 inline bool Checkbox(const char* label, bool* value) {
+    const ImGuiID id = ImGui::GetID(label);
     const float size = std::max(36.0f, ImGui::GetFrameHeight());
     const ImVec2 padding = ImGui::GetStyle().FramePadding;
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding,
@@ -58,19 +59,22 @@ inline bool Checkbox(const char* label, bool* value) {
         const ImVec2 center(p.x + size * 0.5f, p.y + size * 0.5f);
         const float radius = size * 0.46f;
         const bool hover = ImGui::IsItemHovered();
+        const float checked = KennyMotion::Sample(id, 3, *value ? 1.0f : 0.0f, 22.0f);
+        const float emphasis = KennyMotion::Sample(id, 1, hover || ImGui::IsItemFocused() ? 1.0f : 0.0f);
         ImDrawList* draw = ImGui::GetWindowDrawList();
-        if (*value)
+        if (checked > 0.005f)
             draw->AddCircle(center, radius + 2.0f * Scale(),
-                            ImGui::GetColorU32(Claude::Hex(0xFF5A5F, hover ? 0.24f : 0.12f)), 32, 2.0f);
-        draw->AddCircleFilled(center, radius, ImGui::GetColorU32(*value ?
-                              (hover ? Claude::Dark::accentPressed : Claude::Dark::accent) :
-                              Claude::Dark::surfaceElev), 32);
-        draw->AddCircle(center, radius, ImGui::GetColorU32(hover || ImGui::IsItemFocused() ?
-                        Claude::Dark::accentPressed : Claude::Dark::outline), 32, 1.0f);
-        if (*value) {
+                            ImGui::GetColorU32(Claude::Hex(0xFF5A5F, checked*(0.10f+0.12f*emphasis))), 32, 2.0f);
+        draw->AddCircleFilled(center, radius, ImGui::GetColorU32(KennyMotion::Mix(
+            Claude::Dark::surfaceElev, KennyMotion::Mix(Claude::Dark::accent, Claude::Dark::accentPressed, emphasis), checked)),32);
+        draw->AddCircle(center, radius, ImGui::GetColorU32(KennyMotion::Mix(
+            Claude::Dark::outline, Claude::Dark::accentPressed, emphasis)), 32, 1.0f);
+        if (checked > 0.005f) {
             const float mark = radius * 1.05f;
+            ImVec4 ink = Claude::Dark::textPrimary;
+            ink.w *= checked;
             ImGui::RenderCheckMark(draw, ImVec2(center.x - mark * 0.5f, center.y - mark * 0.5f),
-                                  ImGui::GetColorU32(Claude::Dark::textPrimary), mark);
+                                  ImGui::GetColorU32(ink), mark);
         }
     }
     return changed;
@@ -128,7 +132,11 @@ inline bool Slider(const char* label, T* value, T minimum, T maximum, const char
         const float right = b.x - 2.0f - grab * 0.5f;
         const float ratio = range > 0 ? static_cast<float>(std::clamp(
             (static_cast<double>(*value) - minimum) / range, 0.0, 1.0)) : 0.0f;
-        const float x = left + (right - left) * ratio;
+        // Active native input tracks the pointer exactly. Only inactive artwork
+        // eases toward programmatic changes; numeric labels always show reality.
+        const float visual = KennyMotion::Sample(id, 4, ratio, 24.0f, active || changed);
+        const float emphasis = KennyMotion::Sample(id, 1, active || hover ? 1.0f : 0.0f);
+        const float x = left + (right - left) * visual;
         const float y = (a.y + b.y) * 0.5f;
         const float track = std::max(3.0f, 6.0f * scale);
         ImDrawList* draw = ImGui::GetWindowDrawList();
@@ -137,11 +145,11 @@ inline bool Slider(const char* label, T* value, T minimum, T maximum, const char
         draw->AddRectFilled(ImVec2(left, y - track * 0.5f), ImVec2(x, y + track * 0.5f),
                             ImGui::GetColorU32(Claude::Dark::accent), track * 0.5f);
         const float radius = std::max(7.0f, 10.0f * scale);
-        if (active || hover)
+        if (emphasis > 0.005f)
             draw->AddCircle(ImVec2(x, y), radius + 3.0f,
-                            ImGui::GetColorU32(Claude::Hex(0xFF5A5F, 0.18f)), 24, 2.0f);
+                            ImGui::GetColorU32(Claude::Hex(0xFF5A5F, 0.18f*emphasis)), 24, 2.0f);
         draw->AddCircleFilled(ImVec2(x, y), radius,
-                              ImGui::GetColorU32(active || hover ? Claude::Dark::accentPressed : Claude::Dark::accent), 24);
+                              ImGui::GetColorU32(KennyMotion::Mix(Claude::Dark::accent, Claude::Dark::accentPressed, emphasis)), 24);
         draw->AddCircle(ImVec2(x, y), radius, ImGui::GetColorU32(Claude::Dark::accentPressed), 24, 1.0f);
     }
     ImGui::PopStyleVar(2);

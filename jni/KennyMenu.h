@@ -3,6 +3,7 @@
 #include <cmath>
 #include "ClaudeTheme.h"
 #include "KennyAppearance.h"
+#include "KennyEffects.h"
 #include "ANOY/font_awesome_5.h"
 
 // Application-owned window chrome. Feature controls are supplied by main.cpp;
@@ -23,6 +24,7 @@ struct State {
     float indicator = -1.0f;
     KennyAppearance::Preferences appearance;
     bool centerRequested = false;
+    KennyEffects::State effects;
 
     void Select(Category next, int& tab) {
         category = next;
@@ -112,10 +114,12 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
         if (ImGui::IsItemHovered()) ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
         const ImVec2 origin = ImGui::GetWindowPos();
         ImDrawList* draw = ImGui::GetWindowDrawList();
+        const bool resumed = state.effects.Advance(ImGui::GetFrameCount(), ImGui::GetIO().DeltaTime);
+        KennyEffects::Draw(draw, origin, l.size, l.scale, Claude::RadiusWindow*l.scale, state.effects);
         const char* brand = "KennyPvtHax";
         const ImVec2 brandText = ImGui::CalcTextSize(brand);
         draw->AddText(ImVec2(origin.x + l.padding, origin.y + (brandHeight - brandText.y) * 0.5f),
-                      ImGui::GetColorU32(Claude::Dark::accentPressed), brand);
+                      ImGui::GetColorU32(KennyMotion::Mix(Claude::Dark::textPrimary, Claude::Dark::accentPressed, 0.55f)), brand);
 
         ImGui::SetCursorPos(ImVec2(l.size.x - l.padding - closeSize,
                                   (brandHeight - closeSize) * 0.5f));
@@ -134,11 +138,13 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
         }
         // One bounded, time-based underline; no per-tab animation allocations.
         const float target = static_cast<float>(static_cast<int>(state.category));
-        if (state.indicator < 0.0f) state.indicator = target;
-        state.indicator += (target - state.indicator) *
-            (1.0f - std::exp(-18.0f * ImGui::GetIO().DeltaTime));
+        if (state.indicator < 0.0f || resumed) state.indicator = target;
+        state.indicator = KennyMotion::Step(state.indicator, target, 18.0f, ImGui::GetIO().DeltaTime);
         const float underlineWidth = std::min(78.0f * l.scale, tabWidth * 0.65f);
         const float underlineX = origin.x + navX + (state.indicator + 0.5f) * tabWidth - underlineWidth * 0.5f;
+        draw->AddRectFilled(ImVec2(underlineX, origin.y + l.header - 11.0f * l.scale),
+                            ImVec2(underlineX + underlineWidth, origin.y + l.header - 4.0f * l.scale),
+                            ImGui::GetColorU32(Claude::Hex(0xFF5A5F, 0.10f)), 4.0f*l.scale);
         draw->AddRectFilled(ImVec2(underlineX, origin.y + l.header - 9.0f * l.scale),
                             ImVec2(underlineX + underlineWidth, origin.y + l.header - 6.0f * l.scale),
                             ImGui::GetColorU32(Claude::Dark::accentPressed), 2.0f * l.scale);

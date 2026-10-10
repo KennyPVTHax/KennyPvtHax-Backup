@@ -1,92 +1,89 @@
 PROJECT: KennyPvtHax
 
 CURRENT STAGE:
-Stage 4 — Misc, Style, and Settings — COMPLETE
-Checkpoint date: 10 October 2026 (Asia/Calcutta).
-STOPPED after Stage 4. Do not begin Stage 5 without the user's next instruction.
+Stage 5 — Advanced Crimson Visual Effects, Animations, and Final UI Polish — COMPLETE
+Checkpoint date: 10 October 2026.
+STOPPED after Stage 5. Do not begin Stage 6 without the user's next instruction.
 
 THEME:
-Premium black / crimson / fire-red; Stage 3 palette and default shell typography/spacing retained. Defaults for new menu-only preferences: 97% opacity and Standard spacing.
+Premium black / crimson / fire-red. Reference-video geometry and Stage 3/4 grouped layouts retained; crimson remains the default. Appearance preferences remain 97% opacity / Standard spacing by default, session-only.
 
 COMPLETED:
-- Resumed verified commit `f744bc4`; read this checkpoint/design notes, checked Git status/history and source, inspected the Stage 3 previews. Preserved all original untracked sources and prior commits/artifacts. Did not re-extract ZIP/video or repeat video analysis.
-- Redesigned Bullet track into Tracking, Filtering, and Field of view sections using existing responsive equal-width table helpers. All ten original call sites retain their exact bindings/ranges/formats/FOV conditions, including shared Aimbot variables.
-- Redesigned Extra features into Presentation and Utilities sections. Retained all four checkbox bindings and Guest Reset -> original ResetLogin callback. The callback implementation is untouched and was not invoked during verification.
-- Added native pill actions and two-option selectors that reuse the Stage 3 secondary-tab artwork. Action/choice controls retain native IDs/focus/activation and minimum 36 px interaction height.
-- Extended responsive column measurement with an optional real checkbox-label/touch-target width guard for Bullet track; existing Visual/Aim bodies/default layout measurement are unchanged. Added wrapped secondary notes for informational text.
-- Completed Style with working menu-only opacity (85–100%, default 97%) and Standard/Compact row spacing (10/6 px times existing layout scale). Opacity affects the scoped menu background; text/controls/global overlay colors remain clear and unchanged.
-- Completed Settings with working Center window, Reset appearance, and minimal genuine application information. Reset appearance resets only the two new preferences; it does not reset feature configurations, invoke Guest Reset, or move the menu.
-- New presentation preferences live in existing menu state and survive panel switches/close/reopen, with defaults restored on process restart. Added no feature persistence keys, save/load systems, dummy functional controls, SDK calls, permissions, dependencies, or backend features.
-- Retained existing five-category horizontal navigation, 1–5 backend feature tab mapping, remembered Visual/Misc subtabs, close/reopen, drag/viewport constraints, fonts, crimson theme, scrollable content, overlay integration and original configuration behavior.
-- Generated/inspected actual host UI previews for Bullet track, Extra features, Style, Settings at 1920×872 and 640×360 plus Bullet track at 1280×720. Saved valid PNGs, offline viewer, metadata/README, and ZIP under non-hidden previews/stage4/. Verified prior Stage 2/3 PNGs unchanged.
-- Preserved Stage 1–3 source work and historical preview access notes below. No advanced effects/animation work from Stage 5 started.
+- Resumed commit `457a6f5`; inspected Git status/history, checkpoint/design notes, actual shared rendering code, cached reference frames 05/18, and Stage 4 previews. Preserved Stages 1–4 and original untracked dependencies; no ZIP/video extraction, restart, reset, or SDK substitution.
+- Added an actual draw-list atmosphere behind every panel: two soft, slowly moving crimson blooms, a nearly black center, 48 fixed-seed tiny drifting points with faint halos, and restrained inward edge illumination. The 24×24 gradient mesh follows rounded corners with extra corner sampling and a conservative subpixel inset; particle halos and AA fringes remain inside the rounded shell.
+- Added menu-visible timing and a gentle atmosphere-only opening fade. Hidden frames perform no atmosphere work, clock catch-up, feature callbacks, or menu geometry submission. Reopening restarts the short atmosphere fade and snaps the navigation indicator to the current category; layout/text/input remain immediate.
+- Added shared exponential visual easing with finite/clamped frame timing, fixed 192-entry/3,072-byte animation storage, context ownership, and stale/hidden-control recovery. No new textures, blur passes, framework, dependencies, feature keys or resources are created per frame. ImGui geometry buffers reuse their warmed capacity.
+- Polished the KennyPvtHax title with a restrained light crimson tone; retained header alignment, size/position, rounded shell, fonts, section spacing, compact grouped layouts, five primary categories and remembered secondary tabs.
+- Refined the active underline with a low-intensity halo and bounded movement under rapid switching. Primary icon/text highlighting, native pill selected/hover fills and borders, and the floating toggle use smooth restrained feedback. Toggle artwork is rounded while its original 84×36 hitbox/activation behavior stays intact.
+- Added circular checkbox fill/glow/checkmark transitions and slider interaction emphasis. Only inactive slider artwork eases toward externally changed values; active editing snaps artwork to the real value, numeric labels show the real value, and all native edits/configuration updates remain immediate.
+- All 37 original checkbox/slider call sites, ranges, formats, FOV conditions, variable bindings and callbacks are preserved. main.cpp, appearance/panel logic, configuration declarations, SDK/gameplay/input/EGL/build integrations and branding files are byte-identical to Stage 4.
+- Added focused reproducible SDK-independent effect/motion/input checks in tests/. Extended the existing local actual-source interaction/capture harness without modifying backend code.
+- Generated and visually inspected all seven full-size panels and all seven 640×360 captures, plus later animation samples. Corrected the first mesh's angular corner cutoff and a floating-point boundary issue before final capture. Added 21 valid PNGs, seven actual Player time samples at 2–8 visible seconds, self-contained offline viewer, metadata/README, and verified ZIP under previews/stage5/.
 
 MODIFIED FILES:
-- `jni/main.cpp`: grouped original Bullet track and Extra panels; shared native pill Guest Reset button. Entire file outside Misc and all Stage 3 panel branches are unchanged.
-- `jni/KennyAppearance.h` (new): session-only menu preferences and actual Style/Settings render functions.
-- `jni/KennyMenu.h`: appearance state, scoped background alpha/content spacing, new Style/Settings panel routing, one-shot center request; existing shell/nav/input behavior retained.
-- `jni/KennyControls.h`: shared native pill action and equal-width two-option selector helpers; original circular checkbox/slider code unchanged.
-- `jni/KennyPanels.h`: optional widest-checkbox measurement and wrapped secondary text helper; original heading/divider/default layout behavior retained.
-- `.gitignore`: generated Stage 4 public preview directory ignored.
-- `UI_DESIGN_NOTES.md`: completed Stage 4 architecture/control/preference specification, SDK clarification, verification/provenance, and next-stage note.
-- `CODEX_PROGRESS.md`: this checkpoint and preserved historical preview-access notes.
-- Ignored verification artifacts: `.verification/stage4_fixture.py`, extracted fixture header, `stage4_check.cpp`, executable, `stage4-atlas.rgba`, draw/PNG files, `stage4_rasterize.py`; `previews/stage4/` nine PNGs/offline viewer/metadata/README/ZIP. No generated binaries, secrets, original dependency trees, or unrelated files are committed.
+- `jni/KennyMotion.h` (new): bounded visual cache, color interpolation, safe delta-time easing, hover artwork helper.
+- `jni/KennyEffects.h` (new): fixed particle seeds, rounded gradient geometry, visible clock/reveal, inward edge illumination.
+- `jni/KennyMenu.h`: presentation effect state/rendering, restrained title/underline polish and reopen recovery; layout/routing/bindings unchanged.
+- `jni/KennyControls.h`: circular checkbox transitions and visual-only slider easing/emphasis; native input/IDs/ranges unchanged.
+- `jni/ClaudeTheme.h`: primary/secondary tab and toggle artwork transitions; crimson palette unchanged.
+- `tests/kenny_effects_check.cpp` and `tests/README.md` (new): focused actual-production-header host checks and reproducible compile/run instructions.
+- `.gitignore`: generated Stage 5 public preview directory ignored.
+- `UI_DESIGN_NOTES.md`: completed Stage 5 design/implementation/provenance/limitations and Stage 6 handoff.
+- `CODEX_PROGRESS.md`: this checkpoint; earlier design/source map and preview-access history retained.
+- Ignored artifacts: .verification/stage5_fixture.py/.h, stage5_check.cpp/executable, stage5_headers.cpp, stage5_rasterize.py, stage5-atlas.rgba, actual draw/PNG files, stage5_package.py, stage5_viewer_check.js, effect-test executable/temporary diagnostic files; previews/stage5/ PNGs/viewer/metadata/README/ZIP. No binaries, credentials, unrelated original sources or dependency trees are committed.
 
 VERIFICATION:
-- PASS: actual strict C++17 SDK-independent header check with -Wall -Wextra -Werror. KennyMenu transitively includes all new/extended application UI headers.
-- PASS: compiled/ran host executable against production menu/appearance/layout/control headers, exact current feature-panel statements extracted from main.cpp, original SDK-independent configuration declarations, embedded fonts, and real bundled ImGui core. Built-in test hooks observe native item registration; no replacement SDK or fake UI renderer used.
-- PASS: all five primary categories and all five feature panel inventories; secondary tab memory; presentation panels remain isolated from feature callback/backend tab values.
-- PASS: all 30 original checkbox sites toggle/restore their actual variables through label hits at 640×360 after scrolling into view; native checkbox navigation activation remains. All original float/integer limits and native Ctrl-click numeric entry remain functional.
-- PASS: Bullet track FOV condition shows/hides exactly two original controls, shared range remains connected to Aim, tracking accuracy retains 1–3, original Guest Reset native item renders with the callback unchanged (not executed).
-- PASS: new opacity control sets actual scoped menu alpha at 85/100 endpoints; numeric input is bounded for this preference only; both spacing presets change actual content row spacing. Global UI palette/style/font stacks return to their original state after rendering.
-- PASS: Center window re-centers a dragged menu on the next frame without changing appearance/navigation; Reset appearance restores 97%/Standard and preserves a snapshot of every original bound variable; preferences survive close/reopen.
-- PASS: original dragging/close/reopen/position retention, content scrolling with fixed root/header/navigation, balanced font/color/style stacks, viewport fit and primary labels at 1920×872, 2340×1080, 1280×720, 960×540, 640×360. Native item rectangles remain inside table columns horizontally; both spacing modes preserve feature access/minimum touch height.
-- PASS: static audit against f744bc4 confirms all 37 original call-site arguments, per-tab memberships, exact ranges/formats/bindings and unchanged Visual/World/Aim bodies. All main.cpp code outside Misc, configuration/default/branding declarations, gameplay/input/EGL/SDK integrations, build files, and original crimson palette are unchanged. Guest Reset still invokes ResetLogin directly.
-- PASS: visually inspected all four final reference-size and 640×360 PNGs, plus Bullet track at 1280×720. Content below the small viewport remains reachable by scrolling; no new horizontal label clipping/overlap found.
-- PASS: nine PNG signatures/dimensions/RGBA modes/chunk CRCs/Pillow verification/full pixel decodes, eight byte-identical offline viewer image/download data URIs, ZIP integrity, and retained Stage 2/3 image hashes. Metadata records source/image hashes and rendering provenance.
-- PASS: git diff --check and focused staged diff review before commit.
-- Host compilation still emits the original fontAwesome.hpp macro warnings; application-owned headers pass their separate strict check. No introduced verification failure was observed.
+- PASS: strict C++17 application-header syntax check with -Wall -Wextra -Werror; focused effect test compiled with these flags and real unchanged bundled ImGui objects. Actual source/core used; no SDK dummy headers.
+- PASS: rebuilt and ran the expanded host interaction executable against production UI headers, exact main.cpp feature statements/configuration declarations, original embedded fonts, and bundled ImGui core with native test hooks. Original fontAwesome.hpp macro warnings remain; no application-header warning introduced.
+- PASS: all original panel inventories, all 30 original checkbox sites toggle/restore through labels at 640×360 after scrolling, native checkbox navigation activation, float/integer endpoints, Ctrl-click numeric entry, shared Aim/Misc bindings and FOV visibility conditions.
+- PASS: all primary/secondary routes/memory, Style/Settings feature-callback isolation, real opacity endpoints/scoping, Standard/Compact spacing, Center window/Reset appearance preserving feature state, original dragging/close/reopen/position retention, fixed-header content scrolling, balanced style/color/font stacks.
+- PASS: viewport fit and unclipped horizontal labels/items at 1920×872, 2340×1080, 1280×720, 960×540, 640×360; both spacing modes remain usable. Lower small-viewport content remains reachable by scrolling.
+- PASS: rapid real category changes with 30/60/120 Hz frame timing maintain finite/bounded/non-overshooting underline positions and unchanged feature snapshots; inactive slider artwork eases while its bound value updates immediately; 120 hidden frames submit no menu geometry/callbacks, keep animation time fixed and recover correctly on reopening.
+- PASS: focused native floating-toggle wrapper test retains 84×36 hitbox, release activation, disabled behavior and scoped alpha. No live Android toggle/overlay test is implied.
+- PASS: interpolation agreement across frame rates, bad/large timing handling, fixed cache pressure under 9,999 IDs, stale-control recovery, 2,000 rapid animation targets, 500 effect geometry samples across five scales (every generated vertex including halos/AA inside rounded boundaries).
+- PASS: effect geometry buffers and ImGui active allocation count remain stable after warmup over 1,000 frames. Observed maximum effect geometry: 2,425 vertices / 10,584 indices; animation cache is exactly 192 entries / 3,072 bytes. These are host bounds/stability checks, not Android performance or FPS measurements.
+- PASS: static comparison against 457a6f5 confirms main.cpp and all 37 exact binding/range/format sites unchanged; appearance, layout-panel, configuration, branding, SDK/build integrations unchanged; no native/gameplay edits or SDK creation.
+- PASS: actual host rasterizations visually inspected against cached reference geometry/atmosphere. All seven 1920×872 images retain the same pixel draw bounds; time samples differ in real atmosphere pixels with feature values held fixed. No final corner cutoff, horizontal overlap or new clipping found.
+- PASS: 21 PNG signatures/dimensions/RGBA/CRC/integrity/full decodes, 23 byte-identical embedded image/download URIs, viewer JavaScript selection for all 21 captures/play-pause (Node DOM emulation, not a browser screenshot), 24-entry ZIP CRC test. Retained Stage 2/3/4 PNG hashes verified unchanged.
+- PASS: git diff --check and focused diff/source review. Checkpoint commit contains only the ten reviewed source/test/documentation paths above.
 
 KNOWN LIMITATIONS:
-- Per user clarification, jni/SDK/ was intentionally excluded from the upload to reduce size. Do not recreate/remove SDK integrations. NDK/ndk-build is unavailable; full application compilation/linking will use the user's original SDK/compatible NDK later.
-- No live Android device/emulator, overlay/touch integration, Android keyboard input, GPU appearance, frame-rate measurement, or final on-device fidelity verification was performed. Native host pointer/keyboard tests do not prove platform runtime behavior.
-- Previews are actual-source UI CPU rasterizations with host test state on a neutral backdrop; game/floating toggle/platform callbacks/GPU rendering are absent. Illustrative FOV/checkbox values do not change application defaults.
-- New appearance preferences are session-only, clearly described in Style; no persistent feature save/load system exists in the original active UI. Style/Settings intentionally use genuine modest content instead of fabricated settings.
-- At 640×360 and other small windows, some content is below the initial capture and scrolls vertically. Original mixed global/render-local visibility names and embedded font warnings remain untouched.
-- Verification scripts/previews are local and ignored; preserve them for later stages where available. Codex file-browser image behavior is not directly testable here; the image tool displays these PNGs, and the self-contained HTML viewer can be downloaded/opened in a normal browser.
-- Untouched original files remain untracked on disk due to the selective baseline. Use focused explicit git add paths; do not commit credentials, original binaries, generated artifacts, or unreviewed dependency trees.
+- jni/SDK/ intentionally excluded by user; NDK/ndk-build unavailable. No Android application build/link validation performed. Restore the original SDK and use a compatible NDK in Stage 6; never replace missing dependencies with fake headers.
+- No Android device/emulator, touch/overlay/keyboard integration, GPU blending/AA/appearance or FPS measurement. Host native input and warm allocation tests do not establish device behavior/performance.
+- Previews use actual application UI draw code with illustrative host configuration and CPU triangle rasterization on a neutral backdrop. Game/floating-toggle/platform rendering is absent; GPU appearance may differ. Application defaults were not changed.
+- Viewer swaps actual one-second time samples; it demonstrates changed lights/points, not full-speed native animation or control transitions. No live browser screenshot test was available; JavaScript and embedded image bytes were checked, and the image tool displayed real PNGs. If Codex shows “No image”, download/open index.html in a normal browser.
+- Guest Reset still directly calls original ResetLogin; its native control is accessible, but the destructive/platform-dependent callback was not invoked. Center window and Reset appearance were exercised.
+- At 640×360 some content lies below the initial scroll position; this is supported existing scrolling. Session-only preferences and original embedded-font warnings/visibility naming remain unchanged.
+- Original dependency/source trees remain untracked due to the selective baseline. Verification outputs/public previews are local and ignored. Use explicit focused add paths; do not commit credentials, binaries or unrelated original files.
 
 NEXT STAGE:
-Stage 5 — Advanced Crimson Visual Effects, Animations, and Final UI Polish
+Stage 6 — Final Source Audit, Android Build Validation, and Visual Verification
 
 NEXT ACTION:
-WAIT for the user's next instruction. When authorized, read this checkpoint and the Stage 4 section of UI_DESIGN_NOTES.md; inspect Git status and current previews. Extend the existing crimson shell/controls with bounded lightweight ambient/particle/menu animations and focused polish. Keep both appearance preferences genuinely functional, defaults consistent, all 37 original bindings/callbacks and native input/SDK code intact. Do not rebuild completed panels or invent gameplay features. Reuse the host checks, render/inspect updated previews, checkpoint/commit Stage 5 only, then stop.
+WAIT for the user's instruction. When authorized, read this checkpoint and the Stage 5 design notes, inspect Git status and current previews, then audit final source/37 bindings and perform native build with the user's ORIGINAL SDK and compatible NDK. Validate on-device overlay/touch/keyboard, dragging/visibility/scrolling, GPU clipping/blending, appearance and performance; compare to cached reference frames and address real findings. If SDK/NDK/device remain unavailable, run feasible host/static checks and explicitly leave native/runtime acceptance unverified. Do not restart earlier stages or recreate SDK dependencies.
 
 REMAINING TASKS:
-- Stage 5: advanced crimson visual effects, lightweight animations, final UI polish/optimization; existing controls/panels are complete and should be refined rather than replaced.
-- Stage 6: native application build with real SDK/NDK, device/runtime/GPU/visual verification and remaining final acceptance checks.
+Stage 6 native compilation/linking, SDK/dependency validation, on-device interaction/GPU/performance/fidelity verification and final acceptance report. Stage 5 has stopped; none of Stage 6 was started.
 
 REFERENCE NOTES:
-- UI_DESIGN_NOTES.md retains the complete source/binding map and historical visual measurements. Cached .reference/frame-{05,09,12,15,18,24,27}.jpg remain; do not extract/process original uploads again.
-- Reference proportions retained: roughly 1,135×713 centered near (392,80) in 1920×872, 34 px radius, 100 px primary band, 74 px secondary band, thin dividers/equal columns. Translate lavender reference accents to crimson.
-- Public root: /workspace/KennyPvtHax/previews/stage4/. Main PNGs: bullet-1920.png, extra-1920.png, style-1920.png, settings-1920.png. Smaller captures: bullet-1280.png and all four -640.png files.
-- Download/open index.html in a normal browser if Codex shows No image; all four main PNGs/download links are embedded. stage4-previews.zip includes all images/viewer/metadata/README. verification.json holds exact hashes/source provenance.
-- Local reproduction: python .verification/stage4_fixture.py; compile .verification/stage4_check.cpp plus jni/imgui/{imgui,imgui_draw,imgui_widgets,imgui_tables}.cpp using -std=c++17 -O1 -g -DIMGUI_ENABLE_TEST_ENGINE -I jni -I .verification, output .verification/stage4_check; run timeout 30s .verification/stage4_check; rasterize the emitted .draw files with .verification/stage4_rasterize.py using its matching stage4-atlas.rgba.
-- Stage 3 original fixture/harness/atlas and Stage 2/3 previews remain preserved. Host verification never executes Guest Reset/ResetLogin. No build or SDK replacements were created.
+Cached .reference/frame-{05,09,12,15,18,24,27}.jpg remain; Stage 5 reviewed 05/18 without processing the original video. Retained roughly 1,133×715 host window at (393,78), 34 px radius, 100/74 px header/secondary bands at 1920×872, restrained dark atmosphere and equal compact columns. Crimson is the intentional palette translation. See UI_DESIGN_NOTES.md for the historical source/binding map and earlier stage implementation details.
+Public preview directory: /workspace/KennyPvtHax/previews/stage5/.
+Viewer: index.html; bundle: stage5-previews.zip; images: player/world/aim/bullet/extra/style/settings-{1920,640}.png; Player time samples: player-t02-1920.png through player-t08-1920.png. Source/image hashes and provenance are in verification.json.
 
-SOURCE CHECKPOINT HASHES (SHA-256):
+GIT CHECKPOINT:
+Preserved b73a33a, 8bffdcd, 042e39c, f744bc4, 457a6f5. Stage 5: commit containing this checkpoint, subject Stage 5: add restrained crimson atmosphere and UI transitions. Obtain its exact hash with git log -1 --oneline; preview metadata records it after commit.
+
+SOURCE HASHES AT CHECKPOINT:
 - `jni/main.cpp`: `bab6c3877130e4ad55d2ae8e5e033bb49a0b3a01773327486a9230c321ddf811`
-- `jni/ClaudeTheme.h`: `ebfe63af863fee910aa40e68acb4de06edc852e08ab95d78e57328e7fde167b9`
-- `jni/KennyMenu.h`: `610c6218452b46a1f4b9f45a0a44cb38acf02d46c62fd5bd090c0d82ea223052`
-- `jni/KennyControls.h`: `11b5e60e9367554b003260039a0ec7fd463ae5bb2f5d86971bb5746ee2806ddd`
+- `jni/ClaudeTheme.h`: `8e39b5d1ca266a8860f95f695192a6b7e859d86327986942f5da04d63eb28221`
+- `jni/KennyMenu.h`: `5ad0cf7b8d8d3cb90f1fd6993141d4b4b7201e50da465d97399fa2d84b83e7eb`
+- `jni/KennyMotion.h`: `710a0d2e1d259d0c0d145a99f90099f76eb5940d6484e8924641224095a36410`
+- `jni/KennyEffects.h`: `b8b7eeab59084786e97b26a8746d396a9f89c6b2b54ce81404ccf16a84dcb67a`
+- `jni/KennyControls.h`: `31a52f4e00b84402eb79d73f2b408d6ff2055a286a43e79562414f0e00fdc3ed`
 - `jni/KennyPanels.h`: `6df188196b23750c87c4e552a527f956c2b01a522d11fbf060b3778f172004af`
 - `jni/KennyAppearance.h`: `1cf91ce72dcc9a9ff16f7cb39b3c5b60390b74a71d3868666ebe41450ec45ab0`
 - `jni/Helper/definition.h`: `e01c4f04ac3ca5fa34f3a94c41527350db75c15f516a0ce6feabf2193fd6f0b8`
 - `jni/Lua_Buffer.cpp`: `b92231b93b6de973ba3f86dc4b708d1295e9b1ce92741875eac55a8165bfbebb`
-
-GIT CHECKPOINT:
-- Original selective baseline b73a33a, Stage 1 8bffdcd, Stage 2 042e39c, Stage 3 f744bc4 all retained.
-- Stage 4: commit containing this checkpoint, subject Stage 4: complete Misc, Style and Settings panels. Retrieve its exact hash with git log -1 --oneline.
 
 HISTORICAL PREVIEW-ACCESS CHECKPOINT (preserved from work before Stage 3):
 STAGE 2 PREVIEW ACCESS CHECKPOINT — 10 October 2026:

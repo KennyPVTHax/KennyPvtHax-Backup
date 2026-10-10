@@ -1,5 +1,6 @@
 #pragma once
 #include "imgui/imgui.h"
+#include "KennyMotion.h"
 namespace Claude {
 
 // ---- Hex helper ------------------------------------------------------------
@@ -138,12 +139,16 @@ inline void Apply() {
 
 // Existing floating menu toggle.
 inline bool PrimaryButton(const char* label, ImVec2 size = ImVec2(0, 40)) {
-    ImGui::PushStyleColor(ImGuiCol_Button,        Dark::accent);
-    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Dark::accentPressed);
+    const float hover = KennyMotion::Hover(ImGui::GetID(label), size);
+    const ImVec4 surface = KennyMotion::Mix(Dark::accent, Dark::accentPressed, hover);
+    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, size.y*0.5f);
+    ImGui::PushStyleColor(ImGuiCol_Button,        surface);
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, surface);
     ImGui::PushStyleColor(ImGuiCol_ButtonActive,  Dark::accentPressed);
     ImGui::PushStyleColor(ImGuiCol_Text,          Dark::textPrimary);
     bool r = ImGui::Button(label, size);
     ImGui::PopStyleColor(4);
+    ImGui::PopStyleVar();
     return r;
 }
 
@@ -163,14 +168,18 @@ inline bool SecondaryButton(const char* label, ImVec2 size = ImVec2(0, 40)) {
 
 // Horizontal primary tab. The menu draws its shared selection underline.
 inline bool NavItem(const char* label, bool selected, ImVec2 size) {
+    const ImGuiID id = ImGui::GetID(label);
+    const float hover = KennyMotion::Hover(id, size);
+    const float active = KennyMotion::Sample(id, 2, selected ? 1.0f : 0.0f);
+    const ImVec4 surface = Hex(0x26171B, hover * 0.65f);
     // Explicit tab widths supply spacing; keep text padding small on mobile.
     const ImVec2 padding = ImGui::GetStyle().FramePadding;
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(padding.x * 0.25f, padding.y));
-    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Dark::surfaceSubtle);
+    ImGui::PushStyleColor(ImGuiCol_Button, surface);
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, surface);
     ImGui::PushStyleColor(ImGuiCol_ButtonActive,  Dark::accentSubtle);
     ImGui::PushStyleColor(ImGuiCol_Text,
-        selected ? Dark::accentPressed : Dark::textSecondary);
+        KennyMotion::Mix(Dark::textSecondary, Dark::accentPressed, active));
     bool r = ImGui::Button(label, size);
     ImGui::PopStyleColor(4);
     ImGui::PopStyleVar();
@@ -179,13 +188,19 @@ inline bool NavItem(const char* label, bool selected, ImVec2 size) {
 
 // Rounded secondary tab; uses ImGui::Button for the full interactive hit area.
 inline bool PillTab(const char* label, bool selected, ImVec2 size) {
+    const ImGuiID id = ImGui::GetID(label);
+    const float hover = KennyMotion::Hover(id, size);
+    const float active = KennyMotion::Sample(id, 2, selected ? 1.0f : 0.0f);
+    const ImVec4 surface = KennyMotion::Mix(
+        KennyMotion::Mix(Hex(0x100B0E, 0.6f), Dark::accentSubtle, active),
+        Hex(0x42202A, 0.9f), hover * 0.5f);
     ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, size.y * 0.5f);
     ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1.0f);
-    ImGui::PushStyleColor(ImGuiCol_Button, selected ? Dark::accentSubtle : Hex(0x100B0E, 0.6f));
-    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Dark::surfaceSubtle);
+    ImGui::PushStyleColor(ImGuiCol_Button, surface);
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, surface);
     ImGui::PushStyleColor(ImGuiCol_ButtonActive, Dark::accentSubtle);
-    ImGui::PushStyleColor(ImGuiCol_Border, selected ? Hex(0xC44551, 0.65f) : Dark::outline);
-    ImGui::PushStyleColor(ImGuiCol_Text, selected ? Dark::textPrimary : Dark::textSecondary);
+    ImGui::PushStyleColor(ImGuiCol_Border, KennyMotion::Mix(Dark::outline, Hex(0xC44551, 0.75f), std::max(active,hover)));
+    ImGui::PushStyleColor(ImGuiCol_Text, KennyMotion::Mix(Dark::textSecondary, Dark::textPrimary, std::max(active,hover)));
     const bool pressed = ImGui::Button(label, size);
     ImGui::PopStyleColor(5);
     ImGui::PopStyleVar(2);
