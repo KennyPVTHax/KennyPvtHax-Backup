@@ -1,6 +1,6 @@
 # KennyPvtHax — source map and reference design
 
-Stages 1–5.5 and Stage 5.6 Phase A completed, 10 October 2026 UTC. **Current identity: Crimson Eclipse; Player ESP now prototypes Living Crimson Aurora.** The reference geometry, navigation, controls and grouped layouts remain. The other six panels retain Stage 5.5 effects. Phase B and Stage 6 are unimplemented. Historical notes below describe their original checkpoints.
+Stages 1–5.5 and Stage 5.6 Phase A completed, 10 October 2026 UTC. **Current identity: Crimson Eclipse; Phase B adds Aurora / Anime / Classic themes.** Aurora is the default across all seven panels; reference geometry, navigation, controls and grouped layouts remain. Earlier sections describe historical checkpoints. Phase C and Stage 6 remain unimplemented. Historical notes below describe their original checkpoints.
 
 ## Source baseline
 
@@ -341,3 +341,52 @@ Reproduction: `tests/README.md`; tracked extractor, native menu regression suite
 The real main.cpp, configuration declarations, build files, native gameplay/SDK integrations and all 37 original bindings/ranges are unchanged from af8a337. SDK/NDK/device remain unavailable. Host mouse input exercises the existing ImGui path, but Android touch/overlay/backend, actual GPU blending/AA, native compilation/linking and device FPS/thermal/power require later testing. Appearance preferences remain session-only; no fabricated SDK headers, resources, gameplay features or permissions were introduced. Original embedded-font macro warnings remain untouched.
 
 **Stop after Stage 5.6 Phase A. Next action: user inspects the PNGs/MP4 and directs any Phase A refinement or subsequent phase. Do not begin Phase B or Stage 6 automatically.**
+
+
+## Stage 5.6 / Phase B — Custom theme system
+
+### Scope and appearance
+
+Continued directly from 58cbf6c without extracting, reverting or replacing the original architecture. The approved aurora composition/forces/damping/seeds remain. Style now contains three equal, rounded, native theme cards with restrained burgundy selection, small descriptive text, existing motion-cache feedback and a keyboard-focus outline. All three fit at 640×360; the content child scrolls independently of navigation. Existing opacity / Standard–Compact spacing / Full–Reduced controls retain their IDs and ranges. Settings' Reset appearance now restores the entire UI preference set, including default Aurora; Center window is unchanged.
+
+Aurora is routed after native widgets on all seven screens, using the existing two draw channels, input ownership checks and rounded mesh. Its default intensity and activity are 100%; stars and touch attraction are enabled. Controls change curtain alpha (0–100), star visibility, background touch permission and ambient particle/twinkle clock speed (0–100). Zero activity holds star positions and twinkling while curtains continue; hidden stars skip star physics/drawing. A separate particle clock is the only integration change to default motion. At default settings, 1,800 steps produce exactly equal time/response/positions/velocities to the approved renderer; emitted draw vertices/UVs/colors/indices also match byte-for-byte. No curtain formula or physical coefficient was redesigned.
+
+Only empty, hovered content accepts attraction. Native checkbox, slider, table, scrollbar, popup, disabled item, navigation and header ownership takes priority. The header remains the drag area in Aurora; non-atmospheric themes retain native empty-content dragging. No IO capture flags, game callbacks, configuration variables or overlay transparency controls were changed.
+
+Classic paints only static graphite/burgundy rounded material separation. It does not call Aurora initialization/Advance/Draw or an artwork provider. Anime paints the same safe dark surface until supplied artwork is available, with an explicit missing-artwork explanation in Style. No anime drawing, voice, sound system, launcher, custom logo replacement or key-entry UI was fabricated or implemented. The existing identity is retained.
+
+### Appearance persistence
+
+The active source has **no feature configuration save/load system** to extend (Stage 1 audit unchanged). `KennyAppearanceStore.h` therefore owns a separate, versioned, UI-only file:
+
+`<ANativeActivity.internalDataPath>/kennypvthax-appearance-v1.conf`
+
+main.cpp passes the existing activity's private path; no package rename, external storage, SDK dependency or Android permission was added. Configuration is loaded once into the menu's presentation state. Preferences comprise selected theme, opacity, compact rows, reduced motion, aurora intensity, particle activity, star visibility, touch attraction, artwork dimming and artwork Cover/Contain. All default values remain compatible with the previous UI; there was no persisted appearance format to migrate.
+
+Changed preferences save after native adjustment release, Reset, or menu hiding. Equal values perform no I/O; pending drags do not write every frame. A bounded text schema validates version, enum/booleans, field count, trailing data and finite numbers; numeric values are clamped. Writes stage a unique 0600 private file, flush/fsync/close, and atomically rename. A failed write is reported and does not retry every frame. Unavailable/read-error/corrupt storage falls back safely to session preferences with a visible status. No existing feature keys, files, defaults or bindings are read or written. ResetLogin's original destructive/platform behavior remains; the host never executes it.
+
+The on-device path, lifecycle and I/O latency still require Android testing. Host tests exercise genuine filesystem writes and independent fresh Store instances reading the resulting file. No Android restart verification is claimed.
+
+### User-asset integration contract
+
+`KennyThemeBackground.h` accepts renderer-owned `ArtworkFrame { texture, width, height }` through:
+
+- `state.artwork.SetStatic(frame)` for an already-uploaded still image.
+- `state.artwork.SetProvider(callback, user)` for a future frame decoder/cache. Callback signature: `bool(void*, double visibleTime, bool motionAllowed, ArtworkFrame&)`.
+- `state.artwork.Clear()` **before** the owner releases/replaces a texture or the graphics context is lost. Ownership remains with the asset module; this header creates/releases no GL textures.
+
+Registration, callbacks, texture upload and Clear must occur on the render thread. Invalid/missing frames produce the dark fallback. Providers are called at most once per active Anime frame; they must return a cached frame without blocking. Other themes and hidden menus do not call them. Reduced resolves an initial frame then holds it; inactive gaps do not advance elapsed time. Context loss must invalidate the owner's handles and Clear before rendering resumes; actual GL lifecycle testing awaits user assets/device access.
+
+The real draw path submits textured rounded mesh vertices to existing ImGui/GLES texture commands. Cover crops UVs; Contain letterboxes; dimming preserves foreground contrast (35–95%). These Style controls appear only when a valid user asset is registered. They are persisted even when the current asset is missing. No file loader/decoder or artwork is supplied yet, because the user will provide assets later. Tests use diagnostic texture handles only for native geometry/provider verification, never as screenshot artwork.
+
+### Verification and previews
+
+- Source extractor asserts all **37 exact original binding/range/format statements** and the **complete feature-panel/callback body** are unchanged from 58cbf6c. Helper/definition.h, build files and SDK/game integrations remain unchanged; main.cpp adds only private UI-store initialization/flush outside the callback.
+- Real native menu suite retains checkbox/slider/keyboard/numeric-entry/range/conditional/shared-binding tests, five primary categories, secondary memory, original appearance actions, header dragging, close/reopen, scroll and five landscape viewport checks.
+- Phase B adds 90 native theme-card switches, same-frame background routing, all seven Aurora routes, actual intensity endpoints/geometry reduction, frozen zero-activity stars, hidden-star physics pause, touch-disable ownership, provider inactivity/Reduced hold, and original checkbox access under all three themes at 640×360. Warmed allocation/capacity checks cycle all seven routes and all themes over 1,000 frames.
+- Strict C++17 production header syntax, appearance/store/asset tests, existing effects and approved aurora regressions run without fabricated SDK files. Host storage tests cover all preference/theme round-trips, Reset, corrupt/version/nonfinite/trailing data, bounds, 0600 writes, unavailable/write-failure handling and no idle rewrites.
+- Actual host captures use production C++ UI headers, exact extracted feature statements, original embedded fonts and bundled ImGui. The CPU rasterizer consumes actual draw triangles/atlas. **They are not Android captures or a separate UI simulation.** Anime previews intentionally contain no artwork.
+- `previews/phase_b/` contains 13 individual captures (seven Aurora panels, scrolled Aurora preferences, Anime and Classic Player/Style, 640×360 Style), two labeled high-resolution contact sheets, source/state/image-hash provenance, a self-contained HTML viewer, README and 18-entry ZIP. Viewers and sheets retain the actual captures; only external sheet captions are added. All seven Aurora panels, three theme states, scrolled controls and small cards were inspected.
+- SDK/NDK/device remain unavailable: full Android native build, app-private storage in the real process, touch mapping, asset GL lifecycle, GPU blend fidelity, FPS/power/thermal and save latency are unverified. Existing embedded-font macro warnings are unchanged. Effects remain bounded at 40 stars / three original curtains; full mobile performance must be profiled before release.
+
+**Stop after Phase B. Next action: user reviews the three themes, supplies actual artwork when ready, and explicitly directs Phase C or later validation.**

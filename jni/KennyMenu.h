@@ -6,6 +6,8 @@
 #include "KennyEffects.h"
 #include "KennyAurora.h"
 #include "KennyIdentity.h"
+#include "KennyAppearanceStore.h"
+#include "KennyThemeBackground.h"
 #include "imgui/imgui_internal.h"
 #include "ANOY/font_awesome_5.h"
 
@@ -26,6 +28,8 @@ struct State {
     bool initialized = false;
     float indicator = -1.0f;
     KennyAppearance::Preferences appearance;
+    KennyAppearance::Store storage;
+    KennyThemeBackground::Artwork artwork;
     bool centerRequested = false;
     KennyEffects::State effects;
     KennyAurora::State aurora;
@@ -82,6 +86,7 @@ template <typename RenderPanel>
 inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPanel renderPanel) {
     if (viewport.x <= 0.0f || viewport.y <= 0.0f) return;
     state.Initialize(tab);
+    KennyAppearance::Normalize(state.appearance);
     KennyMotion::ScopedReduction motion(state.appearance.reducedMotion);
     const Layout l = Measure(viewport);
     if (Font) ImGui::PushFont(Font);
@@ -192,11 +197,11 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
         // The shared atmosphere already separates the content surface. A
         // second rectangular wash would create a hard strip below the child.
         ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0,0,0,0));
-        const bool phaseA = state.category == Category::Visual && tab == 1;
+        const bool interactiveBackground = state.appearance.theme == KennyAppearance::Theme::Aurora;
         ImGuiWindow* contentWindow = nullptr;
         if (ImGui::BeginChild("##content", ImVec2(l.size.x - 2.0f * l.padding,
                              l.size.y - contentY - 36.0f * l.scale), false,
-                             phaseA ? ImGuiWindowFlags_NoMove : ImGuiWindowFlags_None)) {
+                             interactiveBackground ? ImGuiWindowFlags_NoMove : ImGuiWindowFlags_None)) {
             contentWindow = ImGui::GetCurrentWindow();
             // This ImGui version multiplies a child's scale by its parent's.
             ImGui::SetWindowFontScale(0.875f);
@@ -204,7 +209,7 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
                                 ImVec2(8.0f * l.scale, (state.appearance.compactRows ? 6.0f : 10.0f) * l.scale));
             ImGui::PushItemWidth(std::min(420.0f * l.scale, ImGui::GetContentRegionAvail().x * 0.58f));
             if (state.category == Category::Style) {
-                KennyAppearance::DrawStyle(state.appearance);
+                KennyAppearance::DrawStyle(state.appearance,state.artwork.current.Valid(),state.storage.status);
             } else if (state.category == Category::Settings) {
                 KennyAppearance::DrawSettings(state.appearance, state.centerRequested);
             } else {
@@ -217,7 +222,7 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
         ImGui::PopStyleColor();
         ImGui::PopStyleVar();
         draw->ChannelsSetCurrent(0);
-        if (phaseA) {
+        if (state.appearance.theme == KennyAppearance::Theme::Aurora) {
             const auto& io = ImGui::GetIO();
             const auto& context = *ImGui::GetCurrentContext();
             // Empty content receives native focus (its MoveId) without moving
@@ -227,20 +232,27 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
                 contentWindow->InnerRect.Contains(io.MousePos) && context.HoveredId == 0 &&
                 !context.HoveredIdDisabled &&
                 (context.ActiveId == 0 || (state.aurora.gesture && context.ActiveId == contentWindow->MoveId)) &&
-                state.category == Category::Visual && tab == 1 && opened;
+                state.appearance.touchAttraction && !state.appearance.reducedMotion && opened;
             if (io.MouseClicked[0]) state.aurora.gesture = allowed && context.ActiveId == 0;
             if (!io.MouseDown[0] || !allowed) state.aurora.gesture = false;
             const ImVec2 pointer((io.MousePos.x-origin.x)/l.size.x,(io.MousePos.y-origin.y)/l.size.y);
             state.aurora.Advance(ImGui::GetFrameCount(),io.DeltaTime,l.size,
-                                 state.aurora.gesture,pointer,state.appearance.reducedMotion);
+                                 state.aurora.gesture,pointer,state.appearance.reducedMotion,
+                                 state.appearance.particleActivity*.01f,state.appearance.starsVisible);
             KennyAurora::Draw(draw,origin,ImGui::GetWindowSize(),l.scale,Claude::RadiusWindow*l.scale,
-                              state.aurora,state.appearance.reducedMotion,l.header,contentY);
+                              state.aurora,state.appearance.reducedMotion,l.header,contentY,
+                              state.appearance.auroraIntensity*.01f,state.appearance.starsVisible);
         } else {
             state.aurora.gesture = false;
-            KennyEffects::Draw(draw,origin,ImGui::GetWindowSize(),l.scale,Claude::RadiusWindow*l.scale,
-                               state.effects,state.appearance.reducedMotion,l.header,contentY);
+            KennyThemeBackground::Surface(draw,origin,l.size,Claude::RadiusWindow*l.scale,l.header,contentY);
+            if(state.appearance.theme == KennyAppearance::Theme::Anime) {
+                state.artwork.Advance(ImGui::GetFrameCount(),ImGui::GetIO().DeltaTime,state.appearance.reducedMotion);
+                KennyThemeBackground::DrawArtwork(draw,origin,l.size,Claude::RadiusWindow*l.scale,
+                                                   state.artwork.current,state.appearance);
+            }
         }
         draw->ChannelsMerge();
+        state.storage.Sync(state.appearance,!ImGui::IsAnyItemActive() || !opened);
     }
     ImGui::End();
     ImGui::PopStyleColor();

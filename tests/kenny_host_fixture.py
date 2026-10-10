@@ -1,10 +1,17 @@
 from pathlib import Path
 import re
+import subprocess
 s=Path('jni/main.cpp').read_text()
 a=s.index('            if (Settings::Tab == 1) {',s.index('KennyMenu::Draw('));b=s.index('\n        });',a)
 body=s[a:b]
 pattern=r'KennyControls::(?:Checkbox|SliderFloat|SliderInt)\("([^"]+)"[^;\n]*\);'
 assert len(re.findall(pattern,body)) == 37, 'original binding inventory changed'
+baseline=subprocess.check_output(['git','show','58cbf6c:jni/main.cpp'],text=True,timeout=10)
+assert re.findall(pattern,baseline)==re.findall(pattern,s)
+full_pattern=r'KennyControls::(?:Checkbox|SliderFloat|SliderInt)\([^;\n]+;'
+assert re.findall(full_pattern,baseline)==re.findall(full_pattern,s), 'binding/range/format changed'
+start=baseline.index('            if (Settings::Tab == 1) {',baseline.index('KennyMenu::Draw('))
+assert body==baseline[start:baseline.index('\n        });',start)], 'original panel/callback body changed'
 Path('.verification').mkdir(exist_ok=True)
 body=re.sub(pattern,lambda m:'RecordBefore("'+m[1]+'"); '+m[0]+' RecordAfter("'+m[1]+'");',body)
 d=Path('jni/Helper/definition.h').read_text();enums=d[:d.index('namespace Cheat')]
@@ -43,3 +50,7 @@ void Panels() {
 '''+body+'\n}\n'
 Path('.verification/kenny_host_fixture.h').write_text(prelude)
 print('Host fixture extracts all 37 real panel binding statements; no SDK replacement.')
+
+# Read-only approved renderer snapshot for exact default-behavior comparison.
+approved=subprocess.check_output(['git','show','58cbf6c:jni/KennyAurora.h'],text=True,timeout=10)
+Path('.verification/kenny_aurora_approved.h').write_text(approved.replace('namespace KennyAurora {','namespace KennyAuroraApproved {'))

@@ -23,6 +23,7 @@ struct Star { ImVec2 position, velocity; float radius = 0, luminosity = 0; };
 struct State {
     std::array<Star,StarCount> stars{};
     double time = 0;
+    double particleTime = 0;
     float accumulator = 0, response = 0;
     ImVec2 touch{.5f,.75f};
     bool initialized = false, gesture = false;
@@ -43,14 +44,16 @@ struct State {
                          .25f+KennyEffects::Unit(i*11+997)*.48f};
         initialized = true;
     }
-    void Step(float dt, ImVec2 size, bool down) {
+    void Step(float dt, ImVec2 size, bool down, float activity = 1.0f, bool starsVisible = true) {
         time += dt;
+        particleTime += dt*activity;
         response = KennyMotion::Step(response,down ? 1.0f : 0.0f,down ? 7.0f : 2.8f,dt);
         const float aspect = size.x / std::max(1.0f,size.y);
         const float damping = std::exp(-4.8f*dt);
         for(int i=0;i<StarCount;++i) {
+            if(!starsVisible || activity<=0) break;
             auto& star = stars[i];
-            const ImVec2 home = Home(i,time);
+            const ImVec2 home = Home(i,particleTime);
             const float dx = (touch.x-star.position.x)*aspect, dy = touch.y-star.position.y;
             const float distance = std::sqrt(dx*dx+dy*dy);
             const float weight = down ? Smooth(1-distance/.38f)*response : 0;
@@ -73,7 +76,8 @@ struct State {
             }
         }
     }
-    void Advance(int nextFrame, float dt, ImVec2 size, bool down, ImVec2 target, bool reduced) {
+    void Advance(int nextFrame, float dt, ImVec2 size, bool down, ImVec2 target, bool reduced,
+                 float activity = 1.0f, bool starsVisible = true) {
         Initialize();
         if(nextFrame==frame) return;
         const bool resumed = nextFrame!=frame+1;
@@ -92,7 +96,7 @@ struct State {
         accumulator += elapsed;
         // At most twelve 120 Hz steps, even after a stall. Remainder is retained.
         for(int step=0;step<12 && accumulator+1e-7f>=FixedStep;++step) {
-            Step(FixedStep,size,down);
+            Step(FixedStep,size,down,activity,starsVisible);
             accumulator=std::max(0.0f,accumulator-FixedStep);
         }
     }
@@ -131,7 +135,8 @@ inline CurtainColumn Curtain(float x, double time, int layer) {
              (Field(x*3.7,drift*.43,seed+63)-.5f)*.115f };
 }
 inline void Draw(ImDrawList* draw, ImVec2 origin, ImVec2 size, float scale, float radius,
-                 const State& state, bool reduced, float header, float content) {
+                 const State& state, bool reduced, float header, float content,
+                 float intensity = 1.0f, bool starsVisible = true) {
     draw->PushClipRect(origin,ImVec2(origin.x+size.x,origin.y+size.y),true);
     const ImVec2 uv=ImGui::GetFontTexUvWhitePixel();
     // Quiet graphite/burgundy surface hierarchy, without the previous blooms.
@@ -147,6 +152,7 @@ inline void Draw(ImDrawList* draw, ImVec2 origin, ImVec2 size, float scale, floa
     }
     GridIndices(draw,base,KennyEffects::Columns,KennyEffects::Rows);
     for(int layer=0;layer<Layers;++layer) {
+        if(intensity<=0) break;
         std::array<CurtainColumn,Columns+1> columns{};
         for(int x=0;x<=Columns;++x) {
             const float u=float(x)/Columns;
@@ -175,17 +181,18 @@ inline void Draw(ImDrawList* draw, ImVec2 origin, ImVec2 size, float scale, floa
                 const float light=column.light;
                 ImVec4 c=KennyMotion::Mix(Claude::Hex(layer==0 ? 0x75142C : layer==1 ? 0xB01938 : 0xD12B43),
                                          Claude::Hex(0xF35B73),hem*.34f+local*.10f);
-                c.w=fade*edges*shelf*light*(.24f+.25f*hem)*(1+local*.45f);
+                c.w=fade*edges*shelf*light*(.24f+.25f*hem)*(1+local*.45f)*intensity;
                 draw->PrimWriteVtx(ImVec2(origin.x+p.x,origin.y+p.y),uv,ImGui::GetColorU32(c));
             }
         }
         GridIndices(draw,base,Columns,Rows);
     }
     for(int i=0;i<StarCount;++i) {
+        if(!starsVisible) break;
         const auto& star=state.stars[i];
         const ImVec2 p(star.position.x*size.x,star.position.y*size.y);
-        const float twinkle=reduced ? .7f : .57f+.43f*Field(i*3.3,state.time*.55,i+1071);
-        const float shimmer=(!reduced && i%13==0) ? std::pow(Noise(state.time*.28,i+1871),12.0f) : 0;
+        const float twinkle=reduced ? .7f : .57f+.43f*Field(i*3.3,state.particleTime*.55,i+1071);
+        const float shimmer=(!reduced && i%13==0) ? std::pow(Noise(state.particleTime*.28,i+1871),12.0f) : 0;
         const float r=std::max(.55f,star.radius*scale), halo=r+2.5f*scale;
         if(!KennyEffects::Contains(p,size,radius,halo+1)) continue;
         const float near=Smooth(1-std::hypot((star.position.x-state.touch.x)*size.x/size.y,

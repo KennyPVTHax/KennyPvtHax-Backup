@@ -1,6 +1,74 @@
 PROJECT: KennyPvtHax
 
 CURRENT STAGE:
+Stage 5.6 — Phase B: Custom Theme System — COMPLETE (host-verified)
+
+COMPLETED:
+- Continued from approved 58cbf6c without restarting, reverting or changing SDK/gameplay integrations.
+- Added immediate Aurora / Anime / Classic native Style cards; Aurora remains default and runs across all seven panels.
+- Added functional Aurora intensity, star visibility, touch attraction and particle activity controls. Default physics/curtains remain approved and unchanged.
+- Added asset-ready static texture/frame-provider architecture, rounded Cover/Contain image drawing, conditional real dimming/fit preferences and honest missing-artwork fallback. No substitute artwork or voices.
+- Added Classic static materials with inactive Aurora/asset processing paused; retained branding, layout, navigation, controls, opacity, spacing, Reduced motion, dragging, scrolling and close/reopen.
+- Added isolated, versioned app-private appearance persistence. Active sources have no feature config save/load; original feature configuration is untouched. Theme and every appearance preference restore from the UI-only file, with validation and visible failure fallback.
+- Retained all 37 exact binding/range/format statements and the entire original feature-panel/callback body; no SDK replacement, new permissions/dependencies, sound/logo/key-entry features or Phase C work.
+- Generated and inspected actual production C++/ImGui host previews of every Aurora panel and all three themes. Saved 15 valid PNGs, self-contained viewer, provenance and 18-entry ZIP under previews/phase_b/.
+
+MODIFIED FILES:
+- jni/KennyThemePreferences.h (new): UI-only theme/preferences model, defaults, normalization and comparisons.
+- jni/KennyAppearanceStore.h (new): private bounded versioned load, atomic 0600 save, release/hide synchronization and error status.
+- jni/KennyThemeBackground.h (new): Classic/fallback static surfaces; externally owned artwork texture/provider lifecycle and rounded image drawing.
+- jni/KennyAppearance.h: native theme cards, functional theme-specific preferences, retained shared preferences and Reset.
+- jni/KennyAurora.h: optional intensity/visibility/activity integration; separate particle clock with exact approved default behavior.
+- jni/KennyMenu.h: all-panel theme routing, native touch ownership, inactive-effect pause, artwork state and store synchronization.
+- jni/main.cpp: private appearance path/flush only, outside unchanged feature callback.
+- tests/kenny_host_fixture.py: exact approved binding/panel-body comparison and read-only approved aurora snapshot.
+- tests/kenny_menu_host_check.cpp: retained suite plus Phase B native switching/options/all-theme input/pause/allocation checks; new capture prefixes preserve Phase A evidence.
+- tests/kenny_theme_check.cpp (new): filesystem restart/failure/schema tests, approved physics/draw equivalence and real asset geometry/provider tests.
+- tests/kenny_phase_b_capture.cpp (new): actual seven-panel/three-theme/small-viewport captures, unchanged feature state.
+- tests/kenny_phase_b_package.py (new): real draw-data rasterization, PNG integrity/provenance, contact sheets/viewer/ZIP.
+- tests/README.md: Phase B reproduction and verification boundaries.
+- .gitignore: ignores previews/phase_b/ generated output.
+- UI_DESIGN_NOTES.md and CODEX_PROGRESS.md: architecture, controls, persistence, test evidence and resume checkpoint.
+- Ignored output: generated approved/header fixture, executables, atlas/draw/state/RGBA files, preview PNG/HTML/JSON/ZIP. No binaries, credentials or unrelated original untracked files committed.
+
+VERIFICATION:
+- PASS source fixture: all 37 exact binding/range/format statements and complete original panel/callback body unchanged versus 58cbf6c.
+- PASS strict C++17 production-header syntax (-Wall -Wextra -Werror); strict standalone theme/store/asset and aurora/effects builds.
+- PASS full real native seven-panel suite: original checkboxes/sliders/ranges/keyboard/numeric entry, shared/conditional configuration, navigation, actions, drag/close/reopen, scrolling, five viewports and balanced stacks.
+- PASS 90 native theme-card switches, same-frame routing, Aurora progression on all seven routes and no Aurora processing in Anime/Classic. Real controls drive intensity geometry, star/activity pause and touch permission.
+- PASS every original checkbox site touched/restored under all three themes at 640×360; existing ranges and bindings unchanged. Feature snapshots remain identical after presentation actions.
+- PASS store restart round-trip of every preference and theme, Reset, private 0600 writes, no idle rewrites, active-edit deferral, schema/corruption/nonfinite/trailing-data/bounds checks, missing path and write-failure fallback.
+- PASS 1,800 approved/default physics steps with exact time/response/position/velocity equality; actual default vertices/UVs/colors/indices byte-identical to the approved 58cbf6c renderer.
+- PASS static/provider invalid-frame handling, same-frame idempotence, inactive-gap pause, Reduced frame hold, Clear and portrait/landscape Cover/Contain rounded geometry/UV checks. Diagnostic test texture handles are never preview artwork.
+- PASS existing aurora: 20,000 variable-dt/edge steps, attraction/release, 30/60/120 Hz agreement, bounded malformed/stalled time, hidden/reduced pause, 600 rounded geometry samples and 1,000 warmed allocation frames. Existing effects tests pass unchanged.
+- PASS 1,000 warmed actual menu frames switching seven routes and all three themes: active ImGui allocation counts and vertex/index capacities stable.
+- PASS 13 real captures with identical original feature snapshot, 15 PNG full decodes, two labeled sheets, 30 embedded PNG data URIs in offline viewer, 18-entry ZIP integrity. Inspected actual panels, theme states, Aurora preference scroller and 640×360 cards.
+- PASS focused diff/whitelist review; original configuration declarations, build files, SDK/gameplay modules and previous checkpoints preserved.
+
+KNOWN ISSUES / LIMITATIONS:
+- SDK intentionally absent and NDK/device unavailable; no complete Android native build/link, real activity-path restart/storage, overlay/touch/GPU/texture lifecycle, FPS/power/thermal or file-save latency claim. Host filesystem and native ImGui checks are distinguished from Android testing.
+- Anime has no supplied artwork or decoder yet. Its functional selection uses a dark fallback; the real texture/provider interface is ready for user assets. Asset ownership/upload/release must follow the documented render-thread/context contract.
+- Persistence requires a writable activity private path; otherwise UI preferences remain session-only and report that status. Synchronous small-file saves occur only after finished edits; profile on-device latency later.
+- Host rasterization can differ from native GPU AA/blending. Original embedded-font macro warnings remain untouched. ResetLogin remains accessible but its destructive/platform callback is intentionally not invoked by host tests.
+- Full Aurora retains the approved bounded geometry budget; all-panel device performance remains unmeasured. Classic/Anime skip Aurora clocks, physics and draws; hidden menus submit no effects.
+
+NEXT ACTION:
+STOP after Phase B. User reviews previews/phase_b/index.html and the three theme previews, supplies real artwork when ready and explicitly directs Phase C or later work. Do not start sound playback, custom logo/launcher, key-entry functionality or Stage 6 automatically. The focused HEAD containing this document is the Phase B checkpoint; retrieve its hash with git log -1.
+
+REFERENCE NOTES:
+- Existing reference layout/navigation/window/control proportions and Crimson Eclipse identity remain.
+- Aurora defaults reproduce approved Phase A physics/render geometry; new background integration extends across all seven routes only.
+- Theme previews: aurora-style.png, anime-style.png, classic-style.png; each has a corresponding Player capture. Aurora preferences have a separate scrolled capture.
+- High-resolution sheets: theme-contact-sheet.png (1968×2892), aurora-seven-panels.png (3912×3848). Small cards: style-640.png (640×360). Individual full captures: 1920×872.
+- Preview ZIP: kennypvthax-phase-b-previews.zip. Source/feature/image hashes: verification.json. Bounded reproduction: tests/README.md.
+- Earlier Stage 5.6 Phase A assets were subsequently exported to the private preview repository in preview-only commit 39254db; that historical export did not change the application HEAD. Phase B artifacts are new local outputs.
+
+PREVIOUS PHASE A CHECKPOINT — RETAINED HISTORY:
+The following describes the prior checkpoint and its then-current stop point.
+
+PROJECT: KennyPvtHax
+
+CURRENT STAGE:
 Stage 5.6 — Phase A: Living Crimson Aurora & Interactive Starfield — COMPLETE
 Checkpoint date: 10 October 2026 UTC. Parent application commit: af8a337.
 STOP after Phase A. Phase B and Stage 6 require the user's next instruction.

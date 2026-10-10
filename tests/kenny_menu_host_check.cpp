@@ -137,10 +137,10 @@ int main() {
     ImFontConfig menu_icons=cfg;menu_icons.OversampleH=2;menu_icons.OversampleV=2;
     io.Fonts->AddFontFromMemoryTTF((void*)fontAwesome,sizeof(fontAwesome),30,&menu_icons,ranges);
     unsigned char* pixels;int w,h;io.Fonts->GetTexDataAsRGBA32(&pixels,&w,&h);
-    std::ofstream atlas(".verification/stage5_6-atlas.rgba",std::ios::binary);atlas.write((char*)&w,4);atlas.write((char*)&h,4);atlas.write((char*)pixels,w*h*4);atlas.close();
+    std::ofstream atlas(".verification/phase_b-regression-atlas.rgba",std::ios::binary);atlas.write((char*)&w,4);atlas.write((char*)&h,4);atlas.write((char*)pixels,w*h*4);atlas.close();
     Claude::Apply();ImGui::GetCurrentContext()->TestEngineHookItems=true;
     Cheat::Esp::Line=Cheat::Esp::Skeleton=Cheat::Esp::Health=Cheat::Esp::Name=Cheat::Esp::Distance=Cheat::Esp::Counter=true;
-    Frame();Frame();assert(lastPanel==1);Save("stage5_6-player-1920");
+    Frame();Frame();assert(lastPanel==1);Save("phase_b-regression-player-1920");
     assert(rendered.size()==10);
     Click(CheckPoint(1,"ESP line"));assert(!Cheat::Esp::Line);
     Click(CheckPoint(1,"ESP line"));assert(Cheat::Esp::Line);
@@ -148,12 +148,12 @@ int main() {
     ImGui::ActivateItem(C(1,"ESP line").id);Frame();Frame();assert(!Cheat::Esp::Line);
     ImGui::ActivateItem(C(1,"ESP line").id);Frame();Frame();assert(Cheat::Esp::Line);
     Secondary(true);assert(Settings::Tab==2 && lastPanel==2 && rendered.size()==3);
-    Cheat::Esp::Throwable=Cheat::Esp::WeaponName=true;Frame();Save("stage5_6-world-1920");
+    Cheat::Esp::Throwable=Cheat::Esp::WeaponName=true;Frame();Save("phase_b-regression-world-1920");
     Primary(1);assert(Settings::Tab==3 && lastPanel==3 && rendered.size()==8);
     ResetScroll();
     assert(!Cheat::Aimbot::EnableFov);Click(CheckPoint(3,"Enable FOV"));assert(Cheat::Aimbot::EnableFov);
     Frame();assert(rendered.size()==10 && rendered.count({3,"Aim FOV"}));
-    ResetScroll();Save("stage5_6-aim-1920");
+    ResetScroll();Save("phase_b-regression-aim-1920");
     float old=Cheat::Aimbot::Range;Click(SliderPoint(3,"Aim range",.85f));assert(Cheat::Aimbot::Range>old && Cheat::Aimbot::Range<=400);
     // Drag endpoints and verify the original limits.
     auto c=C(3,"Aim range");auto start=SliderPoint(3,"Aim range");
@@ -199,9 +199,9 @@ int main() {
         for(int i=0;i<5;++i){Primary(i);assert((int)menu.category==i);}
         Primary(0);Secondary(false);ResetScroll();
         ImGui::SetWindowPos("KennyPvtHax",ImVec2((size.x-l.size.x)*.5f,(size.y-l.size.y)*.5f));Frame();Frame();
-        Save(("stage5_6-player-"+std::to_string((int)size.x)).c_str());
-        Secondary(true);ResetScroll();Save(("stage5_6-world-"+std::to_string((int)size.x)).c_str());
-        Primary(1);ResetScroll();Save(("stage5_6-aim-"+std::to_string((int)size.x)).c_str());
+        Save(("phase_b-regression-player-"+std::to_string((int)size.x)).c_str());
+        Secondary(true);ResetScroll();Save(("phase_b-regression-world-"+std::to_string((int)size.x)).c_str());
+        Primary(1);ResetScroll();Save(("phase_b-regression-aim-"+std::to_string((int)size.x)).c_str());
         if(panelWindow->ScrollMax.y>0){
             float before=panelWindow->Scroll.y;auto origin=Origin();
             ImVec2 point(panelWindow->Pos.x+panelWindow->Size.x-25,panelWindow->Pos.y+80);
@@ -306,11 +306,11 @@ int main() {
         assert(Origin().x>=0 && Origin().y>=0 && Origin().x+layout.size.x<=viewport.x+1 && Origin().y+layout.size.y<=viewport.y+1);
         for(int primary=0;primary<5;++primary){Primary(primary);assert((int)menu.category==primary);}
         Primary(2);Secondary(false);ResetScroll();assert(rendered.size()==10);
-        Save(("stage5_6-bullet-"+std::to_string((int)size.x)).c_str());
+        Save(("phase_b-regression-bullet-"+std::to_string((int)size.x)).c_str());
         Secondary(true);ResetScroll();assert(rendered.size()==4);
-        assert(nativeLabels.count("Guest Reset"));Save(("stage5_6-extra-"+std::to_string((int)size.x)).c_str());
-        Primary(3);ResetScroll();assert(rendered.empty());Save(("stage5_6-style-"+std::to_string((int)size.x)).c_str());
-        Primary(4);ResetScroll();assert(rendered.empty());Save(("stage5_6-settings-"+std::to_string((int)size.x)).c_str());
+        assert(nativeLabels.count("Guest Reset"));Save(("phase_b-regression-extra-"+std::to_string((int)size.x)).c_str());
+        Primary(3);ResetScroll();assert(rendered.empty());Save(("phase_b-regression-style-"+std::to_string((int)size.x)).c_str());
+        Primary(4);ResetScroll();assert(rendered.empty());Save(("phase_b-regression-settings-"+std::to_string((int)size.x)).c_str());
         if(panelWindow->ScrollMax.y>0){
             float before=panelWindow->Scroll.y;auto fixed=Origin();
             ImVec2 point(panelWindow->Pos.x+panelWindow->Size.x-25,panelWindow->Pos.y+50);
@@ -391,7 +391,7 @@ int main() {
             if(panel<2 || panel==3 || panel==4)Secondary(panel==1 || panel==4);
             ResetScroll();for(int warm=0;warm<30;++warm)Frame();
             menu.effects.time=2-frameDelta;Frame();
-            Save((std::string("stage5_6-")+names[panel]+"-"+std::to_string((int)size.x)).c_str());
+            Save((std::string("phase_b-regression-")+names[panel]+"-"+std::to_string((int)size.x)).c_str());
         }
     }
     viewport=ImVec2(1920,872);menu.centerRequested=true;Frame();Frame();
@@ -400,10 +400,10 @@ int main() {
     for(int second=2;second<=8;++second) {
         menu.effects.time=second-frameDelta;Frame();
         assert(SnapshotFeatures()==timeFeatures);
-        Save((std::string("stage5_6-player-t0")+std::to_string(second)+"-1920").c_str());
+        Save((std::string("phase_b-regression-player-t0")+std::to_string(second)+"-1920").c_str());
     }
-    menu.effects.time=16-frameDelta;Frame();Save("stage5_6-player-t16-1920");
-    menu.effects.time=6;menu.appearance.reducedMotion=true;Frame();Save("stage5_6-player-reduced-1920");
+    menu.effects.time=16-frameDelta;Frame();Save("phase_b-regression-player-t16-1920");
+    menu.effects.time=6;menu.appearance.reducedMotion=true;Frame();Save("phase_b-regression-player-reduced-1920");
     menu.appearance.reducedMotion=false;
 
     // Phase A observes native input only after all real panel widgets finish.
@@ -442,17 +442,104 @@ int main() {
     Frame(touch,true);assert(!menu.aurora.gesture);Frame();
     Frame();Frame();Secondary(true);const auto paused=menu.aurora.time;
     for(int i=0;i<30;++i)Frame(touch,true);
-    assert(menu.aurora.time==paused && !menu.aurora.gesture);Frame();Secondary(false);
+    assert(menu.aurora.time>paused && menu.aurora.gesture);Frame();Secondary(false);
     menu.appearance.reducedMotion=true;const auto auroraFrozen=menu.aurora.time;
     for(int i=0;i<30;++i)Frame(touch,true);
     assert(menu.aurora.time==auroraFrozen && menu.aurora.response==0 && !menu.aurora.gesture);
     Frame();menu.appearance.reducedMotion=false;Frame();assert(menu.aurora.time>auroraFrozen);
     assert(SnapshotFeatures()==phaseFeatures);
-    std::puts("PASS Phase A actual native input: first-press attraction, held/dragged/released inertia and dispersion, no background window move, header drag intact, first-press checkbox ownership, outside-origin/exit cancellation, non-Player isolation and reduced-motion freeze; original features unchanged.");
+    std::puts("PASS Phase A actual native input: first-press attraction, held/dragged/released inertia and dispersion, no background window move, header drag intact, first-press checkbox ownership, outside-origin/exit cancellation, Aurora across panels and reduced-motion freeze; original features unchanged.");
+
+    // Phase B: native theme cards switch the actual renderer immediately.
+    using Theme=KennyAppearance::Theme;
+    const auto themeFeatures=SnapshotFeatures();
+    viewport=ImVec2(1920,872);menu.centerRequested=true;Frame();Primary(3);ResetScroll();
+    for(int cycle=0;cycle<30;++cycle)for(Theme theme:{Theme::Classic,Theme::Anime,Theme::Aurora}) {
+        Click(NativeCenter(KennyAppearance::ThemeName(theme)));
+        assert(menu.appearance.theme==theme && SnapshotFeatures()==themeFeatures);
+        const int frame=ImGui::GetFrameCount();
+        if(theme!=Theme::Aurora) assert(menu.aurora.frame!=frame && !menu.aurora.gesture);
+        else assert(menu.aurora.frame==frame);
+    }
+    // Aurora controls affect real geometry/physics, without changing features.
+    auto prefSlider=[&](const char* label) {
+        const auto id=ImHashStr(label,0,panelWindow->GetID("##aurora-settings"));
+        return nativeItems.at(id);
+    };
+    auto intoView=[&](Control c) {
+        float delta=0;
+        if(c.max.y>panelWindow->InnerRect.Max.y-6)delta=c.max.y-panelWindow->InnerRect.Max.y+6;
+        else if(c.min.y<panelWindow->InnerRect.Min.y+6)delta=c.min.y-panelWindow->InnerRect.Min.y-6;
+        ImGui::SetScrollY(panelWindow,panelWindow->Scroll.y+delta);Frame();Frame();
+    };
+    intoView(prefSlider("Aurora intensity"));
+    Click(NativeSliderPoint(prefSlider("Aurora intensity"),0));Frame();assert(menu.appearance.auroraIntensity==0);
+    const int dimVertices=ImGui::GetDrawData()->TotalVtxCount;
+    Click(NativeSliderPoint(prefSlider("Aurora intensity"),.99f));Frame();assert(menu.appearance.auroraIntensity==100);
+    assert(ImGui::GetDrawData()->TotalVtxCount>dimVertices+5000);
+    intoView(prefSlider("Particle activity"));
+    Click(NativeSliderPoint(prefSlider("Particle activity"),0));Frame();assert(menu.appearance.particleActivity==0);
+    auto stars=menu.aurora.stars;const auto particleTime=menu.aurora.particleTime, lightTime=menu.aurora.time;
+    for(int i=0;i<60;++i)Frame();assert(menu.aurora.particleTime==particleTime && menu.aurora.time>lightTime);
+    for(int i=0;i<KennyAurora::StarCount;++i)assert(stars[i].position.x==menu.aurora.stars[i].position.x && stars[i].position.y==menu.aurora.stars[i].position.y);
+    Click(NativeSliderPoint(prefSlider("Particle activity"),.99f));Frame();assert(menu.appearance.particleActivity==100);
+    intoView(Native("Show stars"));Click(NativeCenter("Show stars"));Frame();assert(!menu.appearance.starsVisible);
+    stars=menu.aurora.stars;for(int i=0;i<60;++i)Frame();
+    for(int i=0;i<KennyAurora::StarCount;++i)assert(stars[i].position.x==menu.aurora.stars[i].position.x && stars[i].position.y==menu.aurora.stars[i].position.y);
+    Click(NativeCenter("Show stars"));Frame();assert(menu.appearance.starsVisible);
+    intoView(Native("Touch attraction"));Click(NativeCenter("Touch attraction"));Frame();assert(!menu.appearance.touchAttraction);
+    Primary(0);Secondary(false);ResetScroll();const auto loc=Origin();const auto measure=KennyMenu::Measure(viewport);
+    const ImVec2 empty(loc.x+measure.size.x*.5f,loc.y+measure.size.y*.78f);
+    Frame(empty,true);Frame(empty,true);assert(!menu.aurora.gesture);Frame();
+    menu.appearance.touchAttraction=true;
+    // All seven routes flow in Aurora. Inactive themes pause the entire state.
+    for(Theme theme:{Theme::Aurora,Theme::Anime,Theme::Classic}) {
+        menu.appearance.theme=theme;Frame();
+        for(int panel=0;panel<7;++panel) {
+            if(panel<2)menu.visualTab=panel==1?2:1;
+            if(panel==3 || panel==4)menu.miscTab=panel==4?5:4;
+            menu.Select(static_cast<KennyMenu::Category>(primary[panel]),Settings::Tab);
+            Frame();const auto prior=menu.aurora.time;Frame();
+            assert(theme==Theme::Aurora ? menu.aurora.time>prior : menu.aurora.time==prior);
+            if(panel<5)assert(callbackCount>0 && !rendered.empty());else assert(rendered.empty());
+        }
+        Primary(0);Secondary(false);ResetScroll();bool line=Cheat::Esp::Line;
+        Click(CheckPoint(1,"ESP line"));assert(Cheat::Esp::Line!=line);Click(CheckPoint(1,"ESP line"));assert(Cheat::Esp::Line==line);
+        Primary(1);ResetScroll();float range=Cheat::Aimbot::Range;
+        Click(SliderPoint(3,"Aim range",.55f));assert(Cheat::Aimbot::Range!=range);Cheat::Aimbot::Range=range;
+    }
+    // Every original checkbox remains touch-accessible under every theme,
+    // including the smallest viewport and native scroll ownership.
+    for(Theme theme:{Theme::Aurora,Theme::Anime,Theme::Classic}) {
+        menu.appearance.theme=theme;viewport=ImVec2(640,360);menu.centerRequested=true;Frame();Frame();
+        for(const auto& item:cases) {
+            Primary(item.tab<=2?0:item.tab==3?1:2);
+            if(item.tab<=2 || item.tab>=4)Secondary(item.tab==2 || item.tab==5);
+            Frame();ResetScroll();EnsureVisible(item.tab,item.label);
+            const bool before=*item.value;auto rect=C(item.tab,item.label);
+            Click(ImVec2(rect.max.x-3,rect.min.y+18));assert(*item.value!=before);
+            Frame();EnsureVisible(item.tab,item.label);rect=C(item.tab,item.label);
+            Click(ImVec2(rect.max.x-3,rect.min.y+18));assert(*item.value==before);
+        }
+    }
+    viewport=ImVec2(1920,872);menu.centerRequested=true;Frame();Frame();
+    static int providerCalls=0;
+    menu.artwork.SetProvider([](void*,double,bool,KennyThemeBackground::ArtworkFrame& frame) {
+        ++providerCalls;frame={reinterpret_cast<ImTextureID>(1),1920,1080};return true;
+    },nullptr);
+    menu.appearance.theme=Theme::Anime;Frame();assert(providerCalls==1);
+    menu.appearance.reducedMotion=true;for(int i=0;i<60;++i)Frame();assert(providerCalls==1);
+    menu.appearance.theme=Theme::Classic;const auto artworkTime=menu.artwork.time;
+    for(int i=0;i<60;++i)Frame();assert(providerCalls==1 && menu.artwork.time==artworkTime);
+    menu.appearance.theme=Theme::Aurora;for(int i=0;i<60;++i)Frame();assert(providerCalls==1);
+    menu.artwork.Clear();menu.appearance=KennyAppearance::Preferences{};
+    assert(SnapshotFeatures()==themeFeatures);
+    std::puts("PASS Phase B: 90 native card switches, immediate routing, Aurora on all seven panels, functional intensity/activity/star/touch controls, all 30 original checkbox sites under all three themes at 640, all theme routes/control access, inactive physics/provider pause, Reduced artwork frame hold, unchanged feature snapshots.");
 
     // Warm every actual route before observing ImGui allocations/capacities.
     auto cycle=[&](int i) {
         const int panel=i%7;
+        menu.appearance.theme=static_cast<Theme>((i/7)%3);
         if(panel<2)menu.visualTab=panel==1?2:1;
         if(panel==3 || panel==4)menu.miscTab=panel==4?5:4;
         menu.Select(static_cast<KennyMenu::Category>(primary[panel]),Settings::Tab);
@@ -461,7 +548,7 @@ int main() {
     for(int i=0;i<140;++i)cycle(i);
     std::map<ImDrawList*,std::pair<int,int>> capacity;
     const int warmedAllocations=io.MetricsActiveAllocations;
-    for(int i=0;i<14;++i){cycle(i);const auto* data=ImGui::GetDrawData();for(int l=0;l<data->CmdListsCount;++l){auto* d=data->CmdLists[l];capacity[d]={d->VtxBuffer.Capacity,d->IdxBuffer.Capacity};}}
+    for(int i=0;i<42;++i){cycle(i);const auto* data=ImGui::GetDrawData();for(int l=0;l<data->CmdListsCount;++l){auto* d=data->CmdLists[l];capacity[d]={d->VtxBuffer.Capacity,d->IdxBuffer.Capacity};}}
     for(int i=0;i<1000;++i) {
         cycle(i);assert(io.MetricsActiveAllocations==warmedAllocations);
         const auto* data=ImGui::GetDrawData();

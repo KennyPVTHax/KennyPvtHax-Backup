@@ -1,3 +1,31 @@
+# SDK-independent Phase B checks
+
+Run from the repository root. The SDK remains absent; these compile production UI headers with bundled native ImGui and embedded fonts, plus the **exact original** main.cpp panel statements/configuration. No SDK stand-ins or Android runtime claims. Keep assertions enabled; original font-header macro warnings in the menu/capture fixture are pre-existing.
+
+```sh
+python3 tests/kenny_host_fixture.py
+timeout 120s g++ -std=c++17 -O1 -Wall -Wextra -Werror -I jni -I .verification tests/kenny_theme_check.cpp jni/imgui/imgui.cpp jni/imgui/imgui_draw.cpp jni/imgui/imgui_widgets.cpp jni/imgui/imgui_tables.cpp -o .verification/phase_b_theme_check
+timeout 60s .verification/phase_b_theme_check
+timeout 120s g++ -std=c++17 -O0 -g -DIMGUI_ENABLE_TEST_ENGINE -I jni -I .verification tests/kenny_menu_host_check.cpp jni/imgui/imgui.cpp jni/imgui/imgui_draw.cpp jni/imgui/imgui_widgets.cpp jni/imgui/imgui_tables.cpp -o .verification/phase_b_check
+timeout 60s .verification/phase_b_check
+timeout 120s g++ -std=c++17 -O1 -Wall -Wextra -Werror -I jni tests/kenny_aurora_check.cpp jni/imgui/imgui.cpp jni/imgui/imgui_draw.cpp jni/imgui/imgui_widgets.cpp jni/imgui/imgui_tables.cpp -o .verification/phase_b_aurora_check
+timeout 60s .verification/phase_b_aurora_check
+timeout 120s g++ -std=c++17 -O1 -Wall -Wextra -Werror -I jni tests/kenny_effects_check.cpp jni/imgui/imgui.cpp jni/imgui/imgui_draw.cpp jni/imgui/imgui_widgets.cpp jni/imgui/imgui_tables.cpp -o .verification/phase_b_effects_check
+timeout 60s .verification/phase_b_effects_check
+timeout 120s g++ -std=c++17 -O0 -g -DIMGUI_ENABLE_TEST_ENGINE -I jni -I .verification tests/kenny_phase_b_capture.cpp jni/imgui/imgui.cpp jni/imgui/imgui_draw.cpp jni/imgui/imgui_widgets.cpp jni/imgui/imgui_tables.cpp -o .verification/phase_b_capture
+timeout 60s .verification/phase_b_capture
+timeout 60s g++ -std=c++17 -O2 -Wall -Wextra -Werror tests/kenny_host_rasterize.cpp -o .verification/kenny_host_rasterize
+timeout 60s python3 tests/kenny_phase_b_package.py
+```
+
+The extractor compares all 37 binding/range/format statements and the entire feature callback body to 58cbf6c, and generates a read-only approved aurora header under `.verification/` for exact behavior comparisons. The theme test exercises genuine 0600 filesystem writes, all preferences/themes through fresh Store instances, malformed/unavailable storage, atomic saves and no idle rewrites. It also compares 1,800 default physics steps and byte-identical native draw geometry against the approved Phase A code. Asset tests use diagnostic texture handles solely to inspect UVs/rounded geometry and provider lifecycle; they supply no screenshot artwork.
+
+The menu suite retains all original native binding/range/keyboard/navigation/drag/close/scroll/viewport checks, adds 90 native theme-card switches, functional Aurora options, all-panel routing, all 30 original checkbox sites under all three themes at 640×360, inactive physics/provider pause and Reduced asset frame hold. A 1,000-frame allocation/capacity loop cycles seven panels and all three themes. The destructive/platform ResetLogin callback is never invoked. Regression captures use a separate `phase_b-regression-` prefix and do not overwrite approved Phase A evidence.
+
+`previews/phase_b/` contains 13 actual native captures, two labeled contact sheets, source/state/hash provenance, a self-contained offline viewer and an 18-entry ZIP. Anime screenshots show the honest missing-artwork surface; no placeholder art is fabricated. Captures use actual ImGui draw triangles/atlas CPU-rasterized, with a neutral backdrop rather than the game or Android renderer. Android build, activity-private storage/restart, real touch/GPU/asset lifecycle and mobile performance remain unverified.
+
+Stop after Phase B. Historical Phase A/earlier documentation below reflects those original checkpoints; current Aurora integration covers all seven panels.
+
 # SDK-independent Stage 5.5 checks
 
 ## Stage 5.6 / Phase A — living aurora

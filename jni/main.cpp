@@ -1029,8 +1029,10 @@ EGLBoolean _eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
     // ----------------------------------------------------------------
     // Main window
     // ----------------------------------------------------------------
+    static KennyMenu::State menuState;
+    menuState.storage.Configure(g_App->activity ? g_App->activity->internalDataPath : nullptr,
+                                menuState.appearance);
     if (ShowMenu) {
-        static KennyMenu::State menuState;
         KennyMenu::Draw(menuState, opened, Settings::Tab,
                         ImVec2(static_cast<float>(glWidth), static_cast<float>(glHeight)), [] {
             if (Settings::Tab == 1) {
@@ -1132,6 +1134,10 @@ EGLBoolean _eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
             }
         });
     }
+
+    // The floating toggle can hide a pending adjustment before Draw runs.
+    // Flush only completed appearance edits; hidden themes do no rendering.
+    menuState.storage.Sync(menuState.appearance,!ShowMenu || !ImGui::IsAnyItemActive());
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
