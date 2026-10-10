@@ -33,6 +33,22 @@ int main() {
     // A gap represents hidden frames: no elapsed hidden time is simulated.
     assert(state.Advance(4000,5) && state.time==before);
     assert(state.reveal>0 && state.reveal<1);
+    const float reveal=state.reveal;
+    assert(!state.Advance(4000,0.1f) && state.reveal==reveal && state.time==before);
+    assert(!state.Advance(4001,0.1f,true) && state.time==before && state.reveal==1);
+    assert(!state.Advance(4002,0.1f,true) && state.time==before);
+    assert(!state.Advance(4003,1.0f/60) && state.time>before);
+    static_assert(KennyEffects::ParticleCount==40 && KennyEffects::StationaryCount==24 &&
+                  KennyEffects::EmberCount==12,"The curated particle budget must remain bounded");
+    // The previous 4096-second global reset is gone; long-running lighting
+    // stays finite and continuous, with trig evaluated only once per scene.
+    for(double time:{2.0,6.0,17.0,4095.99,4096.0,1e9}) {
+        const ImVec2 size(1133,715),p(200,150);
+        const auto a=KennyEffects::Material(p,size,KennyEffects::Lights(size,time),100,174);
+        const auto b=KennyEffects::Material(p,size,KennyEffects::Lights(size,time+0.001),100,174);
+        assert(std::isfinite(a.x+a.y+a.z+a.w) && a.w>=0 && a.w<=1);
+        assert(std::abs(a.x-b.x)+std::abs(a.y-b.y)+std::abs(a.z-b.z)+std::abs(a.w-b.w)<0.001f);
+    }
 
     ImGui::CreateContext();
     auto& io=ImGui::GetIO(); io.IniFilename=nullptr; io.LogFilename=nullptr;
@@ -58,6 +74,13 @@ int main() {
     disabled=true;buttonFrame(true);buttonFrame(false);assert(presses==1);
     io.MousePos=ImVec2(-100,-100);
     ImGui::NewFrame();
+    {
+        ScopedReduction outer(true);
+        assert(Sample(101,3,0)==0 && Sample(101,3,1)==1);
+        { ScopedReduction inner(false);assert(!reduced); }
+        assert(reduced);
+    }
+    assert(!reduced);
     assert(Sample(101,3,0)==0);
     assert(Sample(101,3,1,18,true)==1); // Immediate active-input snap.
     for(unsigned id=1;id<10000;++id)assert(std::isfinite(Sample(id,7,0.5f)));
@@ -78,11 +101,11 @@ int main() {
         const float radius=34*scale;
         for(int y=0;y<=KennyEffects::Rows;++y)for(int x=0;x<=KennyEffects::Columns;++x)
             assert(KennyEffects::Contains(KennyEffects::MeshPoint(x,y,size,radius),size,radius));
-        for(int sample=0;sample<100;++sample) {
+        for(bool reducedMode:{false,true})for(int sample=0;sample<100;++sample) {
             state.time=sample*41.37;state.reveal=1;
             draw._ResetForNewFrame();draw.PushTextureID(io.Fonts->TexID);
             draw.PushClipRectFullScreen();
-            KennyEffects::Draw(&draw,origin,size,scale,radius,state);
+            KennyEffects::Draw(&draw,origin,size,scale,radius,state,reducedMode);
             for(const auto& v:draw.VtxBuffer)
                 assert(KennyEffects::Contains(ImVec2(v.pos.x-origin.x,v.pos.y-origin.y),size,radius));
             maximumVertices=std::max(maximumVertices,static_cast<unsigned>(draw.VtxBuffer.Size));
@@ -100,7 +123,7 @@ int main() {
         assert(draw.VtxBuffer.Capacity==vCapacity && draw.IdxBuffer.Capacity==iCapacity);
         assert(io.MetricsActiveAllocations==allocations);
     }
-    std::printf("PASS native toggle hitbox/release/disabled input, effect math, hidden-time pause, bounded cache, rapid targets, rounded geometry (500 samples), warmed allocation stability (1000 frames); max effect vertices=%u indices=%u, cache=%zu bytes.\n",
+    std::printf("PASS native toggle hitbox/release/disabled input, effect math, hidden/reduced-time pause, nested reduction scope, long-running continuity, bounded cache, rapid targets, full/reduced rounded geometry (1000 samples), warmed allocation stability (1000 frames); max effect vertices=%u indices=%u, cache=%zu bytes.\n",
                 maximumVertices,maximumIndices,sizeof(cache.entries));
     }
     ImGui::DestroyContext();

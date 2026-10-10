@@ -15,7 +15,7 @@ inline bool Begin(const char* id, int maximumColumns, float minimumEm = 10.0f,
     const int columns = std::clamp(static_cast<int>(width / minimumWidth), 1, maximumColumns);
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding,
                         ImVec2(14.0f * KennyControls::Scale(), 10.0f * KennyControls::Scale()));
-    ImGui::PushStyleColor(ImGuiCol_TableBorderLight, Claude::Hex(0x7A1C24, 0.3f));
+    ImGui::PushStyleColor(ImGuiCol_TableBorderLight, Claude::Hex(0x73636A, 0.13f));
     const bool visible = ImGui::BeginTable(id, columns, ImGuiTableFlags_SizingStretchSame |
                                          ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_NoSavedSettings);
     if (!visible) { ImGui::PopStyleColor(); ImGui::PopStyleVar(); }
@@ -35,10 +35,9 @@ inline void Section(const char* label) {
     ImGui::PopStyleVar();
     const ImVec2 p = ImGui::GetCursorScreenPos();
     const float width = ImGui::GetContentRegionAvail().x;
-    ImGui::GetWindowDrawList()->AddLine(p, ImVec2(p.x + width, p.y),
-                                       ImGui::GetColorU32(Claude::Dark::outline));
-    ImGui::GetWindowDrawList()->AddLine(p, ImVec2(p.x + 18.0f * KennyControls::Scale(), p.y),
-                                       ImGui::GetColorU32(Claude::Dark::accentPressed), 2.0f);
+    const ImU32 start=ImGui::GetColorU32(Claude::Hex(0x88717B,0.24f)),clear=ImGui::GetColorU32(Claude::Hex(0x88717B,0));
+    ImGui::GetWindowDrawList()->AddRectFilledMultiColor(p,ImVec2(p.x+width,p.y+1),start,clear,clear,start);
+    KennyPaint::Seam(ImGui::GetWindowDrawList(),p,28*KennyControls::Scale(),Claude::Hex(0xE78695,0.62f),1);
     ImGui::Dummy(ImVec2(0, 6.0f * KennyControls::Scale()));
 }
 

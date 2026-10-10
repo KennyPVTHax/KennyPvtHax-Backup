@@ -62,17 +62,21 @@ inline bool Checkbox(const char* label, bool* value) {
         const float checked = KennyMotion::Sample(id, 3, *value ? 1.0f : 0.0f, 22.0f);
         const float emphasis = KennyMotion::Sample(id, 1, hover || ImGui::IsItemFocused() ? 1.0f : 0.0f);
         ImDrawList* draw = ImGui::GetWindowDrawList();
-        if (checked > 0.005f)
-            draw->AddCircle(center, radius + 2.0f * Scale(),
-                            ImGui::GetColorU32(Claude::Hex(0xFF5A5F, checked*(0.10f+0.12f*emphasis))), 32, 2.0f);
-        draw->AddCircleFilled(center, radius, ImGui::GetColorU32(KennyMotion::Mix(
-            Claude::Dark::surfaceElev, KennyMotion::Mix(Claude::Dark::accent, Claude::Dark::accentPressed, emphasis), checked)),32);
+        KennyPaint::Disc(draw,center,radius,
+            KennyMotion::Mix(Claude::Hex(0x241B21),KennyMotion::Mix(Claude::Hex(0xD72A45),Claude::Dark::accentPressed,emphasis),checked),
+            KennyMotion::Mix(Claude::Hex(0x0C0B0F),Claude::Hex(0xA40F29),checked));
         draw->AddCircle(center, radius, ImGui::GetColorU32(KennyMotion::Mix(
-            Claude::Dark::outline, Claude::Dark::accentPressed, emphasis)), 32, 1.0f);
+            Claude::Hex(0x88717B,0.42f), Claude::Hex(0xE592A0,0.72f), std::max(checked*0.45f,emphasis))), 32, 1.0f);
+        if(checked>0.005f) {
+            draw->PathArcTo(center,radius-1.4f,-2.4f,-0.75f,12);
+            draw->PathStroke(ImGui::GetColorU32(Claude::Hex(0xFFD3DB,checked*0.20f)),false,1);
+        }
         if (checked > 0.005f) {
             const float mark = radius * 1.05f;
             ImVec4 ink = Claude::Dark::textPrimary;
             ink.w *= checked;
+            ImGui::RenderCheckMark(draw, ImVec2(center.x-mark*0.5f,center.y-mark*0.5f+0.8f),
+                ImGui::GetColorU32(Claude::Hex(0x470D19,checked*0.45f)),mark);
             ImGui::RenderCheckMark(draw, ImVec2(center.x - mark * 0.5f, center.y - mark * 0.5f),
                                   ImGui::GetColorU32(ink), mark);
         }
@@ -144,13 +148,18 @@ inline bool Slider(const char* label, T* value, T minimum, T maximum, const char
                             ImGui::GetColorU32(Claude::Dark::surfaceSubtle), track * 0.5f);
         draw->AddRectFilled(ImVec2(left, y - track * 0.5f), ImVec2(x, y + track * 0.5f),
                             ImGui::GetColorU32(Claude::Dark::accent), track * 0.5f);
+        if(x-left>4) {
+            draw->AddRectFilledMultiColor(ImVec2(left+1,y-track*0.3f),ImVec2(x-1,y+track*0.3f),
+                ImGui::GetColorU32(Claude::Hex(0xC1122B)),ImGui::GetColorU32(Claude::Hex(0xEA4559)),
+                ImGui::GetColorU32(Claude::Hex(0xD72840)),ImGui::GetColorU32(Claude::Hex(0xC1122B)));
+        }
         const float radius = std::max(7.0f, 10.0f * scale);
         if (emphasis > 0.005f)
             draw->AddCircle(ImVec2(x, y), radius + 3.0f,
-                            ImGui::GetColorU32(Claude::Hex(0xFF5A5F, 0.18f*emphasis)), 24, 2.0f);
-        draw->AddCircleFilled(ImVec2(x, y), radius,
-                              ImGui::GetColorU32(KennyMotion::Mix(Claude::Dark::accent, Claude::Dark::accentPressed, emphasis)), 24);
-        draw->AddCircle(ImVec2(x, y), radius, ImGui::GetColorU32(Claude::Dark::accentPressed), 24, 1.0f);
+                            ImGui::GetColorU32(Claude::Hex(0xFF5664, 0.12f*emphasis)), 24, 2.0f);
+        KennyPaint::Disc(draw,ImVec2(x,y),radius,
+            KennyMotion::Mix(Claude::Hex(0xE86A7F),Claude::Hex(0xFFC2CC),emphasis),Claude::Hex(0xAD1E38));
+        draw->AddCircle(ImVec2(x, y), radius, ImGui::GetColorU32(Claude::Hex(0xECA5B2,0.50f)), 24, 1.0f);
     }
     ImGui::PopStyleVar(2);
     ImGui::EndGroup();

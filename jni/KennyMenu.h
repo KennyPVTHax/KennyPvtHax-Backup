@@ -4,6 +4,7 @@
 #include "ClaudeTheme.h"
 #include "KennyAppearance.h"
 #include "KennyEffects.h"
+#include "KennyIdentity.h"
 #include "ANOY/font_awesome_5.h"
 
 // Application-owned window chrome. Feature controls are supplied by main.cpp;
@@ -78,6 +79,7 @@ template <typename RenderPanel>
 inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPanel renderPanel) {
     if (viewport.x <= 0.0f || viewport.y <= 0.0f) return;
     state.Initialize(tab);
+    KennyMotion::ScopedReduction motion(state.appearance.reducedMotion);
     const Layout l = Measure(viewport);
     if (Font) ImGui::PushFont(Font);
     ImGui::SetNextWindowSize(l.size, ImGuiCond_Always);
@@ -114,12 +116,10 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
         if (ImGui::IsItemHovered()) ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
         const ImVec2 origin = ImGui::GetWindowPos();
         ImDrawList* draw = ImGui::GetWindowDrawList();
-        const bool resumed = state.effects.Advance(ImGui::GetFrameCount(), ImGui::GetIO().DeltaTime);
-        KennyEffects::Draw(draw, origin, l.size, l.scale, Claude::RadiusWindow*l.scale, state.effects);
-        const char* brand = "KennyPvtHax";
-        const ImVec2 brandText = ImGui::CalcTextSize(brand);
-        draw->AddText(ImVec2(origin.x + l.padding, origin.y + (brandHeight - brandText.y) * 0.5f),
-                      ImGui::GetColorU32(KennyMotion::Mix(Claude::Dark::textPrimary, Claude::Dark::accentPressed, 0.55f)), brand);
+        const bool resumed = state.effects.Advance(ImGui::GetFrameCount(), ImGui::GetIO().DeltaTime, state.appearance.reducedMotion);
+        KennyEffects::Draw(draw, origin, ImGui::GetWindowSize(), l.scale, Claude::RadiusWindow*l.scale, state.effects,
+            state.appearance.reducedMotion,l.header,l.header+l.secondary);
+        KennyIdentity::Draw(draw,origin,l.padding,l.brand,brandHeight,l.scale);
 
         ImGui::SetCursorPos(ImVec2(l.size.x - l.padding - closeSize,
                                   (brandHeight - closeSize) * 0.5f));
@@ -139,18 +139,14 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
         // One bounded, time-based underline; no per-tab animation allocations.
         const float target = static_cast<float>(static_cast<int>(state.category));
         if (state.indicator < 0.0f || resumed) state.indicator = target;
-        state.indicator = KennyMotion::Step(state.indicator, target, 18.0f, ImGui::GetIO().DeltaTime);
+        state.indicator = state.appearance.reducedMotion ? target :
+            KennyMotion::Step(state.indicator, target, 18.0f, ImGui::GetIO().DeltaTime);
         const float underlineWidth = std::min(78.0f * l.scale, tabWidth * 0.65f);
         const float underlineX = origin.x + navX + (state.indicator + 0.5f) * tabWidth - underlineWidth * 0.5f;
-        draw->AddRectFilled(ImVec2(underlineX, origin.y + l.header - 11.0f * l.scale),
-                            ImVec2(underlineX + underlineWidth, origin.y + l.header - 4.0f * l.scale),
-                            ImGui::GetColorU32(Claude::Hex(0xFF5A5F, 0.10f)), 4.0f*l.scale);
-        draw->AddRectFilled(ImVec2(underlineX, origin.y + l.header - 9.0f * l.scale),
-                            ImVec2(underlineX + underlineWidth, origin.y + l.header - 6.0f * l.scale),
-                            ImGui::GetColorU32(Claude::Dark::accentPressed), 2.0f * l.scale);
-        const ImU32 divider = ImGui::GetColorU32(Claude::Hex(0x7A1C24, 0.32f));
-        draw->AddLine(ImVec2(origin.x + 1, origin.y + l.header),
-                      ImVec2(origin.x + l.size.x - 1, origin.y + l.header), divider);
+        KennyPaint::Seam(draw,ImVec2(underlineX,origin.y+l.header-8*l.scale),underlineWidth,
+                          Claude::Hex(0xEDA9B6,0.78f),std::max(1.0f,2*l.scale));
+        KennyPaint::Seam(draw,ImVec2(origin.x+l.padding,origin.y+l.header),l.size.x-2*l.padding,
+                          Claude::Hex(0x99818B,0.20f));
 
         const char* secondary[2] = {};
         int values[2] = {};
@@ -182,13 +178,15 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
             x += widths[i] + gap;
         }
         const float contentY = l.header + l.secondary;
-        draw->AddLine(ImVec2(origin.x + 1, origin.y + contentY),
-                      ImVec2(origin.x + l.size.x - 1, origin.y + contentY), divider);
+        KennyPaint::Seam(draw,ImVec2(origin.x+l.padding,origin.y+contentY),l.size.x-2*l.padding,
+                          Claude::Hex(0x99818B,0.16f));
 
         // Isolate content scrolling from both navigation rows. No nested card border.
         ImGui::SetCursorPos(ImVec2(l.padding, contentY + 18.0f * l.scale));
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-        ImGui::PushStyleColor(ImGuiCol_ChildBg, Claude::Hex(0x1A1012, 0.16f));
+        // The shared atmosphere already separates the content surface. A
+        // second rectangular wash would create a hard strip below the child.
+        ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0,0,0,0));
         if (ImGui::BeginChild("##content", ImVec2(l.size.x - 2.0f * l.padding,
                              l.size.y - contentY - 36.0f * l.scale), false)) {
             // This ImGui version multiplies a child's scale by its parent's.

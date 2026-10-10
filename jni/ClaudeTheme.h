@@ -1,6 +1,7 @@
 #pragma once
 #include "imgui/imgui.h"
 #include "KennyMotion.h"
+#include "KennyPaint.h"
 namespace Claude {
 
 // ---- Hex helper ------------------------------------------------------------
@@ -13,19 +14,20 @@ inline ImVec4 Hex(unsigned int h, float a = 1.0f) {
 
 // ---- KennyPvtHax black/crimson tokens -------------------------------------
 namespace Dark {
-    inline const ImVec4 bg            = Hex(0x08070A, 0.97f);
-    inline const ImVec4 surface       = Hex(0x141014, 0.72f);
-    inline const ImVec4 surfaceElev   = Hex(0x1A1012);
-    inline const ImVec4 surfaceSubtle = Hex(0x26171B);
-    inline const ImVec4 outline       = Hex(0x7A1C24, 0.55f);
-    inline const ImVec4 textPrimary   = Hex(0xF5F2F2);
-    inline const ImVec4 textSecondary = Hex(0xB7A9AC);
+    inline const ImVec4 bg            = Hex(0x060609, 0.97f);
+    inline const ImVec4 surface       = Hex(0x100B0F, 0.72f);
+    inline const ImVec4 surfaceElev   = Hex(0x1A1014);
+    inline const ImVec4 surfaceSubtle = Hex(0x241A1F);
+    inline const ImVec4 outline       = Hex(0x665059, 0.42f);
+    inline const ImVec4 textPrimary   = Hex(0xF6F2F3);
+    inline const ImVec4 textSecondary = Hex(0xADA3A8);
     inline const ImVec4 textTertiary  = Hex(0x867579);
-    inline const ImVec4 accent        = Hex(0xC1121F);
-    inline const ImVec4 glow          = Hex(0xFF5A5F);
-    inline const ImVec4 accentPressed = Hex(0xE63946);
-    inline const ImVec4 onAccent      = Hex(0x08070A);
-    inline const ImVec4 accentSubtle  = Hex(0x34151C, 0.85f);
+    inline const ImVec4 accent        = Hex(0xC1122B);
+    inline const ImVec4 glow          = Hex(0xFF5664);
+    inline const ImVec4 accentPressed = Hex(0xEA233B);
+    inline const ImVec4 onAccent      = Hex(0x060609);
+    inline const ImVec4 accentSubtle  = Hex(0x30141E, 0.85f);
+    inline const ImVec4 selectedInk   = Hex(0xF4C8D0);
     inline const ImVec4 error         = Hex(0xE5776A);
     inline const ImVec4 success       = Hex(0x86B096);
     inline const ImVec4 warning       = Hex(0xD2A24C);
@@ -170,8 +172,8 @@ inline bool SecondaryButton(const char* label, ImVec2 size = ImVec2(0, 40)) {
 inline bool NavItem(const char* label, bool selected, ImVec2 size) {
     const ImGuiID id = ImGui::GetID(label);
     const float hover = KennyMotion::Hover(id, size);
-    const float active = KennyMotion::Sample(id, 2, selected ? 1.0f : 0.0f);
-    const ImVec4 surface = Hex(0x26171B, hover * 0.65f);
+    const float active = KennyMotion::Sample(id, 2, selected ? 1.0f : 0.0f, 15.0f);
+    const ImVec4 surface = Hex(0x25181F, hover * 0.35f + active * 0.16f);
     // Explicit tab widths supply spacing; keep text padding small on mobile.
     const ImVec2 padding = ImGui::GetStyle().FramePadding;
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(padding.x * 0.25f, padding.y));
@@ -179,7 +181,7 @@ inline bool NavItem(const char* label, bool selected, ImVec2 size) {
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, surface);
     ImGui::PushStyleColor(ImGuiCol_ButtonActive,  Dark::accentSubtle);
     ImGui::PushStyleColor(ImGuiCol_Text,
-        KennyMotion::Mix(Dark::textSecondary, Dark::accentPressed, active));
+        KennyMotion::Mix(KennyMotion::Mix(Dark::textSecondary, Dark::textPrimary, hover*0.45f), Dark::selectedInk, active));
     bool r = ImGui::Button(label, size);
     ImGui::PopStyleColor(4);
     ImGui::PopStyleVar();
@@ -190,18 +192,23 @@ inline bool NavItem(const char* label, bool selected, ImVec2 size) {
 inline bool PillTab(const char* label, bool selected, ImVec2 size) {
     const ImGuiID id = ImGui::GetID(label);
     const float hover = KennyMotion::Hover(id, size);
-    const float active = KennyMotion::Sample(id, 2, selected ? 1.0f : 0.0f);
+    const float active = KennyMotion::Sample(id, 2, selected ? 1.0f : 0.0f, 15.0f);
     const ImVec4 surface = KennyMotion::Mix(
         KennyMotion::Mix(Hex(0x100B0E, 0.6f), Dark::accentSubtle, active),
-        Hex(0x42202A, 0.9f), hover * 0.5f);
+        Hex(0x39212B, 0.9f), hover * 0.4f);
     ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, size.y * 0.5f);
     ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1.0f);
     ImGui::PushStyleColor(ImGuiCol_Button, surface);
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, surface);
     ImGui::PushStyleColor(ImGuiCol_ButtonActive, Dark::accentSubtle);
-    ImGui::PushStyleColor(ImGuiCol_Border, KennyMotion::Mix(Dark::outline, Hex(0xC44551, 0.75f), std::max(active,hover)));
+    ImGui::PushStyleColor(ImGuiCol_Border, KennyMotion::Mix(Hex(0x504149,0.36f), Hex(0xAB6273,0.64f), std::max(active,hover)));
     ImGui::PushStyleColor(ImGuiCol_Text, KennyMotion::Mix(Dark::textSecondary, Dark::textPrimary, std::max(active,hover)));
     const bool pressed = ImGui::Button(label, size);
+    if(ImGui::IsItemVisible()) {
+        const ImVec2 a=ImGui::GetItemRectMin(),b=ImGui::GetItemRectMax();
+        KennyPaint::Seam(ImGui::GetWindowDrawList(),ImVec2(a.x+size.y*0.5f,a.y+2),
+            std::max(0.0f,b.x-a.x-size.y),Hex(0xF4C8D0,(active*0.18f+hover*0.12f)),1);
+    }
     ImGui::PopStyleColor(5);
     ImGui::PopStyleVar(2);
     return pressed;

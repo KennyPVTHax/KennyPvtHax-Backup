@@ -7,6 +7,14 @@
 // Presentation state only. Native widgets continue to update their values on
 // the activation frame; this cache never owns configuration or input state.
 namespace KennyMotion {
+inline bool reduced = false;
+struct ScopedReduction {
+    bool previous;
+    explicit ScopedReduction(bool enabled) : previous(reduced) { reduced = enabled; }
+    ~ScopedReduction() { reduced = previous; }
+    ScopedReduction(const ScopedReduction&) = delete;
+    ScopedReduction& operator=(const ScopedReduction&) = delete;
+};
 inline float Delta(float dt) {
     return std::isfinite(dt) ? std::clamp(dt, 0.0f, 0.1f) : 0.0f;
 }
@@ -23,6 +31,7 @@ struct Cache {
     std::array<Entry, Capacity> entries{};
     ImGuiContext* context = nullptr;
     float Sample(ImGuiID id, unsigned channel, float target, float rate, bool snap = false) {
+        if (reduced) return std::isfinite(target) ? target : 0.0f;
         if (context != ImGui::GetCurrentContext()) {
             entries = {};
             context = ImGui::GetCurrentContext();
