@@ -1,6 +1,6 @@
 # KennyPvtHax — source map and reference design
 
-Stages 1–5 and Stage 5.5 completed, 10 October 2026 UTC. **Current identity: Crimson Eclipse — near-black, burgundy, crimson/fire-red.** The user-requested Stage 5.5 refinement supersedes the earlier palettes; cached reference-video geometry, horizontal navigation and compact grouped layouts remain. Stage 6 is unimplemented. Historical stage notes below describe their original checkpoints.
+Stages 1–5.5 and Stage 5.6 Phase A completed, 10 October 2026 UTC. **Current identity: Crimson Eclipse; Player ESP now prototypes Living Crimson Aurora.** The reference geometry, navigation, controls and grouped layouts remain. The other six panels retain Stage 5.5 effects. Phase B and Stage 6 are unimplemented. Historical notes below describe their original checkpoints.
 
 ## Source baseline
 
@@ -302,3 +302,42 @@ Reproduction while local ignored files remain: `python3 .verification/stage5_5_f
 SDK/NDK/device remain unavailable; no Android compilation/linking, overlay/touch/soft-keyboard runtime, GPU blending/AA or device performance was verified. CPU host captures omit game/platform/floating-toggle rendering; GPU output may differ. Captured playback is one actual PNG per second, not full-speed motion or a device FPS recording. Original embedded-font macro warnings remain untouched. Appearance preferences remain session-only. Checkpoints preserve selective tracked source boundaries; local generated outputs are ignored and no binary/dependency/secret/unrelated files are committed.
 
 Stage 5.5 stops here. **Next: Stage 6 — Final Source Audit, Android Build Validation, and Visual Verification, only after user instruction.** Restore the user's original SDK and compatible NDK for the real native build; inspect actual device/GPU/input/performance and compare cached references before final acceptance. Never regenerate the SDK or restart previous stages.
+
+
+## Stage 5.6 / Phase A — Living Crimson Aurora & Interactive Starfield
+
+### Visual audit and art direction
+
+Reviewed af8a337 production components, the actual Stage 5.5 Player capture and cached reference frame 24. The window, horizontal navigation, compact columns and control proportions already follow the reference; isolated crown/corona blooms and faint points make negative space appear static. Phase A replaces that background on **Visual → Player ESP only** with coherent flowing curtains and an interactive seeded sky. Existing branding, window proportions, spacing, control artwork and all other panel materials remain.
+
+Three independently advected translucent curtain meshes use smooth multiscale hash noise rather than repeated sine strips or radial blooms. Unequal lower hems, skewed folds, fine vertical rays, graded upward falloff and broad left/right composition masks produce overlapping ruby/burgundy/scarlet depth. Graphite header/secondary shelves and quiet near-black gaps preserve hierarchy. After inspecting the first candidate, softened the initially prominent lower bright bands and increased vertical filament variation. Native atlas-white triangles provide all lighting; there is no texture generation, real blur or shader dependency.
+
+### Interaction, timing and clipping
+
+- The budget remains **40 stars**, with deterministic hash-seeded nonuniform positions, varied radii/brightness, slow continuous home drift, twinkling and four occasional shimmer points. There are no wraps, respawns or random per-frame seeds.
+- Native background input is resolved after all widgets, using two reused draw-list channels to paint the selected route's atmosphere underneath them in the same frame. Aurora routing is determined after navigation, preventing a one-frame spill onto another panel. All six non-Player matched renders are pixel-identical to af8a337 through the same CPU rasterizer.
+- Only a press begun on unoccupied Player **content** may initiate a background gesture. Native hovered/active widgets, disabled items, scrollbar/popup ownership, header/close/navigation and outside-origin gestures take priority. Leaving content bounds cancels the gesture until release. No input event, feature variable or overlay capture flag is written by the effect.
+- Player content has native `NoMove`: an empty-content press focuses the existing child without automatically moving the entire menu. **Use the unchanged header to drag the window.** Other panels retain their original empty-space behavior. This deliberate content gesture distinction enables attraction without competing with dragging or adding an invisible input widget.
+- Distance-weighted attraction, a surviving home spring, damped bounded velocity and smoothed visual pointer position create inertia without teleportation. Release keeps positions/velocities continuous and restores ambient spread. Local lighting response/distortion multiplies the existing curtain field; it is not a stand-alone radial aurora substitute.
+- Physics uses a retained fixed-step accumulator at 120 Hz, maximum 12 substeps for a visible frame; finite delta is clamped to 0…100 ms. Visible double time is continuous, same-frame advancement is idempotent, inactive/hidden gaps do not catch up. Full/Reduced uses the existing preference: Reduced freezes the curtain/stars, disables attraction and clears local response; other panel motion behavior is unchanged.
+- Every ribbon vertex projects into an inset convex rounded shell, so its triangles cannot escape rounded corners. Star/halo/AA containment is conservative, with all 40 stars remaining drawable in tested bounds. Rectangular scissoring supplements rounded geometry containment.
+
+### Verification and artifacts
+
+Strict production-header syntax and the focused effect test compile with C++17 / `-Wall -Wextra -Werror`. Existing effect regressions also pass unchanged. The new tracked SDK-independent extractor asserts all 37 original binding sites and uses the actual source panel statements/configuration. Native seven-panel tests cover all original checkboxes/ranges/conditional/shared bindings, numeric entry, callbacks' access, five categories, secondary memory, scrolling, appearance actions, header dragging, close/reopen, five viewport sizes and balanced stacks. Destructive/platform ResetLogin is intentionally never invoked by the host test.
+
+Phase A native input tests pass first-press blank-content attraction and first-press checkbox priority without hover warmup; hold/drag/release dispersion; unchanged feature snapshots and window position during background touch; header dragging; outside-origin/exit cancellation; non-Player isolation and Reduced freeze/resume. Focused tests cover 20,000 variable-dt edge/drag steps, deterministic initialization, 30/60/120 Hz agreement, attraction/release/home recovery, malformed time, continuous long-session noise, 600 rounded geometry samples and 1,000 warmed native-allocation frames. The full real seven-panel suite also passes 1,000 warmed route-switching allocation/capacity frames.
+
+Maximum observed new atmosphere geometry: **7,882 vertices / 41,628 indices** versus Stage 5.5's 1,961 / 8,928. New fixed state is **992 bytes**; three bounded 96×18 curtain meshes reuse native draw buffers and one fixed column array on the stack. The existing 192-entry visual cache is unchanged. These are host observations, not Android FPS/power measurements; profile the additional geometry on-device before expanding beyond Phase A.
+
+`previews/stage5_6/` contains 15 PNGs: actual idle aurora at 0/2/3/6/10 s, idle stars, held center-background touch, dragged touch, initial/+2/+10 s release, Reduced, retained af8a337 baseline, exact-paste before/after comparison and eight-state high-resolution contact sheet. All native captures are 1920×872 with matched original feature state and session defaults. Captions are outside the captured UI. Inspected the timed/touch/release comparison, all required states, the 640×360 scrolling render and representative decoded animation frames; no new label/rounded-boundary artifact was found.
+
+The approximately 12-second MP4 contains **145 consecutive actual renderer frames at 12 fps**, with 60 Hz host input / 120 Hz bounded physics: 0–4 s idle, 4–6 s held touch, 6–8 s dragged right, 8–12 s released. This is continuous output, not playback of unrelated static states; cadence is an export choice, not Android FPS. It fully decodes successfully. The self-contained HTML embeds all exact PNG/video bytes with individual downloads, and the 19-entry ZIP passes integrity checks. The original before draw-data/atlas is retained from af8a337; the faster C++ CPU rasterizer agrees with the earlier Python baseline within one 8-bit channel level. Every non-Player before/after render through the same new rasterizer is byte-identical.
+
+Reproduction: `tests/README.md`; tracked extractor, native menu regression suite, focused physics/geometry checks, capture executable, CPU rasterizer and packager. Provenance JSON records current UI/core/font/draw-data/image/video hashes and baseline source hashes/feature state. Original Stage 5.5 captures and private GitHub exports remain unchanged. New Phase A exports have **not** been uploaded: the previous authorization covered only nine Stage 5.5 PNGs.
+
+### Remaining limitations / stop point
+
+The real main.cpp, configuration declarations, build files, native gameplay/SDK integrations and all 37 original bindings/ranges are unchanged from af8a337. SDK/NDK/device remain unavailable. Host mouse input exercises the existing ImGui path, but Android touch/overlay/backend, actual GPU blending/AA, native compilation/linking and device FPS/thermal/power require later testing. Appearance preferences remain session-only; no fabricated SDK headers, resources, gameplay features or permissions were introduced. Original embedded-font macro warnings remain untouched.
+
+**Stop after Stage 5.6 Phase A. Next action: user inspects the PNGs/MP4 and directs any Phase A refinement or subsequent phase. Do not begin Phase B or Stage 6 automatically.**

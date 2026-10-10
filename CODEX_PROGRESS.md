@@ -1,9 +1,72 @@
 PROJECT: KennyPvtHax
 
 CURRENT STAGE:
-Stage 5.5 — Premium Visual Overhaul / Crimson Eclipse — COMPLETE
-Checkpoint date: 10 October 2026 UTC.
-STOP after Stage 5.5. Stage 6 requires the user's next instruction.
+Stage 5.6 — Phase A: Living Crimson Aurora & Interactive Starfield — COMPLETE
+Checkpoint date: 10 October 2026 UTC. Parent application commit: af8a337.
+STOP after Phase A. Phase B and Stage 6 require the user's next instruction.
+
+THEME UPDATE:
+Crimson Eclipse identity retained. Visual → Player ESP alone prototypes translucent crimson/ruby/scarlet/burgundy aurora curtains and an interactive starfield. All six other panels retain Stage 5.5 materials/effects and matched pixels. No layout/branding/control theme changes.
+
+COMPLETED:
+- Continued af8a337; read existing checkpoint/design notes, audited current source/cached reference frame/actual Stage 5.5 render. Preserved previous source history and prior preview/GitHub export notes.
+- Added three independent smooth noise-advected curtain meshes with vertical rays, graded depth, asymmetric composition, near-black gaps and graphite chrome. Inspected the first render and softened overly distinct hems in favor of vertical folds.
+- Replaced Player's former analytic points with 40 deterministic nonuniform stars, varied size/luminosity, gentle drift/twinkle and occasional shimmer. Fixed state, no per-frame particle containers, wrap/respawn or resource creation.
+- Implemented distance-based background touch attraction, damped inertia, surviving home spring, smoothed visual target, localized curtain illumination/distortion and gradual release dispersion. Native controls are evaluated first; no feature/input/overlay-capture variable is changed by the effect.
+- Preserved header dragging, navigation, close/reopen, scrolling and all existing appearance actions. Player's empty content now focuses its native non-moving child for star interaction; drag from the unchanged header. Other panels' empty-space behavior is unchanged.
+- Added bounded 120 Hz fixed-step integration, max 12 steps/frame, finite/clamped delta, visible-only continuous clock, same-frame idempotence, inactive/hidden pause and the existing Reduced preference's complete prototype motion/response freeze.
+- Rounded geometry containment includes all ribbon triangles, star halos and AA. Native channel buffers are reused; route selection after navigation prevents background spill onto another panel.
+- Kept all 37 exact binding/range/format sites and every SDK/native integration. main.cpp, Helper/definition.h, Android.mk/Application.mk byte-identical to af8a337. No SDK recreation, source extraction/restart, gameplay edit, dependency install or new permissions.
+- Added tracked reproducible host tests/extractor/capturer/rasterizer/packager. Rendered/inspected required timed/touch/release states, 640 scrolling viewport, baseline comparison and decoded animation samples.
+- Saved 15 valid PNGs, a 145-frame continuous MP4, source/state/hash provenance, self-contained offline viewer and 19-entry preview ZIP under previews/stage5_6/. Retained earlier captures and GitHub uploads unchanged; new previews remain local.
+
+MODIFIED FILES:
+- jni/KennyAurora.h (new): procedural curtain geometry, seeded star state/physics, lighting response, clipping/reduced motion.
+- jni/KennyMenu.h: Player-only routing, post-widget input observation, reused background channels, native content focus ownership.
+- tests/kenny_aurora_check.cpp (new): physics/timing/boundary/geometry/star visibility/allocation checks.
+- tests/kenny_host_fixture.py (new): actual source-extracted 37-binding host fixture, no SDK replacement.
+- tests/kenny_menu_host_check.cpp (new): retained earlier native interaction suite plus Phase A ownership/attraction/release/isolation checks.
+- tests/kenny_phase_a_capture.cpp (new): real production UI/font/ImGui capture sequence, matched state and continuous animation.
+- tests/kenny_host_rasterize.cpp (new): CPU rasterization of actual indexed triangles/font atlas.
+- tests/kenny_phase_a_package.py (new): PNG/video/comparison/viewer/provenance packaging and integrity checks.
+- tests/README.md: bounded reproduction commands, tests and host/runtime limits.
+- .gitignore: ignores previews/stage5_6/ generated output.
+- UI_DESIGN_NOTES.md: audit, final implementation/interaction, observed geometry cost, evidence/limits.
+- CODEX_PROGRESS.md: this checkpoint plus retained historical checkpoints/export records.
+- Ignored local artifacts: generated fixture, executables, atlas, draw/state/presentation/RGBA/PNG captures, continuous film frames, inspection sheets and previews/stage5_6/. No binaries/artifacts/source backups/credentials committed.
+
+VERIFICATION:
+- PASS strict C++17 production-header syntax; focused aurora test built with -Wall -Wextra -Werror. Existing focused effects test also passes unchanged.
+- PASS extractor inventory of all 37 real binding sites; source/configuration/build byte identity against af8a337. Native seven-panel suite passes original checkbox/slider/range/keyboard/conditional/shared bindings and category access/actions without changing gameplay code.
+- PASS actual first-press native input: background attraction and checkbox priority without hover warmup; held/drag/release inertia and eventual home recovery; header dragging intact; background touch does not move the window or mutate features; outside-origin/exit cancellation; non-Player isolation; Reduced freeze/resume.
+- PASS original five viewport fits, native scrolling, close/reopen, tab/subtab memory, appearance/reset/center actions, rapid navigation at 30/60/120 Hz, hidden rendering pause and balanced stacks.
+- PASS deterministic 40-star initialization; mean nearby distance decreases 0.159→0.022 (12 stars) under held attraction, then returns within 0.003 normalized distance of drifting homes after release. No positional reset on release.
+- PASS 20,000 variable-dt/edge/drag steps, 30/60/120 Hz agreement, negative/NaN/infinite/stalled delta, same-frame idempotence, hidden/reduced pause and long-session noise continuity.
+- PASS 600 actual rounded draw-geometry samples at five scales/full/reduced plus all star halos remaining drawable; max 7,882 vertices / 41,628 indices, fixed state 992 bytes.
+- PASS 1,000 warmed atmosphere frames and 1,000 actual seven-panel route-switching frames: native active allocation counts and draw-buffer capacities stable.
+- PASS all six non-Player matched 1920×872 renders byte-identical to af8a337 through the same CPU rasterizer. Baseline C++ versus previous Python rasterizer differs at most one channel level; same viewport/feature/appearance state.
+- PASS 15 PNG signatures/full decodes; all captures match original feature snapshot; actual idle time images differ; self-contained viewer has 32 exact image/video data URIs. High-resolution composites paste real captures without alteration, with external captions.
+- PASS MP4 1920×872, 145 consecutive frames, 12 fps / approximately 12 s, encode plus full decode; 19-entry ZIP integrity. Inspected static states, before/after, small viewport and representative decoded video frames.
+- PASS git diff --check and explicit source whitelist review before checkpoint commit.
+
+KNOWN ISSUES / LIMITATIONS:
+- SDK intentionally absent; NDK/device unavailable. No Android build/link, actual overlay/touch/keyboard/GPU verification or mobile FPS/power claim. Host input stands in for existing Android-to-ImGui mapping; previews use neutral background, not game/device capture.
+- Aurora uses more geometry than Stage 5.5 (7,882/41,628 vs 1,961/8,928 observed maxima). Bounded buffers/no new textures are verified on host; profile real mobile hardware before wider rollout. Reduced freezes all motion/response; native visible drawing remains.
+- Host rasterization can differ from GPU AA/blending; original embedded-font macro warnings are preserved. Preferences are session-only. ResetLogin platform/destructive callback is bound but intentionally not invoked in host tests.
+- Codex Android artifact access previously failed. Local PNGs/MP4/self-contained viewer/ZIP are verified; new GitHub upload is not authorized by the prior nine-image Stage 5.5 permission and was not performed.
+
+NEXT ACTION:
+User reviews previews/stage5_6/index.html or living-crimson.mp4 and the individual PNGs; await explicit direction for Phase A adjustments or a subsequent phase. Do not implement Phase B, Anime theme, sound, logo launcher, key-pasting UI or Stage 6 automatically. Checkpoint commit is the focused HEAD containing this document; use git log -1 to retrieve its hash.
+
+REFERENCE NOTES:
+- Existing reference window/navigation/header/secondary rows, native control proportions and compact grouped panels remain. Current background responds only in unoccupied Player content; header remains the drag region.
+- Idle PNGs: aurora-00/02/03/06/10.png; idle-stars.png; center-touch.png; dragged-touch.png; release-00/02/10.png; reduced.png.
+- Compare: before-af8a337.png, before-after.png (3904×1008), contact-sheet.png (3904×3848).
+- Continuous video is a separate timeline: 0–4 s idle, 4–6 held, 6–8 dragged, 8–12 released; 60 Hz input/120 Hz physics sampled at 12 fps. Export cadence is not device performance.
+- Tests/README.md has bounded reproduction; retain original af8a337 baseline draw/state/atlas and Stage 5.5 provenance for comparison packaging. UI_DESIGN_NOTES.md records detailed math/input/performance limitations.
+
+PREVIOUS STAGE 5.5 CHECKPOINT AND EXPORT RECORDS — RETAINED HISTORY:
+The following sections describe the earlier completed stage, not the current next action.
 
 THEME UPDATE:
 Crimson Eclipse: near-black #060609, graphite #100B0F, elevated #1A1014, burgundy undertones, crimson #C1122B / fire red #EA233B, restrained #FF5664 highlights, pearl/rose selection ink and neutral inactive outlines. No lavender accents. Same reference geometry, grouped layouts and native architecture. Defaults: 97% opacity, Standard spacing, Full motion; preferences are session-only.
@@ -106,3 +169,42 @@ STAGE 2 PREVIEW ACCESS CHECKPOINT — 10 October 2026:
 - Confirmed `jni/main.cpp`, `jni/KennyMenu.h`, and `jni/ClaudeTheme.h` remain byte-identical to commit `042e39c`. No UI functionality changed and no prior commits were discarded. At that preview-only checkpoint, HEAD remained `042e39c`; only documentation and the generated-artifact ignore entry were updated.
 - The image tool successfully read/displayed the PNG. The user's Codex file-browser rendering path cannot be directly verified here; if it still shows "No image", download/open the self-contained HTML viewer in a normal browser. Both PNG and viewer live at the non-hidden `previews/stage2/` path.
 - Historical status: Stage 3 was paused then; the user subsequently authorized the crimson Stage 3 implementation recorded above.
+
+
+STAGE 5.5 PREVIEW EXPORT ACCESS CHECKPOINT — 10 October 2026 (Asia/Calcutta):
+- User reported Codex artifact download failure. Current HEAD remains af8a337; no UI/tests/backend/native source or prior commit was changed, and Stage 6 remains stopped.
+- Reverified all 30 original PNGs against verification.json: existence/nonempty, PNG signature, chunk bounds/CRC, Pillow integrity/full decode, RGBA/dimensions and exact SHA256. All source hashes and implementation commit match. No regeneration was needed.
+- Added previews/stage5_5/export/: byte-identical copies of all 30 PNGs, readable mode 0644 in a 0755 directory; seven final 1920×872 panels remain individual PNGs.
+- Added all-panels-contact-sheet.png (3508×2627) with seven labeled native-pixel tiles; crops only the neutral surrounding backdrop. Each pasted tile's pixel bytes equal its source crop exactly.
+- Added before-after-player.png (3928×1050), retaining both complete 1920×872 viewport images at matched time/state. Both pasted viewport rectangles equal their source image pixels exactly. Baseline is 4eaedda; after is af8a337.
+- Displayed both composites and all seven final PNGs through the image-content tool, then inspected the output. Added self-contained export/index.html with nine embedded images, native-size view and per-PNG save link; all 11 image/download URIs match exported PNG bytes.
+- Added export/retrieve.py, RETRIEVE.md and export-verification.json. Tested base64 roundtrip retrieval of Player, contact sheet and comparison; unsafe filenames rejected. This workspace-text transfer bypasses the Codex artifact bridge and requires copying complete terminal output then local base64 decode. SHA256 checks detect incomplete copies.
+- No generic file-upload/attachment capability is exposed in this session. Actual user-side Codex downloader is not directly testable, so the download-service error is not claimed repaired. Local file links, direct image-content display and verified workspace retrieval are provided. No external publication or unsupported URL is created.
+- PNG originals, original viewer/ZIP/provenance and all previous work are preserved; generated export files and .verification/stage5_5_export.py are ignored. Only this checkpoint documentation changed in tracked files. No new Git commit was created, keeping HEAD exactly af8a337.
+- Exact export directory: /workspace/KennyPvtHax/previews/stage5_5/export/.
+- NEXT ACTION: wait for user inspection/instruction; do not begin Stage 6.
+
+- Export accessibility refinement: original project and Stage 5.5 parent directories are mode 0700; private project permissions were preserved. Published byte-identical local copies of all 32 PNGs, viewer/retriever/docs/manifest at /workspace/preview_exports/kenny-crimson-eclipse/, with both export directories 0755 and files 0644. These are local workspace exports, not an external publication or hosted URL. This removes parent-directory permission barriers for the export copies, without asserting the Codex downloader is repaired. Public copy hashes match every project export; source/HEAD remain unchanged.
+
+
+PRIVATE GITHUB PREVIEW EXPORT — PREPARED, AWAITING DESTINATION / AUTHORIZATION:
+Date: 10 October 2026 (Asia/Calcutta).
+- User requested a separate private repository containing preview images only, explicitly prohibiting upload/push until private destination confirmation. No remote writes, repository creation, commits or pushes have occurred.
+- Prepared /workspace/preview_exports/github-stage5-5/ with exactly nine PNG files: player-1920.png, world-1920.png, aim-1920.png, bullet-1920.png, extra-1920.png, style-1920.png, settings-1920.png, all-panels-contact-sheet.png, before-after-player.png. Total 2,058,030 bytes. No source, Git history, HTML, scripts, manifest/configuration data, credentials or other files are in the upload directory.
+- Verified seven final 1920×872 images against af8a337 renderer manifest/SHA256. Contact sheet 3508×2627 and comparison 3928×1050 preserve actual host screenshot pixels exactly; comparison includes Stage 5 (4eaedda) and Stage 5.5 (af8a337) at matched 1920×872/state/time. PNG signature/chunk CRC/full decode checks pass; only IHDR/IDAT/IEND chunks, no embedded text metadata; no symlinks.
+- GitHub connector authenticated-user read and gh auth status / gh api user succeeded as KennyPVTHax. Binary Git blob/tree/commit/ref upload APIs are exposed, and authenticated CLI is available. Target repository privacy/write access remain unverified because the destination is not yet specified. No credential values were printed or saved.
+- Local audit/selected-image Git blob SHA and SHA256 manifest is .verification/github_preview_export_manifest.json, deliberately outside the image-only export folder. Source project remains at af8a337 with earlier preview-access documentation changes retained; UI/tests/native/SDK code is unchanged.
+- Exact next action: obtain PRIVATE GitHub repository URL and user's explicit authorization for these nine images (proposed remote folder stage5-5/ on the repository default branch). Read repository metadata first; verify private=true and write access. Then upload ONLY whitelisted PNG files from the clean export, using an independent preview-only Git/API operation, never pushing this project's source repository/history. Preserve existing remote content and validate resulting image Git blob SHA/bytes. Return authenticated github.com image links for Android viewing. Do not write to a public/inaccessible/unconfirmed repository. Do not begin Stage 6.
+
+
+PRIVATE GITHUB PREVIEW EXPORT — COMPLETE / VERIFIED:
+Date: 10 October 2026 (Asia/Calcutta).
+- User explicitly confirmed private destination KennyPVTHax/KennyPvtHax-Previews and authorized ONLY nine approved PNGs under stage5-5/ on its default branch.
+- GitHub metadata confirmed private=true / visibility=private, permissions.push=true, archived=false, disabled=false and default branch main before uploading; the repository was empty. Privacy/default branch were rechecked before each write and after completion.
+- Uploaded exactly the nine whitelisted PNGs from /workspace/preview_exports/github-stage5-5/ using normal GitHub Contents API commits. No force-push, application Git remote/history change, or upload of source/config/credentials/manifests/scripts/README/other files. Remote recursive tree contains ONLY nine PNG paths under stage5-5/.
+- Downloaded all nine binary Git blobs back through authenticated API and compared bytes, SHA256, Git blob SHA and sizes against selected local images; all match. All images are actual production C++/ImGui host-rendered output, with native-pixel composite exports; no Android runtime or Stage 6 work was performed.
+- Preview repository final commit: b3c81f4fdb14edd21e748c7ba39d87660d248106. Application repository HEAD remains af8a337; UI/tests/native/SDK files and all prior commits are unchanged. Only local checkpoint documentation changed, retaining earlier export-access notes; no application commit was made.
+- GitHub folder: https://github.com/KennyPVTHax/KennyPvtHax-Previews/tree/main/stage5-5
+- Files: player-1920.png, world-1920.png, aim-1920.png, bullet-1920.png, extra-1920.png, style-1920.png, settings-1920.png, all-panels-contact-sheet.png, before-after-player.png.
+- Local audited result: .verification/github_preview_upload_result.json; manifest authorization/destination/upload status updated in .verification/github_preview_export_manifest.json. Upload helper remains ignored/local, never uploaded.
+- NEXT ACTION: user opens individual GitHub image links while signed into an account with private-repository access on Android. Wait for user inspection/instruction; do not begin Stage 6.

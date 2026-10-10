@@ -4,7 +4,9 @@
 #include "ClaudeTheme.h"
 #include "KennyAppearance.h"
 #include "KennyEffects.h"
+#include "KennyAurora.h"
 #include "KennyIdentity.h"
+#include "imgui/imgui_internal.h"
 #include "ANOY/font_awesome_5.h"
 
 // Application-owned window chrome. Feature controls are supplied by main.cpp;
@@ -26,6 +28,7 @@ struct State {
     KennyAppearance::Preferences appearance;
     bool centerRequested = false;
     KennyEffects::State effects;
+    KennyAurora::State aurora;
 
     void Select(Category next, int& tab) {
         category = next;
@@ -117,8 +120,10 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
         const ImVec2 origin = ImGui::GetWindowPos();
         ImDrawList* draw = ImGui::GetWindowDrawList();
         const bool resumed = state.effects.Advance(ImGui::GetFrameCount(), ImGui::GetIO().DeltaTime, state.appearance.reducedMotion);
-        KennyEffects::Draw(draw, origin, ImGui::GetWindowSize(), l.scale, Claude::RadiusWindow*l.scale, state.effects,
-            state.appearance.reducedMotion,l.header,l.header+l.secondary);
+        // Reused native channel buffers resolve input and the selected route
+        // after widgets, yet paint its background behind them in this frame.
+        draw->ChannelsSplit(2);
+        draw->ChannelsSetCurrent(1);
         KennyIdentity::Draw(draw,origin,l.padding,l.brand,brandHeight,l.scale);
 
         ImGui::SetCursorPos(ImVec2(l.size.x - l.padding - closeSize,
@@ -187,8 +192,12 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
         // The shared atmosphere already separates the content surface. A
         // second rectangular wash would create a hard strip below the child.
         ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0,0,0,0));
+        const bool phaseA = state.category == Category::Visual && tab == 1;
+        ImGuiWindow* contentWindow = nullptr;
         if (ImGui::BeginChild("##content", ImVec2(l.size.x - 2.0f * l.padding,
-                             l.size.y - contentY - 36.0f * l.scale), false)) {
+                             l.size.y - contentY - 36.0f * l.scale), false,
+                             phaseA ? ImGuiWindowFlags_NoMove : ImGuiWindowFlags_None)) {
+            contentWindow = ImGui::GetCurrentWindow();
             // This ImGui version multiplies a child's scale by its parent's.
             ImGui::SetWindowFontScale(0.875f);
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing,
@@ -207,6 +216,31 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
         ImGui::EndChild();
         ImGui::PopStyleColor();
         ImGui::PopStyleVar();
+        draw->ChannelsSetCurrent(0);
+        if (phaseA) {
+            const auto& io = ImGui::GetIO();
+            const auto& context = *ImGui::GetCurrentContext();
+            // Empty content receives native focus (its MoveId) without moving
+            // the window. Header dragging is unchanged. Never steal a widget,
+            // scrollbar, popup, disabled item or a gesture begun elsewhere.
+            const bool allowed = contentWindow && context.HoveredWindow == contentWindow &&
+                contentWindow->InnerRect.Contains(io.MousePos) && context.HoveredId == 0 &&
+                !context.HoveredIdDisabled &&
+                (context.ActiveId == 0 || (state.aurora.gesture && context.ActiveId == contentWindow->MoveId)) &&
+                state.category == Category::Visual && tab == 1 && opened;
+            if (io.MouseClicked[0]) state.aurora.gesture = allowed && context.ActiveId == 0;
+            if (!io.MouseDown[0] || !allowed) state.aurora.gesture = false;
+            const ImVec2 pointer((io.MousePos.x-origin.x)/l.size.x,(io.MousePos.y-origin.y)/l.size.y);
+            state.aurora.Advance(ImGui::GetFrameCount(),io.DeltaTime,l.size,
+                                 state.aurora.gesture,pointer,state.appearance.reducedMotion);
+            KennyAurora::Draw(draw,origin,ImGui::GetWindowSize(),l.scale,Claude::RadiusWindow*l.scale,
+                              state.aurora,state.appearance.reducedMotion,l.header,contentY);
+        } else {
+            state.aurora.gesture = false;
+            KennyEffects::Draw(draw,origin,ImGui::GetWindowSize(),l.scale,Claude::RadiusWindow*l.scale,
+                               state.effects,state.appearance.reducedMotion,l.header,contentY);
+        }
+        draw->ChannelsMerge();
     }
     ImGui::End();
     ImGui::PopStyleColor();
