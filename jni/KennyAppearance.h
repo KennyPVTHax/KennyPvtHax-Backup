@@ -1,6 +1,7 @@
 #pragma once
 #include "KennyPanels.h"
 #include "KennyThemePreferences.h"
+#include "KennyCharacters.h"
 
 // All controls are presentation-only; feature bindings stay in main.cpp.
 namespace KennyAppearance {
@@ -36,7 +37,7 @@ inline void ThemeCard(Preferences& p, Theme theme, const char* description) {
                     Claude::Hex(0xEA8796,.12f+.45f*emphasis),1);
     ImGui::RenderNavHighlight(ImRect(start,ImVec2(start.x+width,start.y+height)),ImGui::GetItemID());
 }
-inline void DrawStyle(Preferences& p, bool artworkReady=false, const char* storageStatus=nullptr) {
+inline void DrawStyle(Preferences& p, bool artworkReady=false, const char* storageStatus=nullptr, bool characterReady=false) {
     if(KennyPanels::Begin("##themes",3,4.0f)) {
         ImGui::TableNextColumn();ThemeCard(p,Theme::Aurora,"Living crimson light");
         ImGui::TableNextColumn();ThemeCard(p,Theme::Anime,"Your artwork, your atmosphere");
@@ -66,11 +67,13 @@ inline void DrawStyle(Preferences& p, bool artworkReady=false, const char* stora
         KennyPanels::Note("Only empty content reacts. Controls and the drag header keep priority.");KennyPanels::EndSection();
         KennyPanels::End();
     } else if(p.theme==Theme::Anime) {
-        if(artworkReady && KennyPanels::Begin("##artwork",2,12.0f)) {
+        if((artworkReady||characterReady) && KennyPanels::Begin("##artwork",2,12.0f)) {
             KennyPanels::Section("Artwork surface");
             KennyControls::SliderFloat("Artwork dimming",&p.artworkDim,35,95,"%.0f%%");KennyPanels::EndSection();
             KennyPanels::Section("Composition");
-            KennyControls::Choice("Artwork fit",&p.artworkCover,"Contain","Cover");KennyPanels::EndSection();
+            if(characterReady)KennyPanels::Note("Character cutouts keep their full silhouette and original aspect ratio.");
+            else KennyControls::Choice("Artwork fit",&p.artworkCover,"Contain","Cover");
+            KennyPanels::EndSection();
             KennyPanels::End();
         } else KennyPanels::Note("Anime is selected. No artwork is installed yet; a quiet dark surface keeps every control usable. Your artwork will appear here when installed.");
     } else if(p.theme==Theme::Classic) {
@@ -80,8 +83,38 @@ inline void DrawStyle(Preferences& p, bool artworkReady=false, const char* stora
     if(storageStatus) KennyPanels::Note(storageStatus);
 }
 
+inline void DrawAnime(Preferences& p,KennyCharacters::Registry& registry,bool audioReady){
+    if(p.theme!=Theme::Anime)return;
+    auto& character=registry.Selected(p);
+    const ImVec2 padding=ImGui::GetStyle().FramePadding;
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding,ImVec2(padding.x,std::max(padding.y,(36.0f-ImGui::GetFontSize())*.5f)));
+    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding,Claude::RadiusInput);
+    if(!KennyPanels::Begin("##anime-character",2,12.0f,"Character launcher")){ImGui::PopStyleVar(2);return;}
+    KennyPanels::Section("Anime character");
+    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+    if(ImGui::BeginCombo("##anime-character-id",character.name.c_str())){
+        for(unsigned i=0;i<registry.count;++i){auto& c=registry.characters[i];
+            ImGui::PushID(c.id.c_str());if(ImGui::Selectable(c.name.c_str(),p.characterId==c.id)){p.characterId=c.id;KennyAudio::Emit(KennyAudio::Event::ButtonPressed);}ImGui::PopID();}
+        ImGui::EndCombo();
+    }
+    KennyPanels::Note(character.series.c_str());KennyPanels::Note(character.status.c_str());
+    KennyPanels::Note(character.artworkTexture.Valid()?"Transparent artwork ready.":character.image.rgba.empty()?"Character artwork missing or invalid.":"Artwork decoded; texture rendering unavailable.");
+    ImGui::BeginDisabled(!character.launcherTexture.Valid());KennyControls::Checkbox("Character launcher",&p.characterLauncher);ImGui::EndDisabled();
+    KennyPanels::Note(character.launcherTexture.Valid()?"Character launcher ready.":"Launcher artwork unavailable; using the K emblem.");KennyPanels::EndSection();
+    KennyPanels::Section("Character voice");
+    auto* pack=registry.Pack(character,p.voicePack);bool available=pack&&pack->Available();
+    if(character.packCount){ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+        if(ImGui::BeginCombo("##voice-pack",pack?pack->name.c_str():"Select installed pack")){
+            for(unsigned i=0;i<character.packCount;++i){auto& v=character.packs[i];ImGui::PushID(v.id.c_str());if(ImGui::Selectable(v.name.c_str(),p.voicePack==v.id)){p.voicePack=v.id;KennyAudio::Emit(KennyAudio::Event::ButtonPressed);}ImGui::PopID();}ImGui::EndCombo();}}
+    ImGui::BeginDisabled(!audioReady||!available);
+    KennyControls::Checkbox("Character voice",&p.characterVoice);
+    KennyControls::SliderFloat("Voice volume",&p.characterVolume,0,100,"%.0f%%");ImGui::EndDisabled();
+    KennyPanels::Note(!available?"Voice recordings unavailable. UI tones remain the fallback.":!audioReady?"Voice pack decoded; Android playback unavailable on this host.":"Local voice pack ready. Global UI mute takes precedence.");
+    if(available){unsigned events=0;for(const auto& e:pack->events)events+=e.count>0;ImGui::Text("Mapped events: %u / %u",events,KennyCharacters::EventCount);}
+    KennyPanels::EndSection();KennyPanels::End();ImGui::PopStyleVar(2);
+}
 inline void DrawSettings(Preferences& preferences, bool& centerRequested, bool audioReady=false,
-                         const char* audioStatus="UI audio unavailable in this host preview.") {
+                         const char* audioStatus="UI audio unavailable in this host preview.", KennyCharacters::Registry* characters=nullptr) {
     if (!KennyPanels::Begin("##general", 2, 12.0f)) return;
     KennyPanels::Section("Menu");
     if (KennyControls::Button("Center window")) centerRequested = true;
@@ -115,6 +148,7 @@ inline void DrawSettings(Preferences& preferences, bool& centerRequested, bool a
         KennyPanels::Note("Follow theme uses soft Aurora tones or crisp Classic feedback. Anime voices await your recordings.");
         KennyPanels::EndSection();KennyPanels::End();
     }
+    if(characters)DrawAnime(preferences,*characters,audioReady);
     Normalize(preferences);
 }
 

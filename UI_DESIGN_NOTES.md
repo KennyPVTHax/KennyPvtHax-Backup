@@ -1,6 +1,57 @@
 # KennyPvtHax — source map and reference design
 
-Stages 1–5.5 and Stage 5.6 Phase A completed, 10 October 2026 UTC. **Current identity: Crimson Eclipse; Phase B adds Aurora / Anime / Classic themes.** Aurora is the default across all seven panels; reference geometry, navigation, controls and grouped layouts remain. Earlier sections describe historical checkpoints. Phase C1 now adds the K launcher and UI audio; C2 voice packs and Stage 6 remain unimplemented. Historical notes below describe their original checkpoints.
+Stages 1–5.5 and Stage 5.6 Phase A completed, 10 October 2026 UTC. **Current identity: Crimson Eclipse; Phase B adds Aurora / Anime / Classic themes.** Aurora remains the default across all seven panels. Phase C1 adds the K launcher and UI audio. Phase C2 adds local character packs, transparent PNG rendering and optional character voices through that same audio engine. Rias media remain missing; Stage 6 remains deferred. Earlier sections describe historical checkpoints.
+
+## Phase C2 — character integration, 10 October 2026 UTC
+
+The C1 design remains intact. Anime settings extend the existing Settings table,
+with compact character/artwork/launcher and voice sections. Selectors have minimum
+36-pixel height. Missing media are stated explicitly; unavailable launcher/voice
+controls are disabled. No Rias render or voice was acquired with established
+permission, so the actual result is a selected Rias definition, dark Anime
+surface, K launcher and optional original C1 tones.
+
+`KennyCharacters.h` centralizes character metadata, bounded local manifests,
+cached artwork/voice packs, event mapping and controlled variation.
+`KennyAssetIO.h` implements strict relative-file access and RGBA PNG/PCM WAV
+decoding using existing zlib, without new dependencies. `KennyCharacterGL.h`
+provides native GLES upload/deletion and optional offline APK-to-private staging.
+No runtime network requests or per-frame file loads occur. Textures are cached;
+context loss invalidates references after clearing the launcher. Full aspect-fit
+cutouts sit inside the right content region behind controls, preserving alpha,
+silhouette and existing dimming. No background rectangle is added.
+
+The C1 OpenSL player, dispatcher, generated profiles and four effect voices remain.
+One recorded-PCM character channel, epoch cancellation, independent voice gain,
+cooldown and up-to-three variations add optional voices without overlapping
+dialogue. Only successful interactions route audio. Global mute and leaving Anime
+suppress/cancel character playback. Login/skin/error names remain integration
+hooks; no new gameplay/authentication triggers exist. Details and the event table
+are in [ANIME_CHARACTER_ASSETS.md](ANIME_CHARACTER_ASSETS.md).
+
+Private appearance schema 3 retains the existing filename and migrates schemas
+1/2 without changing old values. New character/pack/artwork/voice/launcher fields
+are normalized; invalid C2 tails preserve valid earlier preferences. Existing
+37 bindings, whole panel callback, SDK logic, native input and approved Aurora
+physics/draw formulas remain untouched.
+
+Host evidence includes strict portable builds, original regressions, byte-exact
+PNG alpha/corruption tests, safe paths/FIFO/symlink rejection, WAV validation,
+registry extension/fallback, voice controls/cooldown/routing, 500 switches,
+10,000 allocation-free cached dispatch/mix iterations, filesystem migration and
+restart, aspect-fit geometry, native selection and 640 scrolling. Eight new
+production screenshots, two real C1 captures and two composites are under
+`previews/phase_c2/`. Classic pixels match C1 exactly; Aurora differs by one
+8-bit channel level at one header pixel. Settings, small viewport, K fallback
+and comparison were inspected. These are CPU-rasterized native ImGui output,
+not Android captures. Diagnostic test pixels/tones never appear as Rias media.
+
+No media was downloaded, invented, committed or published. PNG requires actual
+8-bit RGBA transparency; WebP has no available decoder. Voices require bounded
+PCM16 WAV; compressed audio is unsupported. Restore the real SDK/NDK and install
+permitted media before verifying APK staging, compile/link, GPU alpha/context
+lifecycle, OpenSL voice playback, real touch and performance. Stop after C2;
+do not start key-entry or release work.
 
 ## Source baseline
 

@@ -1,6 +1,68 @@
 PROJECT: KennyPvtHax
 
 CURRENT STAGE:
+Phase C2 — Anime Character Integration — COMPLETE infrastructure (host-verified).
+Parent checkpoint: c5e9ef0. Actual Rias artwork/launcher/recordings remain missing.
+All earlier implementation and Git history preserved. Historical checkpoints follow.
+
+COMPLETED:
+- Added the centralized Rias Gremory / High School DxD definition, ID highschool_dxd_rias, and extensible local character/voice-pack registry.
+- Searched permitted artwork/recordings; no source established permission for the requested assets. Downloaded/integrated media: ZERO. No substitute artwork, cloned voice or diagnostic character media installed.
+- Implemented bounded offline RGBA PNG and PCM16 WAV loading, actual alpha preservation, transparent aspect-fit character layer, cached GLES texture integration/context handling and optional APK-to-private staging.
+- Integrated character-specific transparent launcher reference using the unchanged C1 drag/touch/transition engine, with K fallback outside Anime or when unavailable.
+- Extended existing Anime Settings with selection/status, launcher preference, installed voice packs, voice enable/volume and explicit missing/backend feedback. Unavailable controls are disabled; selectors retain 36-pixel minimum height.
+- Reused C1 OpenSL/player/dispatcher/four effect voices; added one exclusive recorded character channel, event mappings, bounded variations, cooldown, independent gain, global mute precedence and cancellation on theme/character/pack changes.
+- Preserved all appearance/audio settings using schema 3 at the same private path, with schemas 1/2 compatibility and safe invalid/unknown character fallback.
+- Generated/inspected actual C++/ImGui host output, baseline comparison, contact sheet, private offline viewer and ZIP. No source/media upload or publishing.
+
+MODIFIED FILES:
+- jni/KennyAssetIO.h (new): guarded local paths, bounded transparent RGBA PNG and PCM WAV decoders.
+- jni/KennyCharacters.h (new): metadata/pack registry, cache, texture ownership, voice routing/variation and character composition.
+- jni/KennyCharacterGL.h (new): Android GLES upload/delete and optional local APK staging.
+- jni/KennyAudio.h: immutable recorded PCM, exclusive character channel, mute/cancellation/gain and event router, preserving original effect voices.
+- jni/KennyAndroidAudio.h: existing callback activity also considers the character channel; no second backend.
+- jni/KennyControls.h: existing successful checkbox event carries its label for semantic routing.
+- jni/KennyThemePreferences.h: normalized character/pack/artwork/voice/launcher preferences.
+- jni/KennyAppearanceStore.h: compatible schema 3 persistence.
+- jni/KennyAppearance.h: existing Anime Settings and character-aware Style composition/status.
+- jni/KennyMenu.h: registry state, scoped voice setup and Anime-only character layer.
+- jni/main.cpp: UI-only staging/cache/texture/launcher integration; original callback/native/gameplay sections unchanged.
+- assets/anime/index.json; assets/anime/highschool_dxd_rias/manifest.json; assets/anime/highschool_dxd_rias/ASSET_SOURCES.md (new): metadata only, no media.
+- tests/kenny_c2_check.cpp; tests/kenny_c2_fixtures.py; tests/kenny_c2_capture.cpp; tests/kenny_c2_baseline.py; tests/kenny_c2_package.py (new): focused loaders/registry/voice/persistence checks and genuine host evidence.
+- tests/kenny_theme_check.cpp: current-schema wording; tests/README.md: C2 reproduction/limits.
+- .gitignore: private character media and generated C2 previews excluded.
+- ANIME_CHARACTER_ASSETS.md (new), UI_DESIGN_NOTES.md and CODEX_PROGRESS.md: current architecture, asset sources/status, verification and resume instructions.
+
+VERIFICATION:
+- PASS strict portable production-header syntax and C2 builds with C++17/-Wall/-Wextra/-Werror. Initial allocation-counter instrumentation warning was corrected with non-inlined new/delete hooks; strict rebuilt test passes.
+- PASS exact 37 original binding/range/format statements and entire original feature callback. Source before/after the UI block, approved Aurora/theme/effect headers and Android build files unchanged versus c5e9ef0.
+- PASS existing native menu regressions: all controls/ranges/keyboard input, five categories/seven panels, tab memory, dragging, close/reopen, scrolling/viewport fit, balanced stacks, 90 theme switches and 1,000 warmed allocation frames.
+- PASS existing C1 launcher/audio checks: bounded hitbox, drag/transition/input isolation, actual successful sound events, mute/volume, passive/slider silence and repeated cycles without growing allocations.
+- PASS original PCM/mixer/queue/thread suite: distinct profiles, four effect voices, 31 queued commands, mute/volume/throttling, 20,000 allocation-free dispatch/render iterations and 50,000 concurrent SPSC submissions.
+- PASS appearance/store tests: atomic 0600 saves, fresh-instance restart, schema 1/2 migration, malformed data/storage failures and no idle writes. C2 checks schema 3 round-trip and retention of valid old fields for invalid new references.
+- PASS approved Aurora exact default physics for 1,800 steps/byte-identical draw geometry; 20,000 variable-dt particle steps, 600 clipped geometry samples and 1,000 warmed allocations. Existing effect geometry/math/allocation tests also pass.
+- PASS C2: byte-exact 0/128/255 PNG alpha; corrupt/truncated/opaque rejection; traversal/absolute/symlink/FIFO rejection; bounded JSON and WAV validation/downmix/resample; registry extension/selection; cached texture callback lifecycle; actual C1 voice mix/routing/variation/cooldown/global mute/voice volume; missing-recording C1 fallback; 500 switches; 10,000 allocation-free cached dispatch/mix iterations; aspect-fit UV/bounds and safe reference normalization.
+- PASS native Rias selection with missing assets and 36-pixel selector at 640×360. Original feature snapshots unchanged in all new captures.
+- PASS 12 PNG integrity/full decodes, SHA-256 provenance, offline viewer and 15-entry ZIP. Actual C1 versus C2 Classic image is pixel-identical; Aurora differs by one channel level at one header pixel. Settings, small scrolling viewport, K fallback and comparison inspected.
+
+KNOWN LIMITATIONS:
+- Rias artwork, transparent launcher and ALL eleven authorized voice recordings are still absent. Their actual character rendering/playback cannot be visually/audio verified until permitted files are supplied. No pack is presented as fully installed.
+- Missing SDK was intentional; NDK/device unavailable. Android compile/link, optional APK staging, private activity storage/restart, GLES alpha/context/resource lifecycle, OpenSL voice playback, real touch and mobile performance remain UNVERIFIED.
+- Host PNGs are actual production ImGui geometry CPU-rendered, not Android captures. Diagnostic test pixels/tone fixtures remain solely in ignored .verification and never serve as Rias previews/recordings.
+- Supported media are noninterlaced 8-bit RGBA PNG and bounded PCM16 WAV only. WebP, palette/RGB PNG and compressed MP3/OGG/WAV require conversion; unsupported/corrupt assets fall back safely.
+- Registry initializes once; replacing media requires restart. Caches are bounded to 32 MiB decoded data; voices must outlive the existing player. Original font macro warnings and destructive/platform callback verification limitations remain.
+
+NEXT ACTION:
+STOP after C2. Review previews/phase_c2/index.html and ANIME_CHARACTER_ASSETS.md. Obtain permitted character.png, launcher.png and optional mapped voice recordings, install using the documented private/APK layout, then verify on the real Android build/runtime when separately authorized. Do not begin key-entry or release/Stage 6 automatically. Get the focused C2 hash with git log -1.
+
+REFERENCE NOTES:
+- previews/phase_c2/: anime-style.png, anime-player.png, anime-settings.png, anime-voice.png, anime-launcher-fallback.png, anime-voice-640.png, aurora-player.png, classic-player.png, c1-aurora.png, c1-classic.png, contact-sheet.png, non-regression.png.
+- Offline viewer index.html; bundle kennypvthax-c2-previews.zip; provenance verification.json. All private/local; no GitHub upload.
+- ASSET_SOURCES.md records examined URLs/permission limitations. Rias manifest filenames are expected local assets, not supplied files or proof of licensing.
+
+---
+
+CURRENT STAGE:
 Phase C — Checkpoint C1: Interactive K Launcher and UI Sound Events — COMPLETE (host-verified)
 Parent application commit: 5fa7574. C2 and Stage 6 remain deferred.
 

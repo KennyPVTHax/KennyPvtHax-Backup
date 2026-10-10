@@ -26,7 +26,7 @@ class AndroidBackend {
         if(!self.running.load(std::memory_order_acquire))return;
         auto& block=self.pcm[self.slot];self.slot=(self.slot+1)%2;
         self.mixer.Render(block.data(),block.size());
-        bool active=false;for(const auto& voice:self.mixer.voices)active|=voice.clip!=nullptr;
+        bool active=self.mixer.character!=nullptr;for(const auto& voice:self.mixer.voices)active|=voice.clip!=nullptr;
         active|=self.mixer.read.load(std::memory_order_acquire)!=self.mixer.write.load(std::memory_order_acquire);
         self.idleSamples=active ? 0:self.idleSamples+block.size();
         if(self.idleSamples>=SampleRate/8) {

@@ -1,3 +1,44 @@
+# Phase C2 host verification
+
+C2 reuses the actual C1 mixer/backend. No permitted Rias media was acquired.
+These fixtures are diagnostic transparent pixels/test tones, confined to ignored
+`.verification/`; they are never installed or rendered as Rias assets. Run the
+existing C1/menu/theme/Aurora/effects regressions below as well.
+
+```sh
+python3 tests/kenny_host_fixture.py
+python3 tests/kenny_c2_fixtures.py
+timeout 120s g++ -std=c++17 -O1 -Wall -Wextra -Werror -I jni tests/kenny_c2_check.cpp jni/imgui/imgui.cpp jni/imgui/imgui_draw.cpp jni/imgui/imgui_widgets.cpp jni/imgui/imgui_tables.cpp -lz -o .verification/c2_check
+timeout 40s .verification/c2_check
+timeout 120s g++ -std=c++17 -O1 -DIMGUI_ENABLE_TEST_ENGINE -I jni -I .verification tests/kenny_c2_capture.cpp jni/imgui/imgui.cpp jni/imgui/imgui_draw.cpp jni/imgui/imgui_widgets.cpp jni/imgui/imgui_tables.cpp -lz -o .verification/c2_capture
+timeout 60s .verification/c2_capture
+python3 tests/kenny_c2_baseline.py
+timeout 60s g++ -std=c++17 -O2 -Wall -Wextra -Werror tests/kenny_host_rasterize.cpp -o .verification/kenny_host_rasterize
+timeout 60s python3 tests/kenny_c2_package.py
+```
+
+The bounded baseline script compiles actual C1 headers from `c5e9ef0` read-only
+under `.verification/c2-baseline/`. It never checks out, resets or changes history.
+Captures use production ImGui controls, original statements/fonts and native
+input. PNGs rasterize the emitted indexed triangles and show honest missing
+assets/unavailable playback; no substitute character media enters the previews.
+
+Strict C2 checks cover byte-exact alpha, corrupt/truncated/opaque PNG rejection,
+safe paths/symlinks/FIFOs, bounded manifests/WAV downmix/resampling, registry
+extension/fallback, texture-owner callbacks, voice variation/cooldown/mute/volume,
+500 switches, 10,000 allocation-free warmed dispatch/mix iterations, schema 2→3
+persistence, invalid references and native aspect-fit UVs. Existing theme tests
+also verify schema 1 migration. Native C2 captures test missing-media selection
+and minimum 36-pixel selector height at 640×360. The broad menu suite still covers
+all 37 bindings/ranges and original interaction behavior.
+
+`previews/phase_c2/` has 12 validated PNGs (eight new screens, two C1 baselines,
+contact sheet and comparison), SHA-256 provenance, self-contained offline HTML
+and a 15-entry ZIP. Comparison records observed pixels without Android claims.
+Missing SDK/NDK/device prevent Android build, APK staging, GLES/OpenSL playback
+and real device verification. See [ANIME_CHARACTER_ASSETS.md](../ANIME_CHARACTER_ASSETS.md)
+for supported formats and installation. Stop after C2. Historical C1 notes follow.
+
 # Phase C / Checkpoint C1 host verification
 
 Continue in the existing repository. C1 adds the production K launcher and portable PCM/event mixer plus a real Android OpenSL ES adapter. SDK/NDK/device compilation and sound playback remain unverified; do not supply fake OpenSL/SDK headers. Keep assertions enabled.

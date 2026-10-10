@@ -34,3 +34,11 @@ local.properties
 *.key
 jni/Helper/Login.h
 *.bak
+
+# C2 private character media and generated evidence
+previews/phase_c2/
+assets/anime/**/*.png
+assets/anime/**/*.webp
+assets/anime/**/*.wav
+assets/anime/**/*.mp3
+assets/anime/**/*.ogg

@@ -13,6 +13,7 @@
 #include "KennyMenu.h"
 #include "KennyLauncher.h"
 #include "KennyAndroidAudio.h"
+#include "KennyCharacterGL.h"
 #include "KennyPanels.h"
 #include "Lua_Buffer.cpp"
 
@@ -1003,9 +1004,21 @@ EGLBoolean _eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
     static KennyAudio::AndroidBackend uiAudio;
     menuState.storage.Configure(g_App->activity ? g_App->activity->internalDataPath : nullptr,
                                 menuState.appearance);
+    static bool stagedCharacters=false;
+    if(!stagedCharacters){stagedCharacters=true;KennyCharacters::StageAPK(g_App->activity ? g_App->activity->assetManager : nullptr,
+        g_App->activity ? g_App->activity->internalDataPath : nullptr);}
+    menuState.characters.Configure(g_App->activity ? g_App->activity->internalDataPath : nullptr);
+    static EGLContext characterContext=EGL_NO_CONTEXT;
+    if(characterContext!=eglGetCurrentContext()){launcher.logo.Clear();menuState.characters.ClearTextures(true);characterContext=eglGetCurrentContext();}
+    menuState.characters.upload=KennyCharacters::UploadGL;menuState.characters.release=KennyCharacters::ReleaseGL;
     uiAudio.Initialize();
     menuState.audio=uiAudio.Ready() ? &uiAudio.dispatcher : nullptr;
     menuState.audioStatus=uiAudio.Status();
+    menuState.characters.Prepare(menuState.appearance,menuState.audio);
+    auto& selectedCharacter=menuState.characters.Selected(menuState.appearance);
+    if(menuState.appearance.theme==KennyAppearance::Theme::Anime && menuState.appearance.characterLauncher && selectedCharacter.launcherTexture.Valid())
+        launcher.logo.Set(selectedCharacter.launcherTexture);
+    else launcher.logo.Clear();
     KennyLauncher::Draw(launcher,menuState.appearance,menuState.audio,
                         ImVec2(static_cast<float>(glWidth),static_cast<float>(glHeight)));
     launcher.Advance(io.DeltaTime,menuState.appearance.reducedMotion);

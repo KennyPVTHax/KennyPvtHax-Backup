@@ -56,7 +56,7 @@ inline bool Checkbox(const char* label, bool* value) {
         ImGui::PushStyleColor(color, ImVec4(0, 0, 0, 0));
     ImGui::PushStyleColor(ImGuiCol_Text, *value ? Claude::Dark::textPrimary : Claude::Dark::textSecondary);
     const bool changed = ImGui::Checkbox(label, value);
-    if(changed)KennyAudio::Emit(*value ? KennyAudio::Event::CheckboxOn : KennyAudio::Event::CheckboxOff);
+    if(changed)KennyAudio::Emit(*value ? KennyAudio::Event::CheckboxOn : KennyAudio::Event::CheckboxOff,label);
     ImGui::PopStyleColor(7);
     ImGui::PopStyleVar();
     if (ImGui::IsItemVisible()) {

@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "id": "highschool_dxd_rias",
+  "name": "Rias Gremory",
+  "series": "High School DxD",
+  "artwork": "character.png",
+  "launcher": "launcher.png",
+  "voice_packs": [
+    {
+      "id": "default",
+      "name": "Rias / user recordings",
+      "events": {
+        "launcher_open": [
+          "voice/launcher_open.wav"
+        ],
+        "launcher_close": [
+          "voice/launcher_close.wav"
+        ],
+        "menu_navigation": [
+          "voice/menu_navigation.wav"
+        ],
+        "login_success": [
+          "voice/login_success.wav"
+        ],
+        "login_failure": [
+          "voice/login_failure.wav"
+        ],
+        "feature_enabled": [
+          "voice/feature_enabled.wav"
+        ],
+        "feature_disabled": [
+          "voice/feature_disabled.wav"
+        ],
+        "skins_enabled": [
+          "voice/skins_enabled.wav"
+        ],
+        "bullet_track_enabled": [
+          "voice/bullet_track_enabled.wav"
+        ],
+        "confirmation": [
+          "voice/confirmation.wav"
+        ],
+        "error": [
+          "voice/error.wav"
+        ]
+      }
+    }
+  ],
+  "asset_status": "missing; no permitted media acquired",
+  "sources": [],
+  "usage": "Install only assets whose rights permit your intended use; no runtime downloads."
+}

@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
+#include <vector>
 #include "KennyThemePreferences.h"
 
 // Shared event vocabulary, including future key integration. No key validation,
@@ -49,7 +50,8 @@ struct Bank {
     }
     const Clip& Get(Profile p,Event e) const {return clips[static_cast<unsigned>(p)][static_cast<unsigned>(e)];}
 };
-struct Command { Event event=Event::MenuOpen;Profile profile=Profile::Aurora;unsigned epoch=0; };
+struct Recording {std::vector<int16_t> samples;};
+struct Command { Event event=Event::MenuOpen;Profile profile=Profile::Aurora;unsigned epoch=0;const Recording* recording=nullptr;unsigned voiceEpoch=0; };
 // One producer (render thread), one consumer (audio callback). The callback
 // never allocates, locks, performs I/O or initializes a sound resource.
 struct Mixer {
@@ -58,6 +60,19 @@ struct Mixer {
     std::atomic<unsigned> read{0},write{0},epoch{0},volume{3500};
     struct Voice { const Clip* clip=nullptr;unsigned position=0; };
     std::array<Voice,VoiceCount> voices{};
+    std::atomic<unsigned> voiceEpoch{0},voiceVolume{7000};
+    const Recording* character=nullptr;unsigned characterPosition=0,characterEpoch=0;
+    void VoiceVolume(bool enabled,float percent){
+        const unsigned next=enabled&&std::isfinite(percent)?unsigned(std::clamp(percent,0.0f,100.0f)*100):0;
+        const unsigned old=voiceVolume.exchange(next,std::memory_order_relaxed);
+        if(old&&!next)voiceEpoch.fetch_add(1,std::memory_order_release);
+    }
+    bool SubmitRecording(const Recording* clip){
+        if(!clip||clip->samples.empty()||clip->samples.size()>SampleRate*4||!volume.load()||!voiceVolume.load())return false;
+        unsigned w=write.load(std::memory_order_relaxed),next=(w+1)%QueueSize;
+        if(next==read.load(std::memory_order_acquire))return false;
+        queue[w]={Event::MenuOpen,Profile::Aurora,epoch.load(),clip,voiceEpoch.load()};write.store(next,std::memory_order_release);return true;
+    }
     float gain=0;
     unsigned consumerEpoch=0;
     void SetVolume(bool enabled,float percent) {
@@ -74,12 +89,18 @@ struct Mixer {
     }
     void Render(int16_t* output,unsigned count) {
         const unsigned currentEpoch=epoch.load(std::memory_order_acquire);
-        if(currentEpoch!=consumerEpoch) {for(auto& v:voices)v={};consumerEpoch=currentEpoch;gain=0;}
+        if(currentEpoch!=consumerEpoch) {for(auto& v:voices)v={};character=nullptr;consumerEpoch=currentEpoch;gain=0;}
+        const unsigned currentVoiceEpoch=voiceEpoch.load(std::memory_order_acquire);
+        if(currentVoiceEpoch!=characterEpoch){character=nullptr;characterEpoch=currentVoiceEpoch;}
         unsigned r=read.load(std::memory_order_relaxed);
         const unsigned w=write.load(std::memory_order_acquire);
         for(unsigned n=0;n<QueueSize && r!=w;++n) {
             const auto command=queue[r];r=(r+1)%QueueSize;
             if(command.epoch!=currentEpoch || !volume.load(std::memory_order_relaxed))continue;
+            if(command.recording){
+                if(command.voiceEpoch==currentVoiceEpoch && voiceVolume.load() && !character){character=command.recording;characterPosition=0;}
+                continue;
+            }
             for(auto& voice:voices)if(!voice.clip) {voice={&bank->Get(command.profile,command.event),0};break;}
         }
         read.store(r,std::memory_order_release);
@@ -90,12 +111,16 @@ struct Mixer {
                 value+=v.clip->samples[v.position++]*gain;
                 if(v.position>=v.clip->length)v={};
             }
+            if(character){value+=character->samples[characterPosition++]*gain*(voiceVolume.load(std::memory_order_relaxed)*.0001f);
+                if(characterPosition>=character->samples.size())character=nullptr;}
             output[i]=static_cast<int16_t>(std::clamp(value,-32767.0f,32767.0f));
         }
     }
 };
 struct Dispatcher {
     Mixer* mixer=nullptr;
+    using VoiceRouter=bool (*)(void*,Event,const KennyAppearance::Preferences&,double,const char*);
+    VoiceRouter voiceRouter=nullptr;void* voiceUser=nullptr;
     std::array<double,EventCount> last{};
     double lastAny=-100;
     unsigned accepted=0,throttled=0;
@@ -106,14 +131,16 @@ struct Dispatcher {
         if(p.soundProfile==1)return Profile::Aurora;
         return p.theme==KennyAppearance::Theme::Classic ? Profile::Classic : Profile::Aurora;
     }
-    void Refresh(const KennyAppearance::Preferences& p) {if(mixer)mixer->SetVolume(p.uiSounds,p.uiVolume);}
-    bool Emit(Event e,const KennyAppearance::Preferences& p,double now) {
+    void Refresh(const KennyAppearance::Preferences& p) {if(mixer){mixer->SetVolume(p.uiSounds,p.uiVolume);
+        mixer->VoiceVolume(p.theme==KennyAppearance::Theme::Anime&&p.characterVoice,p.characterVolume);}}
+    bool Emit(Event e,const KennyAppearance::Preferences& p,double now,const char* label=nullptr) {
         Refresh(p);const unsigned i=static_cast<unsigned>(e);
         if(!mixer || !p.uiSounds || p.uiVolume<=0 || i>=EventCount || !std::isfinite(now))return false;
         const bool lifecycle=e==Event::MenuOpen || e==Event::MenuClose;
         if(now<lastAny){last.fill(-100);lastAny=-100;}
         if(now-last[i]<.055 || (!lifecycle && now-lastAny<.022)) {++throttled;return false;}
-        if(!mixer->Submit(e,Resolve(p)))return false;
+        const bool voice=voiceRouter&&voiceRouter(voiceUser,e,p,now,label);
+        if(!voice && !mixer->Submit(e,Resolve(p)))return false;
         last[i]=lastAny=now;lastEvent=e;++accepted;return true;
     }
 };
@@ -127,5 +154,5 @@ struct Scope {
     ~Scope(){current=previous;}
     Scope(const Scope&)=delete;Scope& operator=(const Scope&)=delete;
 };
-inline void Emit(Event event) {if(current.dispatcher && current.preferences)current.dispatcher->Emit(event,*current.preferences,current.time);}
+inline void Emit(Event event,const char* label=nullptr) {if(current.dispatcher && current.preferences)current.dispatcher->Emit(event,*current.preferences,current.time,label);}
 } // namespace KennyAudio

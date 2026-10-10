@@ -63,7 +63,7 @@ int main() {
     assert(failed.uiVolume==35 && failed.soundProfile==2);
     unlink(store.path.c_str());rmdir(directory);
     std::puts("PASS appearance: atomic private 0600 writes, restart round-trip of every preference/theme, default reset, no idle rewrites, deferred active edits, corrupt/version/nonfinite/trailing-data fallback, clamps and unavailable/write-failure handling.");
-    std::puts("PASS C1 audio preferences: all three fields round-trip, real v1 migration preserves every legacy preference, schema 2 persists at the existing private path; invalid audio fields/trailing data safely rejected.");
+    std::puts("PASS C1 audio preferences: all three fields round-trip, real v1 migration preserves every legacy preference, legacy audio fields persist in the current schema at the existing private path; invalid audio fields/trailing data safely rejected.");
 
     KennyAurora::State active;KennyAuroraApproved::State approved;
     for(int frame=0;frame<1800;++frame) {

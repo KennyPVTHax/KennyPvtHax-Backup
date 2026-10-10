@@ -30,6 +30,7 @@ struct State {
     KennyAppearance::Preferences appearance;
     KennyAppearance::Store storage;
     KennyThemeBackground::Artwork artwork;
+    KennyCharacters::Registry characters;
     KennyAudio::Dispatcher* audio=nullptr;
     const char* audioStatus="UI audio unavailable in this host preview.";
     bool centerRequested = false;
@@ -88,6 +89,7 @@ template <typename RenderPanel>
 inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPanel renderPanel, float presentationAlpha=1.0f, bool acceptInput=true) {
     if (viewport.x <= 0.0f || viewport.y <= 0.0f) return;
     state.Initialize(tab);
+    state.characters.Prepare(state.appearance,state.audio);
     KennyAudio::Scope audio(state.audio,state.appearance,ImGui::GetTime());
     KennyAppearance::Normalize(state.appearance);
     KennyMotion::ScopedReduction motion(state.appearance.reducedMotion);
@@ -221,10 +223,10 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
                                 ImVec2(8.0f * l.scale, (state.appearance.compactRows ? 6.0f : 10.0f) * l.scale));
             ImGui::PushItemWidth(std::min(420.0f * l.scale, ImGui::GetContentRegionAvail().x * 0.58f));
             if (state.category == Category::Style) {
-                KennyAppearance::DrawStyle(state.appearance,state.artwork.current.Valid(),state.storage.status);
+                KennyAppearance::DrawStyle(state.appearance,state.artwork.current.Valid(),state.storage.status,state.characters.Selected(state.appearance).artworkTexture.Valid());
             } else if (state.category == Category::Settings) {
                 KennyAppearance::DrawSettings(state.appearance, state.centerRequested,
-                                              state.audio && state.audio->mixer,state.audioStatus);
+                                              state.audio && state.audio->mixer,state.audioStatus,&state.characters);
             } else {
                 renderPanel();
             }
@@ -259,9 +261,11 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
             state.aurora.gesture = false;
             KennyThemeBackground::Surface(draw,origin,l.size,Claude::RadiusWindow*l.scale,l.header,contentY);
             if(state.appearance.theme == KennyAppearance::Theme::Anime) {
+                state.characters.Prepare(state.appearance,state.audio);
                 state.artwork.Advance(ImGui::GetFrameCount(),ImGui::GetIO().DeltaTime,state.appearance.reducedMotion);
-                KennyThemeBackground::DrawArtwork(draw,origin,l.size,Claude::RadiusWindow*l.scale,
-                                                   state.artwork.current,state.appearance);
+                auto& character=state.characters.Selected(state.appearance);
+                if(character.artworkTexture.Valid())KennyCharacters::DrawCharacter(draw,origin,l.size,Claude::RadiusWindow*l.scale,contentY,character.artworkTexture,state.appearance);
+                else KennyThemeBackground::DrawArtwork(draw,origin,l.size,Claude::RadiusWindow*l.scale,state.artwork.current,state.appearance);
             }
         }
         draw->ChannelsMerge();
