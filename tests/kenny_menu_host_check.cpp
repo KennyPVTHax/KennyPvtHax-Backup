@@ -16,6 +16,10 @@ static float windowAlpha = 0;
 
 void ImGuiTestEngineHook_ItemAdd(ImGuiContext* ctx, const ImRect& bb, ImGuiID id) {
     auto* window=ctx->CurrentWindow;
+    if(window->Flags & ImGuiWindowFlags_Popup) {
+        nativeItems[id]={id,bb.Min,bb.Max};
+        return;
+    }
     if(!window->ParentWindow || std::string(window->ParentWindow->Name)!="KennyPvtHax")return;
     nativeItems[id]={id,bb.Min,bb.Max};
     panelWindow=window;

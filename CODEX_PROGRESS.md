@@ -1,6 +1,74 @@
 PROJECT: KennyPvtHax
 
 CURRENT STAGE:
+Phase C — Checkpoint C1: Interactive K Launcher and UI Sound Events — COMPLETE (host-verified)
+Parent application commit: 5fa7574. C2 and Stage 6 remain deferred.
+
+COMPLETED:
+- Retained the approved Aurora engine, three themes, layout and all original feature behavior.
+- Replaced the old floating Menu/Close toggle with the existing K emblem launcher: bounded native tap, drag/reposition, viewport clamp, theme treatment, preserved section/window position and lightweight open/close fade. Reduced motion snaps immediately.
+- Added a reusable transparent texture/logo rendering reference with aspect-fit, missing/invalid fallback and explicit external texture cleanup contract; no final logo invented.
+- Added interaction-only theme-aware dispatcher, actual original synthesized Classic/Aurora PCM, bounded four-voice mixer and Android OpenSL ES adapter. No music, voices, per-tap loads or per-frame initialization.
+- Added functional mute/volume/profile Settings controls, unavailable-backend feedback and private audio preference persistence. Existing schema 1 migrates without losing any appearance preferences; schema 2 retains the same file path.
+- Added future key sound names/interfaces only; all remain unused. C2 voice packs, sound-file loading, key/authentication and Stage 6 are not implemented.
+- Closed/fading controls cannot receive input; sliders, passive frames and star interaction remain silent. No original native input hook/gameplay/SDK change.
+- Generated and inspected actual native host previews, genuine portable-mixer WAV demos, offline viewer, provenance and ZIP. Preserved earlier evidence.
+
+MODIFIED FILES:
+- jni/KennyAudio.h (new): event vocabulary, deterministic PCM bank, fixed mixer, scoped/throttled dispatcher.
+- jni/KennyAndroidAudio.h (new): real OpenSL ES backend, bounded buffers, idle stop/wake, shutdown/failure handling; explicit unavailable host branch.
+- jni/KennyLauncher.h (new): native K launcher, drag/tap state, transitions and external logo texture contract.
+- jni/KennyIdentity.h: share the existing emblem without changing its header drawing.
+- jni/KennyControls.h: successful checkbox/button/choice event hooks; original sliders untouched.
+- jni/KennyAppearance.h: actual theme-change event and audio Settings controls/status/selector.
+- jni/KennyThemePreferences.h: UI sounds, volume and profile preferences.
+- jni/KennyAppearanceStore.h: schema 2 audio fields and compatible schema 1 reader.
+- jni/KennyMenu.h: scoped audio, navigation events, transition alpha, explicit closing root/child input isolation, audio Settings status.
+- jni/main.cpp: replace UI-only toggle integration with launcher/audio setup/pump; entire original callback and all code outside UI integration preserved.
+- jni/Android.mk: link platform OpenSLES only.
+- tests/kenny_audio_check.cpp (new): actual portable PCM/event/queue/thread/allocation tests and WAV output.
+- tests/kenny_c1_check.cpp (new): real native launcher/menu/audio-control interactions and captures.
+- tests/kenny_c1_package.py (new): native raster previews, original PCM demos, integrity/provenance/viewer/ZIP.
+- tests/kenny_host_fixture.py: current callback extraction endpoint; all 37 statements/body still exact.
+- tests/kenny_menu_host_check.cpp: record real popup item geometry for native selector testing.
+- tests/kenny_theme_check.cpp: audio round-trip, legacy migration and malformed schema 2 checks.
+- tests/README.md: C1 reproduction and verification boundaries.
+- .gitignore: generated previews/phase_c1/ excluded.
+- UI_DESIGN_NOTES.md and CODEX_PROGRESS.md: C1 architecture, evidence, limitations and resume checkpoint.
+
+VERIFICATION:
+- PASS exact 37 original bindings/ranges/formats and complete feature-panel/callback body; original input/gameplay/native sections unchanged versus 5fa7574.
+- PASS strict C++17 portable production-header syntax and strict audio/theme/aurora/effects builds. Android-only OpenSL branch not compiled.
+- PASS original native seven-panel regression: controls, float/int ranges, keyboard/numeric entry, five categories/subtab memory, header dragging, close/reopen, five viewports, scrolling, no horizontal clipping, balanced stacks, themes/appearance actions, 1,000 warmed route frames and 90 theme switches.
+- PASS actual PCM recipes/mixer: bounded deterministic profiles, distinct toggles, four voices/31 commands, saturation, mute/volume/epoch behavior, scope/throttle/time checks, unavailable backend, 20,000 allocation-free iterations, 50,000 concurrent SPSC submissions.
+- PASS actual native C1 interactions: bounded/outside launcher, drag without open, viewport fit, fades/Reduced targets, routing/window preservation, closing controls disabled, actual checkbox/button/nav/theme/selector events, mute/volume, passive/slider/background silence and balanced stacks. 120 repeated cycles; inactive ImGui buffers retire 105→98 allocations, then counts remain 98; no growth. Original feature snapshot unchanged after restoring deliberate test edits.
+- PASS actual filesystem persistence: all audio fields, real schema 1 migration preserving ten existing fields, schema 2 fresh-instance restart, corrupt/nonfinite/trailing rejection, atomic 0600 writes, inactive/deferred behavior and safe storage failures.
+- PASS exact approved default Aurora physics for 1,800 steps and byte-identical draw geometry; existing 20,000 physics-step/600 geometry/1,000 allocation aurora tests and 1,000 effect geometry/allocation tests pass.
+- PASS 10 PNG full decodes, two 48kHz/16-bit mono WAV full FFmpeg decodes, source/hash provenance, self-contained viewer and 15-entry ZIP. Inspected actual launcher detail and full/small Settings previews.
+- PASS focused diff and explicit source whitelist; no original untracked dependencies, secrets, binaries or generated assets committed.
+
+KNOWN LIMITATIONS:
+- Missing SDK was intentional; NDK/device unavailable. Full Android compilation/link, real OpenSL sound playback/callback shutdown/latency, activity-private storage/restart, overlay/touch/GPU/texture lifetime and mobile performance remain unverified.
+- The actual portable PCM tests/demos are host output, not mocked Android playback. Host UI correctly disables audio controls; separately labeled PCM-test Settings capture uses the real portable mixer. No device sound/FPS claim.
+- Custom transparent logo upload/delete remains external-owner responsibility; no supplied final logo/decoder. Clear the reference before deleting texture/context.
+- Anime voice recordings, pack loader, clip mappings/variation and format decoding await C2 approval/assets. Safe behavior now is optional UI tones with no voice controls or file loading.
+- Original embedded-font macro warnings remain untouched. The destructive Guest Reset platform callback stays connected but is not invoked by host tests.
+
+NEXT ACTION:
+STOP after C1. Review previews/phase_c1/index.html, launcher-detail.png and the two PCM demos. Await explicit user approval before C2 — Anime voice-pack infrastructure. Do not begin C2 or Stage 6 automatically. Retrieve the focused checkpoint hash with git log -1.
+
+REFERENCE NOTES:
+- Actual C++/ImGui UI headers, extracted original controls and embedded fonts generate screenshots through the native draw-data CPU rasterizer; no separate mockup/AI screenshot.
+- previews/phase_c1/: launcher-aurora.png, launcher-anime.png, launcher-classic.png, launcher-detail.png, opening.png, player.png, closing.png, settings.png, settings-640.png, audio-test-settings.png.
+- aurora-sounds.wav and classic-sounds.wav each contain menu open/close, checkbox on/off, button, primary/secondary navigation, theme-change at 35% UI gain. Browser WAV playback does not verify Android.
+- Offline viewer: index.html. Bundle: kennypvthax-c1-previews.zip. Hash/source evidence: verification.json. Previous preview directories/checkpoints retained.
+
+PREVIOUS PHASE B CHECKPOINT — RETAINED HISTORY:
+The following describes the preceding checkpoint and its original stop point.
+
+PROJECT: KennyPvtHax
+
+CURRENT STAGE:
 Stage 5.6 — Phase B: Custom Theme System — COMPLETE (host-verified)
 
 COMPLETED:

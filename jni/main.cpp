@@ -11,6 +11,8 @@
 #include <string>
 #include "ClaudeTheme.h"
 #include "KennyMenu.h"
+#include "KennyLauncher.h"
+#include "KennyAndroidAudio.h"
 #include "KennyPanels.h"
 #include "Lua_Buffer.cpp"
 
@@ -995,44 +997,20 @@ EGLBoolean _eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
     ImGui_ImplAndroid_NewFrame(glWidth, glHeight);
     ImGui::NewFrame();
 
-    // ----------------------------------------------------------------
-    // Persistent state
-    // ----------------------------------------------------------------
-    static bool ShowMenu = false;
-    static bool opened   = false;
-
-    if (!opened) {
-        opened   = true;
-        ShowMenu = false;
-    }
-
-    // ----------------------------------------------------------------
-    // Floating toggle window (this is the single accent control)
-    // ----------------------------------------------------------------
-    {
-        static const ImGuiWindowFlags toggleFlags =
-            ImGuiWindowFlags_NoResize        | ImGuiWindowFlags_NoSavedSettings |
-            ImGuiWindowFlags_NoCollapse      | ImGuiWindowFlags_NoScrollbar     |
-            ImGuiWindowFlags_AlwaysAutoResize| ImGuiWindowFlags_NoTitleBar;
-
-        ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_FirstUseEver);
-        ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_FirstUseEver);
-
-        if (ImGui::Begin("##toggle", nullptr, toggleFlags)) {
-            ImGui::SetCursorPos(ImVec2(12, 10));
-            if (Claude::PrimaryButton(ShowMenu ? "Close" : "Menu", ImVec2(84, 36)))
-                ShowMenu = !ShowMenu;
-        }
-        ImGui::End();
-    }
-
-    // ----------------------------------------------------------------
-    // Main window
-    // ----------------------------------------------------------------
+    // Persistent UI state and one-time, UI-owned audio resources.
     static KennyMenu::State menuState;
+    static KennyLauncher::State launcher;
+    static KennyAudio::AndroidBackend uiAudio;
     menuState.storage.Configure(g_App->activity ? g_App->activity->internalDataPath : nullptr,
                                 menuState.appearance);
-    if (ShowMenu) {
+    uiAudio.Initialize();
+    menuState.audio=uiAudio.Ready() ? &uiAudio.dispatcher : nullptr;
+    menuState.audioStatus=uiAudio.Status();
+    KennyLauncher::Draw(launcher,menuState.appearance,menuState.audio,
+                        ImVec2(static_cast<float>(glWidth),static_cast<float>(glHeight)));
+    launcher.Advance(io.DeltaTime,menuState.appearance.reducedMotion);
+    if (launcher.DrawMenu()) {
+        bool opened=true;
         KennyMenu::Draw(menuState, opened, Settings::Tab,
                         ImVec2(static_cast<float>(glWidth), static_cast<float>(glHeight)), [] {
             if (Settings::Tab == 1) {
@@ -1132,12 +1110,14 @@ EGLBoolean _eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
                     KennyPanels::End();
                 }
             }
-        });
+        },launcher.alpha,launcher.target);
+        if(!opened)launcher.Request(false,menuState.appearance,menuState.audio,ImGui::GetTime());
     }
 
-    // The floating toggle can hide a pending adjustment before Draw runs.
+    // Completed audio/appearance changes also flush after menu closure.
     // Flush only completed appearance edits; hidden themes do no rendering.
-    menuState.storage.Sync(menuState.appearance,!ShowMenu || !ImGui::IsAnyItemActive());
+    menuState.storage.Sync(menuState.appearance,!launcher.target || !ImGui::IsAnyItemActive());
+    uiAudio.Pump(menuState.appearance);
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

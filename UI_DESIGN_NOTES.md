@@ -1,6 +1,6 @@
 # KennyPvtHax — source map and reference design
 
-Stages 1–5.5 and Stage 5.6 Phase A completed, 10 October 2026 UTC. **Current identity: Crimson Eclipse; Phase B adds Aurora / Anime / Classic themes.** Aurora is the default across all seven panels; reference geometry, navigation, controls and grouped layouts remain. Earlier sections describe historical checkpoints. Phase C and Stage 6 remain unimplemented. Historical notes below describe their original checkpoints.
+Stages 1–5.5 and Stage 5.6 Phase A completed, 10 October 2026 UTC. **Current identity: Crimson Eclipse; Phase B adds Aurora / Anime / Classic themes.** Aurora is the default across all seven panels; reference geometry, navigation, controls and grouped layouts remain. Earlier sections describe historical checkpoints. Phase C1 now adds the K launcher and UI audio; C2 voice packs and Stage 6 remain unimplemented. Historical notes below describe their original checkpoints.
 
 ## Source baseline
 
@@ -390,3 +390,54 @@ The real draw path submits textured rounded mesh vertices to existing ImGui/GLES
 - SDK/NDK/device remain unavailable: full Android native build, app-private storage in the real process, touch mapping, asset GL lifecycle, GPU blend fidelity, FPS/power/thermal and save latency are unverified. Existing embedded-font macro warnings are unchanged. Effects remain bounded at 40 stars / three original curtains; full mobile performance must be profiled before release.
 
 **Stop after Phase B. Next action: user reviews the three themes, supplies actual artwork when ready, and explicitly directs Phase C or later validation.**
+
+## Phase C — Checkpoint C1 (10 October 2026)
+
+C1 extends approved Phase B (`5fa7574`). It preserves the Aurora engine, all three themes, reference layout and the complete original feature callback. No C2 voice pack, recording, artwork, final logo, key input or authentication is implemented.
+
+### Launcher and presentation lifecycle
+
+`KennyLauncher.h` owns a small native ImGui window and its InvisibleButton. The existing K monogram is shared through `KennyIdentity::Emblem`; its header geometry is unchanged. The launcher is 48–80 pixels depending on viewport scale, initially at (20,20), clamped to the viewport. Classic has restrained graphite edging; Aurora/Anime have a muted burgundy treatment. It renders no aurora, starfield, texture allocation or background audio while closed.
+
+Native release activates a tap. Movement beyond ImGui's drag threshold repositions the launcher, suppresses opening on release and retains its position in the current session. Native activation/focus and the exact visible square bound the hit area. Window dragging, original input hooks and viewport/overlay routing remain unchanged.
+
+`State::Request` reports real open/close transitions and preserves menu routing/position. A bounded exponential alpha transition uses existing frame timing (~220 ms), with immediate Reduced-motion targets. Functional input is available immediately on opening. During closure the root AND content child have NoInputs, and native disabled scopes prevent activation. The hidden menu submits no panels/effects; only the launcher is drawn. Close produces its own single lifecycle event, rather than generic button feedback.
+
+Future logo integration: on the render thread call `launcher.logo.Set({texture,width,height})` with an externally owned, uploaded transparent RGBA texture. Draw uses fit/contain with the original aspect ratio and full UVs. Invalid/missing geometry safely uses the existing K. Call `launcher.logo.Clear()` BEFORE releasing/replacing the texture or losing its GL context; the asset owner manages upload/deletion. No texture/file loader, final logo or owned GL resource is fabricated in C1.
+
+### Audio events and profiles
+
+`KennyAudio.h` provides these shared names:
+
+- Used now: `menu_open`, `menu_close`, `checkbox_on`, `checkbox_off`, `button_click`, `primary_navigation`, `secondary_navigation`, `theme_changed`.
+- Reserved and unused until real key integration: `key_focused`, `key_pasted`, `key_submitted`, `key_accepted`, `key_rejected`.
+
+A scoped dispatcher surrounds real native menu widgets. Changed checkbox values, successful action buttons, changed choices/theme cards and actual navigation changes emit events; drawing, hovering, slider updates, physics and redundant selection do not. Menu lifecycle calls are outside that scope. No original callback is replaced or delayed; Guest Reset still uses its original platform callback and is never invoked in host tests.
+
+Classic uses short crisp digital/mechanical PCM envelopes; Aurora uses softer, lower tones and gentle signature glides. Both are original lightweight synthesis, prepared once, without downloaded/copyrighted sounds or invented voices. Follow theme selects Classic for Classic and the optional soft UI effects for Aurora/Anime; explicit soft/crisp overrides are functional. Anime has no voice playback yet.
+
+Settings adds UI sounds, master volume (0–100%, default 35%), and Follow theme / Aurora soft / Classic crisp profile. Native controls are disabled with an honest status if backend initialization is unavailable. The selector has a minimum 36-pixel hit height. Reset appearance includes default audio preferences. Existing shared appearance controls stay in Style.
+
+### Backend, resource budgets and persistence
+
+No pre-existing UI audio backend was present. `KennyAndroidAudio.h` uses Android OpenSL ES (API 21 compatible), linked through the platform `-lOpenSLES`; no external dependency/permission is added. It owns one engine/output mix/PCM player, a two-block 256-sample buffer queue at 48 kHz mono 16-bit little-endian, and the portable mixer. It does not change media volume, request audio focus or modify the background game's audio objects.
+
+The bank is fixed at 2 profiles × 13 events × 9,600 int16 samples (~500 KB); actual clips last 28–150 ms. The mixer has four fixed voices and a 32-slot SPSC ring (31 pending commands). Saturation drops excess feedback safely. Rendering/submission performs no allocation, file I/O, synthesis or locks. Master gain is clamped/finite and smoothly applied; muting increments an epoch so pending/active sounds cannot return after unmute. Same-event throttling is 55 ms; ordinary event spacing is at least 22 ms, while distinct menu lifecycle events stay responsive. Backward/nonfinite event time is handled.
+
+Initialization is attempted once, safely reports OpenSL failure, and does not repeat expensive work each frame or tap. The player stops after ~125 ms of silence; Pump reuses existing buffers/objects for queued input. Shutdown stops and destroys the player before mix/engine and bank lifetime ends. These platform calls and their callback lifecycle still require Android build/device validation; host tests do NOT prove OpenSL playback or latency.
+
+The existing app-private file remains `<ANativeActivity.internalDataPath>/kennypvthax-appearance-v1.conf`. Schema 2 appends `uiSounds`, `uiVolume`, `soundProfile` while reading the real schema 1 unchanged and defaulting only new fields. Original ten appearance preferences and feature settings are retained. Bounded parsing, normalization, unique atomic 0600 saves, deferred drag writes, no idle rewrites and visible failure/session fallback continue. No configuration secret or feature persistence is added.
+
+C1 has no runtime audio-asset directory or file decoder: the supported playable format is generated PCM. Host review WAVs contain the actual mixer's 48 kHz / 16-bit / mono samples. Event-to-file mappings, installed pack directories, file-format decoding, random variations and voice controls remain C2; no nonfunctional pack selector is exposed.
+
+### Verification and evidence
+
+- Exact 37 binding/range/format sites and full original callback preserved; input/gameplay/native code outside the UI block byte-identical to Phase B. Approved Aurora/default physics and draw geometry remain exact versus 58cbf6c.
+- Existing real seven-panel suite passes navigation, all original controls, numeric/keyboard/drag behavior, themes, small-viewports, scrolling, header dragging, actions, allocation/capacity checks. Strict portable production headers and focused audio/store/aurora/effects builds pass.
+- `kenny_audio_check.cpp` exercises actual deterministic PCM bank/mixer, four voices/31 commands, malformed input, volume/mute epochs, profile resolution, throttling, scoped events, absent host backend, 20,000 allocation-free dispatch/render iterations and 50,000 concurrent producer submissions.
+- `kenny_c1_check.cpp` uses actual production launcher/menu/native input and the real portable mixer: outside/drag/tap, five viewports, route/position retention, fade/Reduced, closing input isolation, actual widget/navigation/theme events, native selector/volume/mute, slider/background/passive silence, invalid/Clear logo references and 120 repeated cycles. ImGui retires stale popup/table buffers (105 → 98 active allocations), then remains at 98; no growing allocations. Original feature snapshot is restored unchanged.
+- Store tests exercise all audio fields, real v1 migration, schema 2 restart, corrupt/nonfinite/profile/boolean/trailing rejection and all retained filesystem behaviors.
+- `previews/phase_c1/` contains 10 valid PNGs (native 1920×872 captures, 640×360 settings, enlarged native launcher crops), two genuine mixer WAVs, self-contained offline image/audio viewer, source/hash provenance and a 15-entry ZIP. The explicitly labeled PCM-test settings screenshot exercises the actual portable mixer, not an Android player; ordinary host screenshots correctly show the unavailable backend. No fake renderer, artwork, voices or Android capture.
+- Android native compilation/linking, OpenSL device output/latency/cleanup, overlay touch, real private-path restart, GL texture lifecycle and Android FPS remain unverified because SDK/NDK/device are unavailable. Original embedded-font macro warnings are pre-existing and unchanged.
+
+STOP at C1. After explicit C1 approval, implement C2 voice-pack infrastructure; do not start it or Stage 6 automatically.

@@ -30,19 +30,24 @@ struct Store {
             char text[512]{};
             const ssize_t length=read(fd,text,sizeof(text)-1);
             close(fd);
-            int theme=0,compact=0,reduced=0,stars=0,touch=0,cover=0,consumed=0;
+            int theme=0,compact=0,reduced=0,stars=0,touch=0,cover=0,consumed=0,version=0,sounds=1,profile=0;
             Preferences loaded;
             const int fields=length>0 && length<ssize_t(sizeof(text)-1) ? std::sscanf(text,
-                "KennyPvtHaxAppearance 1\n%d %f %d %d %f %f %d %d %f %d %n",
-                &theme,&loaded.opacity,&compact,&reduced,&loaded.auroraIntensity,
+                "KennyPvtHaxAppearance %d\n%d %f %d %d %f %f %d %d %f %d %n",
+                &version,&theme,&loaded.opacity,&compact,&reduced,&loaded.auroraIntensity,
                 &loaded.particleActivity,&stars,&touch,&loaded.artworkDim,&cover,&consumed) : 0;
-            if(fields==10 && consumed==length && theme>=0 && theme<=2 &&
+            int audioConsumed=0;
+            const bool audioValid=version==1 ? consumed==length : version==2 &&
+                std::sscanf(text+consumed,"%d %f %d %n",&sounds,&loaded.uiVolume,&profile,&audioConsumed)==3 &&
+                consumed+audioConsumed==length && sounds>=0 && sounds<=1 && profile>=0 && profile<=2 && std::isfinite(loaded.uiVolume);
+            if(fields==11 && audioValid && theme>=0 && theme<=2 &&
                 compact>=0 && compact<=1 && reduced>=0 && reduced<=1 && stars>=0 && stars<=1 &&
                 touch>=0 && touch<=1 && cover>=0 && cover<=1 &&
                 std::isfinite(loaded.opacity) && std::isfinite(loaded.auroraIntensity) &&
                 std::isfinite(loaded.particleActivity) && std::isfinite(loaded.artworkDim)) {
                 loaded.theme=static_cast<Theme>(theme);loaded.compactRows=compact;loaded.reducedMotion=reduced;
                 loaded.starsVisible=stars;loaded.touchAttraction=touch;loaded.artworkCover=cover;
+                loaded.uiSounds=sounds;loaded.soundProfile=profile;
                 Normalize(loaded);p=loaded;
             } else status="Saved appearance was invalid; using defaults. Change a preference to replace it.";
         } else if(errno!=ENOENT) status="Could not read saved appearance; using session preferences.";
@@ -51,9 +56,10 @@ struct Store {
     bool Save(const Preferences& p) {
         char text[256];
         const int length=std::snprintf(text,sizeof(text),
-            "KennyPvtHaxAppearance 1\n%d %.9g %d %d %.9g %.9g %d %d %.9g %d\n",
+            "KennyPvtHaxAppearance 2\n%d %.9g %d %d %.9g %.9g %d %d %.9g %d\n%d %.9g %d\n",
             static_cast<int>(p.theme),p.opacity,p.compactRows,p.reducedMotion,p.auroraIntensity,
-            p.particleActivity,p.starsVisible,p.touchAttraction,p.artworkDim,p.artworkCover);
+            p.particleActivity,p.starsVisible,p.touchAttraction,p.artworkDim,p.artworkCover,
+            p.uiSounds,p.uiVolume,p.soundProfile);
         // Unique 0600 staging survives stale files from an interrupted save.
         char staging[1024];
         if(temporary.size()>=sizeof(staging)) return false;

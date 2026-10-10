@@ -17,6 +17,9 @@ struct Preferences {
     bool starsVisible = true, touchAttraction = true;
     float artworkDim = 70.0f;
     bool artworkCover = true;
+    bool uiSounds = true;
+    float uiVolume = 35.0f;
+    int soundProfile = 0; // 0: theme, 1: Aurora soft, 2: Classic crisp.
 };
 inline float Bounded(float value, float low, float high, float fallback) {
     return std::isfinite(value) ? std::clamp(value,low,high) : fallback;
@@ -27,11 +30,14 @@ inline void Normalize(Preferences& p) {
     p.auroraIntensity=Bounded(p.auroraIntensity,0,100,100);
     p.particleActivity=Bounded(p.particleActivity,0,100,100);
     p.artworkDim=Bounded(p.artworkDim,35,95,70);
+    p.uiVolume=Bounded(p.uiVolume,0,100,35);
+    p.soundProfile=std::clamp(p.soundProfile,0,2);
 }
 inline bool Equal(const Preferences& a, const Preferences& b) {
     return a.theme==b.theme && a.opacity==b.opacity && a.compactRows==b.compactRows &&
         a.reducedMotion==b.reducedMotion && a.auroraIntensity==b.auroraIntensity &&
         a.particleActivity==b.particleActivity && a.starsVisible==b.starsVisible &&
-        a.touchAttraction==b.touchAttraction && a.artworkDim==b.artworkDim && a.artworkCover==b.artworkCover;
+        a.touchAttraction==b.touchAttraction && a.artworkDim==b.artworkDim && a.artworkCover==b.artworkCover &&
+        a.uiSounds==b.uiSounds && a.uiVolume==b.uiVolume && a.soundProfile==b.soundProfile;
 }
 } // namespace KennyAppearance

@@ -11,7 +11,9 @@ inline void ThemeCard(Preferences& p, Theme theme, const char* description) {
     const ImVec2 start=ImGui::GetCursorScreenPos();
     for(ImGuiCol c:{ImGuiCol_Button,ImGuiCol_ButtonHovered,ImGuiCol_ButtonActive,ImGuiCol_Text})
         ImGui::PushStyleColor(c,ImVec4(0,0,0,0));
-    if(ImGui::Button(ThemeName(theme),ImVec2(width,height))) p.theme=theme;
+    if(ImGui::Button(ThemeName(theme),ImVec2(width,height)) && p.theme!=theme) {
+        p.theme=theme;KennyAudio::Emit(KennyAudio::Event::ThemeChanged);
+    }
     ImGui::PopStyleColor(4);
     const float emphasis=KennyMotion::Sample(ImGui::GetItemID(),0,p.theme==theme ? 1.0f : 0.0f);
     const float hover=KennyMotion::Sample(ImGui::GetItemID(),1,ImGui::IsItemHovered() ? 1.0f : 0.0f);
@@ -78,7 +80,8 @@ inline void DrawStyle(Preferences& p, bool artworkReady=false, const char* stora
     if(storageStatus) KennyPanels::Note(storageStatus);
 }
 
-inline void DrawSettings(Preferences& preferences, bool& centerRequested) {
+inline void DrawSettings(Preferences& preferences, bool& centerRequested, bool audioReady=false,
+                         const char* audioStatus="UI audio unavailable in this host preview.") {
     if (!KennyPanels::Begin("##general", 2, 12.0f)) return;
     KennyPanels::Section("Menu");
     if (KennyControls::Button("Center window")) centerRequested = true;
@@ -91,6 +94,28 @@ inline void DrawSettings(Preferences& preferences, bool& centerRequested) {
     KennyPanels::Note("Android landscape interface");
     KennyPanels::EndSection();
     KennyPanels::End();
+    if(KennyPanels::Begin("##ui-audio",2,12.0f,"UI sounds")) {
+        KennyPanels::Section("Interface audio");
+        ImGui::BeginDisabled(!audioReady);
+        KennyControls::Checkbox("UI sounds",&preferences.uiSounds);
+        KennyControls::SliderFloat("UI sound volume",&preferences.uiVolume,0,100,"%.0f%%");
+        ImGui::EndDisabled();
+        KennyPanels::Note(audioStatus);KennyPanels::EndSection();
+        KennyPanels::Section("Sound character");
+        ImGui::BeginDisabled(!audioReady);
+        const ImVec2 audioPadding=ImGui::GetStyle().FramePadding;
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding,ImVec2(audioPadding.x,
+            std::max(audioPadding.y,(36.0f-ImGui::GetFontSize())*.5f)));
+        ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding,Claude::RadiusInput);
+        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+        if(ImGui::Combo("##sound-profile",&preferences.soundProfile,"Follow theme\0Aurora / soft\0Classic / crisp\0"))
+            KennyAudio::Emit(KennyAudio::Event::ButtonPressed);
+        ImGui::PopStyleVar(2);
+        ImGui::EndDisabled();
+        KennyPanels::Note("Follow theme uses soft Aurora tones or crisp Classic feedback. Anime voices await your recordings.");
+        KennyPanels::EndSection();KennyPanels::End();
+    }
+    Normalize(preferences);
 }
 
 } // namespace KennyAppearance

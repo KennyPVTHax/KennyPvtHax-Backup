@@ -2,7 +2,7 @@ from pathlib import Path
 import re
 import subprocess
 s=Path('jni/main.cpp').read_text()
-a=s.index('            if (Settings::Tab == 1) {',s.index('KennyMenu::Draw('));b=s.index('\n        });',a)
+a=s.index('            if (Settings::Tab == 1) {',s.index('KennyMenu::Draw('));b=s.index('\n        },launcher.alpha,launcher.target);',a)
 body=s[a:b]
 pattern=r'KennyControls::(?:Checkbox|SliderFloat|SliderInt)\("([^"]+)"[^;\n]*\);'
 assert len(re.findall(pattern,body)) == 37, 'original binding inventory changed'

@@ -1,3 +1,25 @@
+# Phase C / Checkpoint C1 host verification
+
+Continue in the existing repository. C1 adds the production K launcher and portable PCM/event mixer plus a real Android OpenSL ES adapter. SDK/NDK/device compilation and sound playback remain unverified; do not supply fake OpenSL/SDK headers. Keep assertions enabled.
+
+```sh
+python3 tests/kenny_host_fixture.py
+timeout 60s g++ -std=c++17 -O1 -Wall -Wextra -Werror -pthread -I jni tests/kenny_audio_check.cpp -o .verification/c1_audio_check
+timeout 45s .verification/c1_audio_check
+timeout 120s g++ -std=c++17 -O1 -DIMGUI_ENABLE_TEST_ENGINE -I jni -I .verification tests/kenny_c1_check.cpp jni/imgui/imgui.cpp jni/imgui/imgui_draw.cpp jni/imgui/imgui_widgets.cpp jni/imgui/imgui_tables.cpp -o .verification/c1_launcher_check
+timeout 90s .verification/c1_launcher_check
+timeout 60s g++ -std=c++17 -O2 -Wall -Wextra -Werror tests/kenny_host_rasterize.cpp -o .verification/kenny_host_rasterize
+timeout 60s python3 tests/kenny_c1_package.py
+```
+
+Also compile/run the existing menu, theme/store, aurora and effects checks below against current source. Production portable headers can be checked strictly with a small include/Draw translation unit; the native capture fixture retains pre-existing embedded font macro warnings.
+
+The source fixture compares all 37 original calls/ranges/formats and the entire feature callback to the approved baseline. C1 checks exercise genuine native input, real PCM generation/mixing/dispatch, scoped successful interactions, profile selector, volume/mute, logo hitbox/drag, transitions/Reduced motion, closing input isolation, repeated launcher cycles and unchanged feature snapshots. The PCM test checks four voices/31 queued commands, mute epochs, throttling, finite inputs, 20,000 allocation-free iterations and 50,000 concurrent producer submissions. Theme/store tests now cover all audio fields and real schema 1 migration without resetting prior preferences. No Guest Reset execution or C2 voice recordings/loader.
+
+`previews/phase_c1/` contains ten actual native PNGs, two original-mixer WAVs, source/hash provenance, self-contained offline image/audio viewer and a 15-entry ZIP. Host screenshots expose unavailable playback honestly; `audio-test-settings.png` is explicitly labeled as a real portable-mixer test sink, not Android output. `launcher-detail.png` enlarges original native crops, without replacing their rendering. PNGs are CPU-rasterized actual ImGui geometry, not Android captures. WAVs are playable actual 48kHz/16-bit mono synthesis/mixer samples; browser playback does not test OpenSL ES.
+
+The external asset owner registers a transparent logo texture and must Clear before deletion/context loss. No asset loader or invented artwork/voice is present. Android build/link, output/latency/callback lifecycle, private-path restart, touch/GPU/resource lifetime and performance require the user's restored SDK/NDK/device. **Stop after C1 for approval before C2.** Historical documentation follows.
+
 # SDK-independent Phase B checks
 
 Run from the repository root. The SDK remains absent; these compile production UI headers with bundled native ImGui and embedded fonts, plus the **exact original** main.cpp panel statements/configuration. No SDK stand-ins or Android runtime claims. Keep assertions enabled; original font-header macro warnings in the menu/capture fixture are pre-existing.

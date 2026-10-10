@@ -3,6 +3,7 @@
 #include <cmath>
 #include <type_traits>
 #include "ClaudeTheme.h"
+#include "KennyAudio.h"
 #include "imgui/imgui_internal.h"
 
 namespace KennyControls {
@@ -12,8 +13,10 @@ inline float Scale() { return ImGui::GetFontSize() / 32.0f; }
 // Full-width action with the same rounded artwork as secondary navigation.
 // The native button owns activation and retains the caller's label ID.
 inline bool Button(const char* label) {
-    return Claude::PillTab(label, false, ImVec2(ImGui::GetContentRegionAvail().x,
+    const bool pressed=Claude::PillTab(label, false, ImVec2(ImGui::GetContentRegionAvail().x,
                                               std::max(36.0f, ImGui::GetFrameHeight())));
+    if(pressed)KennyAudio::Emit(KennyAudio::Event::ButtonPressed);
+    return pressed;
 }
 
 inline bool Choice(const char* label, bool* value, const char* first, const char* second) {
@@ -35,6 +38,7 @@ inline bool Choice(const char* label, bool* value, const char* first, const char
     }
     ImGui::PopID();
     ImGui::EndGroup();
+    if(changed)KennyAudio::Emit(KennyAudio::Event::ButtonPressed);
     return changed;
 }
 
@@ -52,6 +56,7 @@ inline bool Checkbox(const char* label, bool* value) {
         ImGui::PushStyleColor(color, ImVec4(0, 0, 0, 0));
     ImGui::PushStyleColor(ImGuiCol_Text, *value ? Claude::Dark::textPrimary : Claude::Dark::textSecondary);
     const bool changed = ImGui::Checkbox(label, value);
+    if(changed)KennyAudio::Emit(*value ? KennyAudio::Event::CheckboxOn : KennyAudio::Event::CheckboxOff);
     ImGui::PopStyleColor(7);
     ImGui::PopStyleVar();
     if (ImGui::IsItemVisible()) {

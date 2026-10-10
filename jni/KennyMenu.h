@@ -30,6 +30,8 @@ struct State {
     KennyAppearance::Preferences appearance;
     KennyAppearance::Store storage;
     KennyThemeBackground::Artwork artwork;
+    KennyAudio::Dispatcher* audio=nullptr;
+    const char* audioStatus="UI audio unavailable in this host preview.";
     bool centerRequested = false;
     KennyEffects::State effects;
     KennyAurora::State aurora;
@@ -83,9 +85,10 @@ inline ImVec2 Constrain(ImVec2 pos, ImVec2 size, ImVec2 viewport) {
 }
 
 template <typename RenderPanel>
-inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPanel renderPanel) {
+inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPanel renderPanel, float presentationAlpha=1.0f, bool acceptInput=true) {
     if (viewport.x <= 0.0f || viewport.y <= 0.0f) return;
     state.Initialize(tab);
+    KennyAudio::Scope audio(state.audio,state.appearance,ImGui::GetTime());
     KennyAppearance::Normalize(state.appearance);
     KennyMotion::ScopedReduction motion(state.appearance.reducedMotion);
     const Layout l = Measure(viewport);
@@ -95,6 +98,7 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
                                  (viewport.y - l.size.y) * 0.5f),
                             state.centerRequested ? ImGuiCond_Always : ImGuiCond_FirstUseEver);
     state.centerRequested = false;
+    ImGui::PushStyleVar(ImGuiStyleVar_Alpha,ImGui::GetStyle().Alpha*std::clamp(presentationAlpha,0.0f,1.0f));
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, Claude::RadiusWindow * l.scale);
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(12.0f * l.scale, 7.0f * l.scale));
@@ -104,8 +108,10 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
     background.w = std::clamp(state.appearance.opacity, 85.0f, 100.0f) * 0.01f;
     ImGui::PushStyleColor(ImGuiCol_WindowBg, background);
     const ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings |
-        ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoTitleBar;
+        ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoTitleBar |
+        (acceptInput ? ImGuiWindowFlags_None : ImGuiWindowFlags_NoInputs);
     if (ImGui::Begin("KennyPvtHax", nullptr, flags)) {
+        ImGui::BeginDisabled(!acceptInput);
         // Per-window scale is assigned, never multiplied into global style/fonts.
         ImGui::SetWindowFontScale((Font ? 1.0f : 2.0f) * l.scale);
         const ImVec2 pos = ImGui::GetWindowPos();
@@ -143,8 +149,11 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
         for (int i = 0; i < 5; ++i) {
             ImGui::SetCursorPos(ImVec2(navX + i * tabWidth, l.navY + 4.0f * l.scale));
             if (Claude::NavItem(labels[i], static_cast<int>(state.category) == i,
-                               ImVec2(tabWidth, l.navHeight - 12.0f * l.scale)))
+                               ImVec2(tabWidth, l.navHeight - 12.0f * l.scale))) {
+                const bool changed=static_cast<int>(state.category)!=i;
                 state.Select(static_cast<Category>(i), tab);
+                if(changed)KennyAudio::Emit(KennyAudio::Event::PrimaryNavigation);
+            }
         }
         // One bounded, time-based underline; no per-tab animation allocations.
         const float target = static_cast<float>(static_cast<int>(state.category));
@@ -181,7 +190,9 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
             ImGui::SetCursorPos(ImVec2(x, l.header + (l.secondary - pillHeight) * 0.5f));
             const bool presentation = state.category == Category::Style || state.category == Category::Settings;
             if (Claude::PillTab(secondary[i], presentation || tab == values[i], ImVec2(widths[i], pillHeight)) && !presentation) {
+                const bool changed=tab!=values[i];
                 tab = values[i];
+                if(changed)KennyAudio::Emit(KennyAudio::Event::SecondaryNavigation);
                 if (state.category == Category::Visual) state.visualTab = tab;
                 if (state.category == Category::Misc) state.miscTab = tab;
             }
@@ -201,7 +212,8 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
         ImGuiWindow* contentWindow = nullptr;
         if (ImGui::BeginChild("##content", ImVec2(l.size.x - 2.0f * l.padding,
                              l.size.y - contentY - 36.0f * l.scale), false,
-                             interactiveBackground ? ImGuiWindowFlags_NoMove : ImGuiWindowFlags_None)) {
+                             (interactiveBackground ? ImGuiWindowFlags_NoMove : ImGuiWindowFlags_None) |
+                             (acceptInput ? ImGuiWindowFlags_None : ImGuiWindowFlags_NoInputs))) {
             contentWindow = ImGui::GetCurrentWindow();
             // This ImGui version multiplies a child's scale by its parent's.
             ImGui::SetWindowFontScale(0.875f);
@@ -211,7 +223,8 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
             if (state.category == Category::Style) {
                 KennyAppearance::DrawStyle(state.appearance,state.artwork.current.Valid(),state.storage.status);
             } else if (state.category == Category::Settings) {
-                KennyAppearance::DrawSettings(state.appearance, state.centerRequested);
+                KennyAppearance::DrawSettings(state.appearance, state.centerRequested,
+                                              state.audio && state.audio->mixer,state.audioStatus);
             } else {
                 renderPanel();
             }
@@ -232,7 +245,7 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
                 contentWindow->InnerRect.Contains(io.MousePos) && context.HoveredId == 0 &&
                 !context.HoveredIdDisabled &&
                 (context.ActiveId == 0 || (state.aurora.gesture && context.ActiveId == contentWindow->MoveId)) &&
-                state.appearance.touchAttraction && !state.appearance.reducedMotion && opened;
+                state.appearance.touchAttraction && !state.appearance.reducedMotion && opened && acceptInput;
             if (io.MouseClicked[0]) state.aurora.gesture = allowed && context.ActiveId == 0;
             if (!io.MouseDown[0] || !allowed) state.aurora.gesture = false;
             const ImVec2 pointer((io.MousePos.x-origin.x)/l.size.x,(io.MousePos.y-origin.y)/l.size.y);
@@ -253,10 +266,11 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
         }
         draw->ChannelsMerge();
         state.storage.Sync(state.appearance,!ImGui::IsAnyItemActive() || !opened);
+        ImGui::EndDisabled();
     }
     ImGui::End();
     ImGui::PopStyleColor();
-    ImGui::PopStyleVar(5);
+    ImGui::PopStyleVar(6);
     if (Font) ImGui::PopFont();
 }
 

@@ -137,7 +137,7 @@ LOCAL_SRC_FILES :=  main.cpp \
 
 LOCAL_CPP_FEATURES := exceptions
 
-LOCAL_LDLIBS := -llog -landroid -lEGL -lGLESv2 -lGLESv3 -lGLESv1_CM -lz
+LOCAL_LDLIBS := -llog -landroid -lOpenSLES -lEGL -lGLESv2 -lGLESv3 -lGLESv1_CM -lz
 
 LOCAL_STATIC_LIBRARIES := libdobby libcurl libssl libcrypto And64InlineHook ElfImg fake_dlfcn android_native_app_glue plthook_elf tools base64 SubstrateDebug SubstrateHook hde64 SubstratePosixMemory KittyMemory MemoryPatch MemoryBackup KittyUtils shadowhook
 

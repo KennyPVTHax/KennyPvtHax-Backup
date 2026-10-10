@@ -19,7 +19,7 @@ int main() {
     assert(p.theme==Theme::Aurora && store.available);
     p.theme=Theme::Anime;p.opacity=88.125f;p.compactRows=true;p.reducedMotion=true;
     p.auroraIntensity=43.5f;p.particleActivity=27;p.starsVisible=false;p.touchAttraction=false;
-    p.artworkDim=82;p.artworkCover=false;
+    p.artworkDim=82;p.artworkCover=false;p.uiSounds=false;p.uiVolume=73.25f;p.soundProfile=2;
     store.Sync(p,false);assert(access(store.path.c_str(),F_OK)!=0);
     store.Sync(p,true);assert(access(store.path.c_str(),F_OK)==0);
     struct stat st{};assert(stat(store.path.c_str(),&st)==0 && (st.st_mode&0777)==0600);
@@ -32,10 +32,22 @@ int main() {
         read.Configure(directory,value);assert(Equal(value,p));
     }
     p=Preferences{};store.Sync(p,true);Store reset;Preferences value;reset.Configure(directory,value);assert(Equal(value,p));
+    // Read the real Phase B schema without resetting its ten preferences.
+    {std::ofstream out(store.path);out<<"KennyPvtHaxAppearance 1\n2 88.125 1 1 43.5 27 0 0 82 0\n";}
+    Store legacy;Preferences migrated;legacy.Configure(directory,migrated);
+    assert(migrated.theme==Theme::Classic && migrated.opacity==88.125f && migrated.compactRows && migrated.reducedMotion);
+    assert(migrated.auroraIntensity==43.5f && migrated.particleActivity==27 && !migrated.starsVisible && !migrated.touchAttraction);
+    assert(migrated.artworkDim==82 && !migrated.artworkCover && migrated.uiSounds && migrated.uiVolume==35 && migrated.soundProfile==0);
+    migrated.uiVolume=42.5f;legacy.Sync(migrated,true);Store upgraded;Preferences reread;upgraded.Configure(directory,reread);
+    assert(Equal(migrated,reread));
     for(const char* corrupt:{"", "KennyPvtHaxAppearance 2\n0 97 0 0 100 100 1 1 70 1\n",
           "KennyPvtHaxAppearance 1\n8 97 0 0 100 100 1 1 70 1\n",
           "KennyPvtHaxAppearance 1\n0 nan 0 0 100 100 1 1 70 1\n",
-          "KennyPvtHaxAppearance 1\n0 97 0 0 100 100 1 1 70 1\nextra"}) {
+          "KennyPvtHaxAppearance 1\n0 97 0 0 100 100 1 1 70 1\nextra",
+          "KennyPvtHaxAppearance 2\n0 97 0 0 100 100 1 1 70 1\n2 35 0\n",
+          "KennyPvtHaxAppearance 2\n0 97 0 0 100 100 1 1 70 1\n1 nan 0\n",
+          "KennyPvtHaxAppearance 2\n0 97 0 0 100 100 1 1 70 1\n1 35 3\n",
+          "KennyPvtHaxAppearance 2\n0 97 0 0 100 100 1 1 70 1\n1 35 0\nextra"}) {
         std::ofstream out(store.path);out<<corrupt;out.close();Store read;Preferences defaults;
         read.Configure(directory,defaults);assert(Equal(defaults,Preferences{}));
     }
@@ -47,8 +59,11 @@ int main() {
     failure.Configure(nowhere.c_str(),failed);failed.theme=Theme::Classic;failure.Sync(failed,true);
     assert(std::strstr(failure.status,"Could not save") && Equal(failure.observed,failed));
     failed.opacity=std::numeric_limits<float>::quiet_NaN();Normalize(failed);assert(failed.opacity==97);
+    failed.uiVolume=std::numeric_limits<float>::quiet_NaN();failed.soundProfile=99;Normalize(failed);
+    assert(failed.uiVolume==35 && failed.soundProfile==2);
     unlink(store.path.c_str());rmdir(directory);
     std::puts("PASS appearance: atomic private 0600 writes, restart round-trip of every preference/theme, default reset, no idle rewrites, deferred active edits, corrupt/version/nonfinite/trailing-data fallback, clamps and unavailable/write-failure handling.");
+    std::puts("PASS C1 audio preferences: all three fields round-trip, real v1 migration preserves every legacy preference, schema 2 persists at the existing private path; invalid audio fields/trailing data safely rejected.");
 
     KennyAurora::State active;KennyAuroraApproved::State approved;
     for(int frame=0;frame<1800;++frame) {

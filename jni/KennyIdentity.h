@@ -2,10 +2,8 @@
 #include "ClaudeTheme.h"
 
 namespace KennyIdentity {
-inline void Draw(ImDrawList* draw, ImVec2 origin, float padding, float width,
-                 float height, float scale) {
-    const float mark=38*scale, gap=12*scale;
-    const ImVec2 center(origin.x+padding+mark*0.5f,origin.y+height*0.5f);
+inline void Emblem(ImDrawList* draw,ImVec2 center,float scale) {
+    const float mark=38*scale;
     KennyPaint::Disc(draw,center,mark*0.48f,Claude::Hex(0x321C27),Claude::Hex(0x0B090D));
     draw->AddCircle(center,mark*0.49f,ImGui::GetColorU32(Claude::Hex(0x94717D,0.32f)),32,1);
     draw->PathArcTo(center,mark*0.49f,-2.2f,0.25f,18);
@@ -17,6 +15,13 @@ inline void Draw(ImDrawList* draw, ImVec2 origin, float padding, float width,
     draw->AddLine(ImVec2(stem.x+1*scale,center.y),ImVec2(center.x+8*scale,center.y-10*scale),ink,stroke);
     draw->AddLine(ImVec2(stem.x+1*scale,center.y),ImVec2(center.x+8*scale,center.y+10*scale),
                   ImGui::GetColorU32(Claude::Dark::selectedInk),stroke);
+}
+inline void Draw(ImDrawList* draw, ImVec2 origin, float padding, float width,
+                 float height, float scale) {
+    const float mark=38*scale, gap=12*scale;
+    const ImVec2 center(origin.x+padding+mark*0.5f,origin.y+height*0.5f);
+    Emblem(draw,center,scale);
+    const ImU32 ink=ImGui::GetColorU32(Claude::Dark::textPrimary);
     const float x=origin.x+padding+mark+gap;
     ImFont* font=ImGui::GetFont();
     const float available=width-mark-gap-4*scale;
