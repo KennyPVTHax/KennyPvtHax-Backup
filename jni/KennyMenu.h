@@ -10,6 +10,10 @@ namespace KennyMenu {
 
 enum class Category { Visual, Aim, Misc, Style, Settings };
 
+// A separately baked menu font keeps header glyphs sharp without changing the
+// default font used by the floating toggle or existing overlay text.
+inline ImFont* Font = nullptr;
+
 struct State {
     Category category = Category::Visual;
     int visualTab = 1;
@@ -70,6 +74,7 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
     if (viewport.x <= 0.0f || viewport.y <= 0.0f) return;
     state.Initialize(tab);
     const Layout l = Measure(viewport);
+    if (Font) ImGui::PushFont(Font);
     ImGui::SetNextWindowSize(l.size, ImGuiCond_Always);
     ImGui::SetNextWindowPos(ImVec2((viewport.x - l.size.x) * 0.5f,
                                  (viewport.y - l.size.y) * 0.5f), ImGuiCond_FirstUseEver);
@@ -82,7 +87,7 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
         ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoTitleBar;
     if (ImGui::Begin("KennyPvtHax", nullptr, flags)) {
         // Per-window scale is assigned, never multiplied into global style/fonts.
-        ImGui::SetWindowFontScale(2.0f * l.scale);
+        ImGui::SetWindowFontScale((Font ? 1.0f : 2.0f) * l.scale);
         const ImVec2 pos = ImGui::GetWindowPos();
         const ImVec2 bounded = Constrain(pos, l.size, viewport);
         if (pos.x != bounded.x || pos.y != bounded.y) ImGui::SetWindowPos(bounded);
@@ -102,7 +107,7 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
         const char* brand = "KennyPvtHax";
         const ImVec2 brandText = ImGui::CalcTextSize(brand);
         draw->AddText(ImVec2(origin.x + l.padding, origin.y + (brandHeight - brandText.y) * 0.5f),
-                      ImGui::GetColorU32(Claude::Dark::accent), brand);
+                      ImGui::GetColorU32(Claude::Dark::accentPressed), brand);
 
         ImGui::SetCursorPos(ImVec2(l.size.x - l.padding - closeSize,
                                   (brandHeight - closeSize) * 0.5f));
@@ -128,8 +133,8 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
         const float underlineX = origin.x + navX + (state.indicator + 0.5f) * tabWidth - underlineWidth * 0.5f;
         draw->AddRectFilled(ImVec2(underlineX, origin.y + l.header - 9.0f * l.scale),
                             ImVec2(underlineX + underlineWidth, origin.y + l.header - 6.0f * l.scale),
-                            ImGui::GetColorU32(Claude::Dark::accent), 2.0f * l.scale);
-        const ImU32 divider = ImGui::GetColorU32(Claude::Hex(0x51465F, 0.32f));
+                            ImGui::GetColorU32(Claude::Dark::accentPressed), 2.0f * l.scale);
+        const ImU32 divider = ImGui::GetColorU32(Claude::Hex(0x7A1C24, 0.32f));
         draw->AddLine(ImVec2(origin.x + 1, origin.y + l.header),
                       ImVec2(origin.x + l.size.x - 1, origin.y + l.header), divider);
 
@@ -169,11 +174,12 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
         // Isolate content scrolling from both navigation rows. No nested card border.
         ImGui::SetCursorPos(ImVec2(l.padding, contentY + 18.0f * l.scale));
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-        ImGui::PushStyleColor(ImGuiCol_ChildBg, Claude::Hex(0x14111F, 0.16f));
+        ImGui::PushStyleColor(ImGuiCol_ChildBg, Claude::Hex(0x1A1012, 0.16f));
         if (ImGui::BeginChild("##content", ImVec2(l.size.x - 2.0f * l.padding,
                              l.size.y - contentY - 36.0f * l.scale), false)) {
             // This ImGui version multiplies a child's scale by its parent's.
-            ImGui::SetWindowFontScale(1.0f);
+            ImGui::SetWindowFontScale(0.875f);
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(8.0f * l.scale, 10.0f * l.scale));
             ImGui::PushItemWidth(std::min(420.0f * l.scale, ImGui::GetContentRegionAvail().x * 0.58f));
             if (state.category == Category::Style || state.category == Category::Settings) {
                 Claude::SectionHeader(state.category == Category::Style ? "Appearance" : "General");
@@ -182,6 +188,7 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
                 renderPanel();
             }
             ImGui::PopItemWidth();
+            ImGui::PopStyleVar();
         }
         ImGui::EndChild();
         ImGui::PopStyleColor();
@@ -189,6 +196,7 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
     }
     ImGui::End();
     ImGui::PopStyleVar(5);
+    if (Font) ImGui::PopFont();
 }
 
 } // namespace KennyMenu

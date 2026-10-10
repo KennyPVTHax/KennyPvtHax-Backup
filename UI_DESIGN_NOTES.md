@@ -1,6 +1,6 @@
 # KennyPvtHax — source map and reference design
 
-Stage 1 inspection and Stage 2 implementation, 10 October 2026 (Asia/Calcutta). The original observations below remain the design specification. Completed Stage 2 changes and validation are recorded at the end; Stages 3–6 remain unimplemented.
+Stages 1–3 completed, 10 October 2026 (Asia/Calcutta). **Current theme: black/crimson/fire-red**, explicitly requested for Stage 3. This supersedes the historical lavender implementation palette below; the video still governs geometry, spacing, and visual hierarchy. Stage 3 grouped panels and controls are recorded at the end. Stages 4–6 remain unimplemented.
 
 ## Source baseline
 
@@ -79,7 +79,7 @@ No feature configuration save/load implementation or preset UI was found in the 
 1. **Stage 2:** evolve `ClaudeTheme.h` into application-owned black/lavender styling without a second competing theme. Build a rounded panel/header, primary `Visual | Aim | Misc | Style | Settings`, and a secondary pill row using existing ImGui buttons and shared theme helpers. Keep `Settings::Tab` meanings for existing feature panels. Route Visual to Player/World, Aim to existing Aimbot, Misc to Bullet track/Extra features. Reserve Style and Settings for interface options and existing application actions. Use a branded header/initial instead of copying the reference logo.
 2. **Stage 3:** use scrollable two/three-column layouts for existing Visual and Aim controls. Preserve every inventory entry and shared pointer binding. Responsive column reduction and scaled fonts must accommodate smaller overlay surfaces; do not multiply style scale every frame.
 3. **Stage 4:** lay out Misc, Style, Settings. Only introduce appearance preferences that actually affect the interface. Retain the existing reset callback. No new gameplay controls, authentication, licensing, bypass behavior, or fictitious presets.
-4. **Stage 5:** add reusable application checkbox/slider/pill helpers with existing ImGui IDs, item registration, keyboard/mouse/touch behavior, and value updates. Draw bounded particles/glow through the menu's clipped draw list, with fixed storage and no new dependencies. Animations should be time-based and lightweight. Do not change global ESP/game colors when styling UI chrome.
+4. **Stage 5:** polish the reusable application checkbox/slider/pill helpers (checkboxes/sliders implemented early in Stage 3 at the user's explicit request). Draw bounded particles/glow through the menu's clipped draw list, with fixed storage and no new dependencies. Animations should be time-based and lightweight. Do not change global ESP/game colors when styling UI chrome.
 5. **Stage 6:** compile using the real Android NDK and missing SDK once available, inspect the actual UI, and compare cached reference frames. Report static checks separately from device/build evidence.
 
 ## Baseline limitations
@@ -122,3 +122,54 @@ The local `.verification/` directory contains a host harness, extracted UI/confi
 - Still blocked/unverified: complete Android native compilation/linking (missing SDK and NDK), device touch integration, live game overlay, GPU appearance, runtime frame rate, and final visual fidelity. No package/environment installation was performed.
 
 For local reproduction while `.verification/` exists: run `python .verification/make_harness.py`, compile `.verification/menu_check.cpp` with the four bundled ImGui core `.cpp` files and `-I jni -I .verification`, run the resulting binary with `timeout 30s`, and rasterize its `.draw` files using `.verification/rasterize.py`. Generated objects/binaries, fixture files, and previews are not application dependencies.
+
+## Stage 3 — completed: crimson Visual and Aim panels
+
+The user explicitly changed the accent system to crimson/fire-red and requested circular checkboxes/thin sliders in Stage 3. Those controls are implemented now rather than deferred to Stage 5. Stage 2 shell geometry, routing, remembered subtabs, close/drag, and isolated content scrolling remain intact.
+
+### Current palette and typography
+
+| Role | Current value |
+| --- | --- |
+| Root background | `#08070A`, alpha 0.97 |
+| Secondary surface | `#141014`, alpha 0.72 |
+| Raised/control surface | `#1A1012` |
+| Inactive slider track | `#26171B` |
+| Primary accent | `#C1121F` |
+| Selected text/hover highlight | `#E63946` |
+| Small control highlight ring | `#FF5A5F`, alpha 0.12–0.24 |
+| Dividers and perimeter | `#7A1C24`, subdued alpha |
+| Primary text | `#F5F2F2` |
+| Secondary text | `#B7A9AC` |
+| Active secondary pill | `#34151C`, border `#C44551` |
+
+The same embedded typeface is baked once at 32 px, with 30 px merged icons, into a dedicated `KennyMenu::Font`. The shell pushes/pops this font and uses local `layout.scale`; the content inherits a factor of 0.875 (28 px at reference scale), with 10 px row spacing. This replaces the historical Stage 2 enlargement of a 16 px atlas and improves glyph sharpness. Original base/toggle, ESP, fallback fonts and global font scale remain unchanged. No external typeface/dependency was introduced.
+
+### Layout and inventory
+
+- `KennyPanels::Begin/Section/EndSection/End` uses the bundled ImGui table API, equal stretch columns, dim inner dividers, matching heading baselines, and short red title markers. Column count derives from available width and font size; narrow windows reduce columns and retain native child scrolling. Styling and item-width pushes are balanced, including the non-visible table case.
+- Player ESP: **Player** (line, skeleton, health, box), **Labels** (name, distance, counter), **World** (alert, loot box, vehicle name). All ten original bindings remain in tab 1; wide windows use three columns.
+- World ESP: **Threats & targeting** (throwable, target line), **Equipment** (enemy weapon). All three original bindings remain in tab 2; wide windows use two columns. This panel has only three genuine settings. It retains the shell proportions and consequently has free space below its compact groups; no filler settings were invented or controls moved between panels.
+- Aimbot: **Targeting** (enable, range), **Filtering** (visibility, ignore knocked/bot), **Tuning** (smoothing, recoil), **Field of view** (enable FOV, conditional radius/show circle). Two balanced columns and two group rows replace the single long list. All ten original call sites/ranges/formats/FOV conditions remain in tab 3.
+- Misc/Extra receive the same reusable checkbox/slider artwork to keep the interface consistent. Their layout/order, variables, conditions, and reset callback are unchanged; Stage 4 organization and reserved Style/Settings functionality remain pending.
+
+### Native controls with custom artwork
+
+`KennyControls` registers real ImGui controls; it does not substitute visual-only items or write configuration independently. Checkboxes keep native IDs, focus/activation, whole-label hit areas, change return values, and minimum 36 px interaction height. Native square artwork is transparent; a clipped circular crimson fill/outline and centered white tick are drawn over the native item. A circular focus/hover outline replaces the checkbox's rectangular navigation artwork.
+
+Sliders keep the caller's original label ID using this bundled version's `PushOverrideID` and native `SliderScalar`. Labels/formatted values appear above thin rounded tracks; a small circular handle follows native linear grab geometry, including integer grab sizing. Narrow headers place the numeric value on a second line. Dragging, native keyboard behavior, and Ctrl-click numeric entry are delegated to ImGui. Drawing clamps only the visual ratio, without changing actual values/ranges/defaults. The Android application's existing keyboard support is unchanged; host numeric-entry tests do not imply Android soft-keyboard support.
+
+There are no particle systems, new opening animations, gameplay changes, configuration keys, login/licensing changes, SDK substitutes, or new dependencies in Stage 3. Small control rings use bounded circle segments, not blur passes. Runtime GPU performance remains unmeasured.
+
+### Verification and actual preview provenance
+
+- Strict C++17 syntax check passed for `KennyMenu.h` and `KennyPanels.h` (including theme/control headers) with `-Wall -Wextra -Werror`.
+- Production UI host harness passed: every primary category/secondary route, remembered tabs, reserved-container isolation, checkbox pointer/native navigation activation, all 30 original checkbox call sites toggling/restoring actual variables through label hits at 640×360 after scrolling into view, FOV-dependent visibility, all original float slider endpoints (range/FOV 0–400, smoothing 1–4, recoil 0–2), integer endpoints 1–3, and Ctrl-click typed value.
+- Host checks passed for drag/position retention, close/reopen, scrolling with fixed root/navigation, balanced font/style/color stacks, no horizontal control clipping in tables, viewport bounds and primary-label fit at 1920×872, 2340×1080, 1280×720, 960×540, and 640×360.
+- Static comparison with `042e39c` passed for all 37 original control sites, per-panel membership, exact bindings/ranges/formats, unchanged Misc/Extra bodies modulo wrapper namespace, unchanged configuration/default declarations/build files/branding, and unchanged gameplay/input/EGL integration. Allowed changes outside the feature branches are only the UI helper include, theme comment, and dedicated menu-font initialization.
+- Inspected all three final 1920×872 previews, Player at 1280×720, and all three panels at 640×360. Corrected enlarged-font softness, Aim vertical fit, and inherited table-heading baseline differences. At small resolutions the captured top of scrollable content is intentionally partial; labels/navigation do not overlap horizontally.
+- Public artifacts: `previews/stage3/{player-1920,world-1920,aim-1920}.png`, smaller PNGs, `index.html`, `verification.json`, `README.md`, and `stage3-previews.zip`. Every PNG passed signature/chunk-CRC/Pillow verification/full decoding; the offline viewer embeds byte-identical main PNGs with download links. ZIP integrity passed. All generated artifacts are ignored by Git; Stage 2 images/viewer remain intact.
+- These are **actual production ImGui UI draw-data rasterizations**, using exact panel statements extracted from `main.cpp`, original SDK-independent configuration declarations, embedded fonts, and host test state. The CPU rasterizer is a verification-only rendering backend, not an application UI simulation. Not AI imagery or an Android/game/GPU capture. The host enables some test states to demonstrate checks/FOV; application defaults are unchanged.
+- Still blocked: missing `jni/SDK/` and Android NDK; no full native application compilation/linking, device touch/overlay behavior, GPU appearance/performance, or final on-device fidelity verification. Original font-header macro warnings remain unrelated and untouched. A temporary edit-tool transport error recovered on retry; no source work was lost.
+
+Local Stage 3 reproduction, while the ignored verification files exist: run `python .verification/stage3_fixture.py`; compile `.verification/stage3_check.cpp` with the cached four ImGui core objects (or the real bundled core `.cpp` sources), `-std=c++17 -I jni -I .verification`; run `timeout 30s .verification/stage3_check`; rasterize `.verification/stage3-*.draw` through `.verification/rasterize.py`. Its `atlas.rgba` is the current Stage 3 atlas. The old Stage 2 harness/draw output are historical; regenerate their matching atlas with their original executable if needed. Neither harness is part of the Android build.

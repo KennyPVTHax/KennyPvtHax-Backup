@@ -2,6 +2,8 @@
 .reference/
 .build/
 .verification/
+previews/stage2/
+previews/stage3/
 
 # Generated output and supplied binary libraries
 obj/

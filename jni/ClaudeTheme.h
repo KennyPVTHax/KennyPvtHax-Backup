@@ -10,20 +10,21 @@ inline ImVec4 Hex(unsigned int h, float a = 1.0f) {
 }
 
 
-// ---- KennyPvtHax black/lavender tokens -------------------------------------
+// ---- KennyPvtHax black/crimson tokens -------------------------------------
 namespace Dark {
-    inline const ImVec4 bg            = Hex(0x08070E, 0.97f);
-    inline const ImVec4 surface       = Hex(0x14111F, 0.72f);
-    inline const ImVec4 surfaceElev   = Hex(0x100E18);
-    inline const ImVec4 surfaceSubtle = Hex(0x211C30);
-    inline const ImVec4 outline       = Hex(0x554966, 0.55f);
-    inline const ImVec4 textPrimary   = Hex(0xF3F0FF);
-    inline const ImVec4 textSecondary = Hex(0x9993AC);
-    inline const ImVec4 textTertiary  = Hex(0x696277);
-    inline const ImVec4 accent        = Hex(0xB69AFF);
-    inline const ImVec4 accentPressed = Hex(0xC9B7FF);
-    inline const ImVec4 onAccent      = Hex(0x08070E);
-    inline const ImVec4 accentSubtle  = Hex(0x2B223F, 0.85f);
+    inline const ImVec4 bg            = Hex(0x08070A, 0.97f);
+    inline const ImVec4 surface       = Hex(0x141014, 0.72f);
+    inline const ImVec4 surfaceElev   = Hex(0x1A1012);
+    inline const ImVec4 surfaceSubtle = Hex(0x26171B);
+    inline const ImVec4 outline       = Hex(0x7A1C24, 0.55f);
+    inline const ImVec4 textPrimary   = Hex(0xF5F2F2);
+    inline const ImVec4 textSecondary = Hex(0xB7A9AC);
+    inline const ImVec4 textTertiary  = Hex(0x867579);
+    inline const ImVec4 accent        = Hex(0xC1121F);
+    inline const ImVec4 glow          = Hex(0xFF5A5F);
+    inline const ImVec4 accentPressed = Hex(0xE63946);
+    inline const ImVec4 onAccent      = Hex(0x08070A);
+    inline const ImVec4 accentSubtle  = Hex(0x34151C, 0.85f);
     inline const ImVec4 error         = Hex(0xE5776A);
     inline const ImVec4 success       = Hex(0x86B096);
     inline const ImVec4 warning       = Hex(0xD2A24C);
@@ -76,8 +77,8 @@ inline void Apply() {
 
     // Inputs
     c[ImGuiCol_FrameBg]              = Dark::surfaceSubtle;
-    c[ImGuiCol_FrameBgHovered]       = Hex(0x2B243D);
-    c[ImGuiCol_FrameBgActive]        = Hex(0x352A4B);
+    c[ImGuiCol_FrameBgHovered]       = Hex(0x32191F);
+    c[ImGuiCol_FrameBgActive]        = Hex(0x442029);
 
     // Title / menu bar
     c[ImGuiCol_TitleBg]              = Dark::surfaceElev;
@@ -88,20 +89,20 @@ inline void Apply() {
     // Scrollbar
     c[ImGuiCol_ScrollbarBg]          = ImVec4(0, 0, 0, 0);
     c[ImGuiCol_ScrollbarGrab]        = Dark::outline;
-    c[ImGuiCol_ScrollbarGrabHovered] = Hex(0x75668F);
+    c[ImGuiCol_ScrollbarGrabHovered] = Hex(0xA94752);
     c[ImGuiCol_ScrollbarGrabActive]  = Dark::accent;
 
     // Buttons — neutral by default (NOT accent)
     c[ImGuiCol_Button]               = ImVec4(0, 0, 0, 0);
     c[ImGuiCol_ButtonHovered]        = Dark::surfaceSubtle;
-    c[ImGuiCol_ButtonActive]         = Hex(0x352A4B);
+    c[ImGuiCol_ButtonActive]         = Hex(0x442029);
 
     // Accent-driven controls
     c[ImGuiCol_CheckMark]            = Dark::accent;
     c[ImGuiCol_SliderGrab]           = Dark::accent;
     c[ImGuiCol_SliderGrabActive]     = Dark::accentPressed;
     c[ImGuiCol_Header]               = Dark::accentSubtle;
-    c[ImGuiCol_HeaderHovered]        = Hex(0x3B2D53);
+    c[ImGuiCol_HeaderHovered]        = Hex(0x52212B);
     c[ImGuiCol_HeaderActive]         = Dark::accentSubtle;
 
     // Legacy tab enum names match the bundled ImGui version.
@@ -140,7 +141,7 @@ inline bool PrimaryButton(const char* label, ImVec2 size = ImVec2(0, 40)) {
     ImGui::PushStyleColor(ImGuiCol_Button,        Dark::accent);
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Dark::accentPressed);
     ImGui::PushStyleColor(ImGuiCol_ButtonActive,  Dark::accentPressed);
-    ImGui::PushStyleColor(ImGuiCol_Text,          Dark::onAccent);
+    ImGui::PushStyleColor(ImGuiCol_Text,          Dark::textPrimary);
     bool r = ImGui::Button(label, size);
     ImGui::PopStyleColor(4);
     return r;
@@ -150,7 +151,7 @@ inline bool PrimaryButton(const char* label, ImVec2 size = ImVec2(0, 40)) {
 inline bool SecondaryButton(const char* label, ImVec2 size = ImVec2(0, 40)) {
     ImGui::PushStyleColor(ImGuiCol_Button,        ImVec4(0, 0, 0, 0));
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Dark::surfaceSubtle);
-    ImGui::PushStyleColor(ImGuiCol_ButtonActive,  Hex(0x352A4B));
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive,  Hex(0x442029));
     ImGui::PushStyleColor(ImGuiCol_Text,          Dark::textPrimary);
     ImGui::PushStyleColor(ImGuiCol_Border,        Dark::outline);
     ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1.0f);
@@ -169,7 +170,7 @@ inline bool NavItem(const char* label, bool selected, ImVec2 size) {
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Dark::surfaceSubtle);
     ImGui::PushStyleColor(ImGuiCol_ButtonActive,  Dark::accentSubtle);
     ImGui::PushStyleColor(ImGuiCol_Text,
-        selected ? Dark::accent : Dark::textSecondary);
+        selected ? Dark::accentPressed : Dark::textSecondary);
     bool r = ImGui::Button(label, size);
     ImGui::PopStyleColor(4);
     ImGui::PopStyleVar();
@@ -180,10 +181,10 @@ inline bool NavItem(const char* label, bool selected, ImVec2 size) {
 inline bool PillTab(const char* label, bool selected, ImVec2 size) {
     ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, size.y * 0.5f);
     ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1.0f);
-    ImGui::PushStyleColor(ImGuiCol_Button, selected ? Dark::accentSubtle : Hex(0x0D0B13, 0.6f));
+    ImGui::PushStyleColor(ImGuiCol_Button, selected ? Dark::accentSubtle : Hex(0x100B0E, 0.6f));
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Dark::surfaceSubtle);
     ImGui::PushStyleColor(ImGuiCol_ButtonActive, Dark::accentSubtle);
-    ImGui::PushStyleColor(ImGuiCol_Border, selected ? Hex(0xA08ACC, 0.65f) : Dark::outline);
+    ImGui::PushStyleColor(ImGuiCol_Border, selected ? Hex(0xC44551, 0.65f) : Dark::outline);
     ImGui::PushStyleColor(ImGuiCol_Text, selected ? Dark::textPrimary : Dark::textSecondary);
     const bool pressed = ImGui::Button(label, size);
     ImGui::PopStyleColor(5);

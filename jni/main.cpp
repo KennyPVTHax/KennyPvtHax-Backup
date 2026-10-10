@@ -11,6 +11,7 @@
 #include <string>
 #include "ClaudeTheme.h"
 #include "KennyMenu.h"
+#include "KennyPanels.h"
 #include "Lua_Buffer.cpp"
 
 
@@ -970,7 +971,18 @@ EGLBoolean _eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
         cfg.SizePixels = ((float)density / 20.0f);
         io.Fonts->AddFontDefault(&cfg);
 
-        // Apply the KennyPvtHax black/lavender theme
+        // Bake the existing typeface at header resolution once. Only the menu
+        // selects this font; the original base, ESP, and fallback fonts remain.
+        ImFontConfig menu_cfg;
+        menu_cfg.FontDataOwnedByAtlas = false;
+        KennyMenu::Font = io.Fonts->AddFontFromMemoryTTF((void*)Custom_data, Custom_size,
+                                                        32.0f, &menu_cfg);
+        ImFontConfig menu_icons = icons_cfg;
+        menu_icons.FontDataOwnedByAtlas = false;
+        io.Fonts->AddFontFromMemoryTTF((void*)fontAwesome, sizeof(fontAwesome),
+                                       30.0f, &menu_icons, icons_ranges);
+
+        // Apply the KennyPvtHax black/crimson theme
         Claude::Apply();
 
         ImGui_ImplAndroid_Init();
@@ -1022,60 +1034,84 @@ EGLBoolean _eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
         KennyMenu::Draw(menuState, opened, Settings::Tab,
                         ImVec2(static_cast<float>(glWidth), static_cast<float>(glHeight)), [] {
             if (Settings::Tab == 1) {
-                Claude::SectionHeader("Player ESP");
-                ImGui::Checkbox("ESP line",     &Cheat::Esp::Line);
-                ImGui::Checkbox("ESP name",     &Cheat::Esp::Name);
-                ImGui::Checkbox("ESP distance", &Cheat::Esp::Distance);
-                ImGui::Checkbox("ESP health",   &Cheat::Esp::Health);
-                ImGui::Checkbox("ESP skeleton", &Cheat::Esp::Skeleton);
-                ImGui::Checkbox("ESP box",      &Cheat::Esp::Box);
-                ImGui::Checkbox("Alert",        &Cheat::Esp::Alert);
-                ImGui::Checkbox("Loot box",     &Cheat::Esp::LootBox);
-                ImGui::Checkbox("Counter",      &Cheat::Esp::Counter);
-                ImGui::Checkbox("Vehicle name", &Cheat::Esp::Vehicle::Name);
+                if (KennyPanels::Begin("##players", 3)) {
+                    KennyPanels::Section("Player");
+                    KennyControls::Checkbox("ESP line",     &Cheat::Esp::Line);
+                    KennyControls::Checkbox("ESP skeleton", &Cheat::Esp::Skeleton);
+                    KennyControls::Checkbox("ESP health",   &Cheat::Esp::Health);
+                    KennyControls::Checkbox("ESP box",      &Cheat::Esp::Box);
+                    KennyPanels::EndSection();
+                    KennyPanels::Section("Labels");
+                    KennyControls::Checkbox("ESP name",     &Cheat::Esp::Name);
+                    KennyControls::Checkbox("ESP distance", &Cheat::Esp::Distance);
+                    KennyControls::Checkbox("Counter",      &Cheat::Esp::Counter);
+                    KennyPanels::EndSection();
+                    KennyPanels::Section("World");
+                    KennyControls::Checkbox("Alert",        &Cheat::Esp::Alert);
+                    KennyControls::Checkbox("Loot box",     &Cheat::Esp::LootBox);
+                    KennyControls::Checkbox("Vehicle name", &Cheat::Esp::Vehicle::Name);
+                    KennyPanels::EndSection();
+                    KennyPanels::End();
+                }
             }
             else if (Settings::Tab == 2) {
-                Claude::SectionHeader("World ESP");
-                ImGui::Checkbox("Throwable",    &Cheat::Esp::Throwable);
-                ImGui::Checkbox("Enemy weapon", &Cheat::Esp::WeaponName);
-                ImGui::Checkbox("Target line",  &Cheat::Esp::Target);
+                if (KennyPanels::Begin("##world", 2, 12.0f)) {
+                    KennyPanels::Section("Threats & targeting");
+                    KennyControls::Checkbox("Throwable",    &Cheat::Esp::Throwable);
+                    KennyControls::Checkbox("Target line",  &Cheat::Esp::Target);
+                    KennyPanels::EndSection();
+                    KennyPanels::Section("Equipment");
+                    KennyControls::Checkbox("Enemy weapon", &Cheat::Esp::WeaponName);
+                    KennyPanels::EndSection();
+                    KennyPanels::End();
+                }
             }
             else if (Settings::Tab == 3) {
-                Claude::SectionHeader("Aimbot");
-                ImGui::Checkbox("Enable aimbot", &Cheat::Aimbot::Enable);
-                ImGui::Checkbox("Enable FOV",    &Cheat::Aimbot::EnableFov);
-                if (Cheat::Aimbot::EnableFov) {
-                    ImGui::SliderFloat("Aim FOV",      &Cheat::Aimbot::Radius, 0.0f, 400.0f, "%.0f");
-                    ImGui::Checkbox("Show FOV circle", &Cheat::Aimbot::ShowFovCircle);
+                if (KennyPanels::Begin("##aim", 2, 12.0f)) {
+                    KennyPanels::Section("Targeting");
+                    KennyControls::Checkbox("Enable aimbot", &Cheat::Aimbot::Enable);
+                    KennyControls::SliderFloat("Aim range", &Cheat::Aimbot::Range, 0.0f, 400.0f, "%.0f m");
+                    KennyPanels::EndSection();
+                    KennyPanels::Section("Filtering");
+                    KennyControls::Checkbox("Visibility check", &Cheat::Aimbot::VisCheck);
+                    KennyControls::Checkbox("Ignore knocked", &Cheat::Aimbot::IgnoreKnock);
+                    KennyControls::Checkbox("Ignore bot", &Cheat::Aimbot::IgnoreBot);
+                    KennyPanels::EndSection();
+                    KennyPanels::Section("Tuning");
+                    KennyControls::SliderFloat("Aim smoothing", &Cheat::Aimbot::Smoothing, 1.0f, 4.0f, "%.0f");
+                    KennyControls::SliderFloat("Recoil compensation", &Cheat::Aimbot::RecoilSet, 0.0f, 2.0f);
+                    KennyPanels::EndSection();
+                    KennyPanels::Section("Field of view");
+                    KennyControls::Checkbox("Enable FOV", &Cheat::Aimbot::EnableFov);
+                    if (Cheat::Aimbot::EnableFov) {
+                        KennyControls::SliderFloat("Aim FOV", &Cheat::Aimbot::Radius, 0.0f, 400.0f, "%.0f");
+                        KennyControls::Checkbox("Show FOV circle", &Cheat::Aimbot::ShowFovCircle);
+                    }
+                    KennyPanels::EndSection();
+                    KennyPanels::End();
                 }
-                ImGui::SliderFloat("Aim range",           &Cheat::Aimbot::Range,     0.0f, 400.0f, "%.0f m");
-                ImGui::SliderFloat("Aim smoothing",       &Cheat::Aimbot::Smoothing, 1.0f, 4.0f,   "%.0f");
-                ImGui::SliderFloat("Recoil compensation", &Cheat::Aimbot::RecoilSet, 0.0f, 2.0f);
-                ImGui::Checkbox("Visibility check", &Cheat::Aimbot::VisCheck);
-                ImGui::Checkbox("Ignore knocked",   &Cheat::Aimbot::IgnoreKnock);
-                ImGui::Checkbox("Ignore bot",       &Cheat::Aimbot::IgnoreBot);
             }
             else if (Settings::Tab == 4) {
                 Claude::SectionHeader("Bullet track");
-                ImGui::Checkbox("Enable bullet track", &Cheat::BulletTrack::Enable);
-                ImGui::Checkbox("Enable FOV",          &Cheat::Aimbot::EnableFov);
+                KennyControls::Checkbox("Enable bullet track", &Cheat::BulletTrack::Enable);
+                KennyControls::Checkbox("Enable FOV",          &Cheat::Aimbot::EnableFov);
                 if (Cheat::Aimbot::EnableFov) {
-                    ImGui::SliderFloat("Aim FOV",      &Cheat::Aimbot::Radius, 0.0f, 400.0f, "%.0f");
-                    ImGui::Checkbox("Show FOV circle", &Cheat::Aimbot::ShowFovCircle);
+                    KennyControls::SliderFloat("Aim FOV",      &Cheat::Aimbot::Radius, 0.0f, 400.0f, "%.0f");
+                    KennyControls::Checkbox("Show FOV circle", &Cheat::Aimbot::ShowFovCircle);
                 }
-                ImGui::SliderFloat("Aim range",              &Cheat::Aimbot::Range, 0.0f, 400.0f, "%.0f m");
-                ImGui::Checkbox("Force headshot on full",    &Cheat::BulletTrack::ForceHeadshotWhenFull);
-                ImGui::SliderInt("Tracking accuracy",        &Cheat::BulletTrack::TrackingAccuracy, 1, 3, "%d/3");
-                ImGui::Checkbox("Visibility check",          &Cheat::Aimbot::VisCheck);
-                ImGui::Checkbox("Ignore knocked",            &Cheat::Aimbot::IgnoreKnock);
-                ImGui::Checkbox("Ignore bot",                &Cheat::Aimbot::IgnoreBot);
+                KennyControls::SliderFloat("Aim range",              &Cheat::Aimbot::Range, 0.0f, 400.0f, "%.0f m");
+                KennyControls::Checkbox("Force headshot on full",    &Cheat::BulletTrack::ForceHeadshotWhenFull);
+                KennyControls::SliderInt("Tracking accuracy",        &Cheat::BulletTrack::TrackingAccuracy, 1, 3, "%d/3");
+                KennyControls::Checkbox("Visibility check",          &Cheat::Aimbot::VisCheck);
+                KennyControls::Checkbox("Ignore knocked",            &Cheat::Aimbot::IgnoreKnock);
+                KennyControls::Checkbox("Ignore bot",                &Cheat::Aimbot::IgnoreBot);
             }
             else if (Settings::Tab == 5) {
                 Claude::SectionHeader("Extra features");
-                ImGui::Checkbox("Small cross",  &Cheat::Memory::Small);
-                ImGui::Checkbox("X-hit effect", &Cheat::Memory::Hit);
-                ImGui::Checkbox("iPad view",    &Cheat::Memory::IPad);
-                ImGui::Checkbox("6-hour fixer", &Cheat::Memory::IslandBp);
+                KennyControls::Checkbox("Small cross",  &Cheat::Memory::Small);
+                KennyControls::Checkbox("X-hit effect", &Cheat::Memory::Hit);
+                KennyControls::Checkbox("iPad view",    &Cheat::Memory::IPad);
+                KennyControls::Checkbox("6-hour fixer", &Cheat::Memory::IslandBp);
 
                 if (ImGui::Button("Guest Reset"))
                   {
