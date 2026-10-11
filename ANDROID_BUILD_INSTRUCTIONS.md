@@ -21,6 +21,11 @@ repository cannot hold plaintext private symbols: the workflow uploads them
 only encrypted when `KPH_SYMBOLS_AGE_RECIPIENT` is configured. The normal native
 filename remains `libs/arm64-v8a/libAnoy.so`.
 
+Latest diagnostic ARM64 result: **success**, source `c975a6d`,
+[run 38117222977](https://github.com/KennyPVTHax/KennyPvtHax-Backup/actions/runs/38117222977).
+Use its matching runtime artifact and build metadata; native compilation and
+host regressions passed, but device startup stability remains unverified.
+
 ## Current repository update — original SDK included
 
 The owner has now supplied `SDK.zip`; its 2,391 original source/header files are

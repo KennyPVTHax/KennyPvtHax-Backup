@@ -1,5 +1,22 @@
 PROJECT: KennyPvtHax
 
+FINAL DIAGNOSTIC BUILD VERIFICATION:
+Code commit c975a6d; Actions run 38117222977 SUCCESS using unchanged NDK
+25.2.9519653, arm64-v8a and full presentation. Runtime artifact 11694306093.
+Actual ZIP CRC/digest, two-file contents, ARM64 ELF and exported host interfaces
+verified. Runtime SHA256 9824c2841aabb36176d837d061d8cb0e1cf45ca48d271cc0640014553958ad14.
+BuildID 42cdd97dec39e9eeceeaedf5c2e75fd36b46ba27. Report metadata in
+DIAGNOSTIC_BUILD_VERIFICATION.json and KENNY_ANDROID_CRASH_DIAGNOSTICS.md.
+Final sanitizer checks pass, including persistent append failures, report-cap
+separation, and queued physical press-origin preservation. Secondary live EGL
+contexts do not trigger repeated UI texture allocation; owner loss is diagnosed.
+Initial native build passed compilation but the readelf/grep verification pipe
+failed; corrected workflow reruns passed. No plaintext/private symbol archive
+uploaded: age public-recipient secret missing. Source SDK/37 callbacks unchanged.
+No Android runtime/actual Documents export/device crash root cause is claimed.
+This final verification commit changes documentation only, not compiled code.
+
+
 CURRENT TASK:
 Emergency Android startup diagnostics and targeted lifecycle corrections.
 Base: latest successful Actions source 7381b71 (NDK 25.2.9519653).
@@ -22,7 +39,7 @@ jni/KennyAndroidAudio.h; jni/KennyCharacterGL.h; jni/Android.mk;
 jni/imgui/backends/imgui_impl_opengl3.cpp and .h;
 .github/workflows/build-native.yml; tests/kenny_diagnostics_check.cpp;
 tests/kenny_startup_audit.py; CODEX_PROGRESS.md; ANDROID_BUILD_INSTRUCTIONS.md;
-KENNY_ANDROID_CRASH_DIAGNOSTICS.md; README.md.
+KENNY_ANDROID_CRASH_DIAGNOSTICS.md; DIAGNOSTIC_BUILD_VERIFICATION.json; README.md.
 
 VERIFICATION:
 Strict host logger/input checks pass, including actual SIGKILL persistence,

@@ -6,6 +6,41 @@ compiled successfully with **NDK 25.2.9519653 (r25c)**. A successful build did n
 establish device stability. No device crash trace was provided; the actual
 reported crash's root cause is **not established**.
 
+## Verified diagnostic ARM64 build
+
+Final diagnostic code commit: **`c975a6de76c626fba0b4a079d55d9521a2aa82c1`**.
+[Actions run 38117222977](https://github.com/KennyPVTHax/KennyPvtHax-Backup/actions/runs/38117222977)
+completed **successfully** with NDK **25.2.9519653**, isolation **full**.
+[Download the runtime artifact](https://github.com/KennyPVTHax/KennyPvtHax-Backup/actions/runs/38117222977/artifacts/11694306093).
+Extract `libs/arm64-v8a/libAnoy.so`; retain `.verification/build-info.txt`.
+
+- Runtime size: 6,752,752 bytes.
+- Runtime SHA-256: `9824c2841aabb36176d837d061d8cb0e1cf45ca48d271cc0640014553958ad14`.
+- ELF BuildID: `42cdd97dec39e9eeceeaedf5c2e75fd36b46ba27`.
+- Artifact ZIP SHA-256: `2befd89516a51ef3e713319dd2e9714c5b8be38ec22961c3f81231718e906d67`.
+
+The actual uploaded ZIP was retrieved using the authenticated GitHub connector;
+CRC, both expected entries, digest, ARM64 ELF and both exported FD/storage
+interfaces were checked. The direct cloud CLI artifact-storage download returned
+403; the supported connector succeeded. The GitHub artifact link is the stable
+retrieval route for the owner (sign in; artifact retention is 30 days).
+
+Matching unstripped `.debug_info` and identical runtime/symbol BuildIDs were
+verified in CI. **No private symbol archive was uploaded:** the age recipient
+secret is not configured, and plaintext symbols must not be published here.
+Configure the public recipient and rerun before a test requiring retained exact
+symbols. Do not claim to symbolize this binary with a different build's symbols.
+No device runtime, host Documents export or Android playback was tested.
+
+Earlier diagnostic run 38115438893 compiled the library but its new verification
+pipeline exited 74 on an early-closed readelf/grep pipe. The workflow now checks
+saved output instead. Runs 38115625355 and 38116561310 also passed; **use the final
+38117222977 artifact**, which includes the touch-origin and EGL-owner guards.
+Final logger/input tests, including persistent append failure and physical press
+origin preservation, passed ASan/UBSan after separating I/O failure from the
+independent report-cap fixture. See `DIAGNOSTIC_BUILD_VERIFICATION.json`.
+This verification/documentation update changes no compiled application files.
+
 ## Corrected source defects and boundaries
 
 - `_HAI` previously called `ImGui::GetIO()` without a context/readiness check,
@@ -296,9 +331,8 @@ Existing menu/C1/audio/theme/Aurora/effects/C2/C3 suites were rebuilt and passed
 including persistence, rapid switching, dragging/scrolling, warmed allocations,
 PCM mute/volume/cooldown and approved Aurora physics/draw regression checks.
 
-A diagnostic Actions build is dispatched after commit; its actual result and
-artifact are reported in the verification update/final response, not inferred
-from these host tests. No Android device test, new EGL context-loss test, real
+The final diagnostic Actions build passed as recorded above; its actual artifact
+bytes were verified independently of the host tests. No Android device test, new EGL context-loss test, real
 OpenSL playback, actual host Documents export or tombstone analysis has occurred
 here. Send the last startup stages and matching fatal trace from the next run to
 establish the smallest evidence-based correction. Do not conclude "crash fixed"

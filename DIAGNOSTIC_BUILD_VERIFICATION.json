@@ -1,0 +1,25 @@
+{
+  "source_commit": "c975a6de76c626fba0b4a079d55d9521a2aa82c1",
+  "workflow_run": 38117222977,
+  "conclusion": "success",
+  "ndk": "25.2.9519653",
+  "isolation": "full",
+  "artifact_id": 11694306093,
+  "artifact_zip_sha256": "2befd89516a51ef3e713319dd2e9714c5b8be38ec22961c3f81231718e906d67",
+  "runtime_sha256": "9824c2841aabb36176d837d061d8cb0e1cf45ca48d271cc0640014553958ad14",
+  "runtime_bytes": 6752752,
+  "build_id": "42cdd97dec39e9eeceeaedf5c2e75fd36b46ba27",
+  "zip_crc_verified": true,
+  "exported_diagnostic_interfaces_verified": true,
+  "host_checks": [
+    "37 full original bindings/ranges/callback body",
+    "startup source gates and unchanged offsets",
+    "ASan/UBSan independent logger, real SIGKILL persistence, disk/write/permission failures, input origin/overflow",
+    "ASan/UBSan actual embedded font build/clear/recreate",
+    "rebuilt menu,C1,audio,theme,Aurora,effects,C2,C3 regressions"
+  ],
+  "private_symbols_uploaded": false,
+  "private_symbols_reason": "No age public recipient secret configured; plaintext never uploaded to public repository. Matching unstripped build was verified in CI, not retained as downloadable plaintext.",
+  "android_runtime_verified": false,
+  "documents_export_verified": false
+}
