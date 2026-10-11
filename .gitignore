@@ -45,3 +45,17 @@ assets/anime/**/*.ogg
 
 # C3 private renderer previews and asset review
 previews/phase_c3/
+
+# Authorized public backup: preserve vetted original build inputs and only CC0 runtime clips
+!jni/curl/**/*.a
+!jni/Dobby/**/*.a
+!jni/prebuilt/**/*.a
+!jni/shadowhook/*.a
+!jni/Helper/Login.h
+!assets/anime/highschool_dxd_rias/voice/cici_hello.wav
+!assets/anime/highschool_dxd_rias/voice/cici_see_you_later.wav
+!assets/anime/highschool_dxd_rias/voice/cici_okay_happy.wav
+!assets/anime/highschool_dxd_rias/voice/cici_okay_normal.wav
+!assets/anime/highschool_dxd_rias/voice/cici_no_problem.wav
+# Restore the owner's original SDK locally; it is not part of the public backup
+jni/SDK/

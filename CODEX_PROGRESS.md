@@ -1,5 +1,82 @@
 PROJECT: KennyPvtHax
 
+CURRENT TASK:
+GitHub build backup — prepared for explicitly authorized PUBLIC publication.
+Original application checkpoint: 3436f47; all 12 development commits preserved.
+Destination: KennyPVTHax/KennyPvtHax-Backup, default branch main.
+
+SCOPE:
+Complete verified source export (991 paths), original untracked native/build
+dependencies including all 40 supplied static libraries, existing build docs,
+and five explicitly approved CC0 Cici Fyre runtime clips. Source/application
+callbacks and 37 bindings/ranges unchanged. Public backup adds README, licensing
+notes, machine-readable provenance and explicit .gitignore exceptions only.
+The original Codex checkout and local private media remain untouched.
+
+VERIFICATION / LIMITS:
+Both export hashes verified; 12 historical commits/146 blobs and current source
+scanned without high-confidence secrets or suspicious credential assignments.
+Public pins/runtime token variables were reviewed, not mistaken for secrets.
+Previous restored-export host checks pass. Final GitHub coverage and fresh-clone
+host tests are reported after upload; no Android build or device claim.
+
+EXCLUDED:
+All six permission-unverified OGGs, duplicated 57 original recordings, private
+media archive, previews/caches/test binaries and the genuine SDK. No release.
+
+NEXT:
+Clone the normal repository as KennyPvtHax; restore original jni/SDK/ locally
+and use the original compatible NDK (exact version unknown). Build libAnoy.so
+through the existing ndk-build/original host application workflow. No UI/Anime
+acquisition/key-entry work starts as part of this publication.
+
+---
+
+CURRENT TASK:
+Complete Android source export — verified, 11 October 2026 (Asia/Calcutta).
+Application HEAD preserved at 3436f47. Further UI/asset/key development paused.
+
+COMPLETED:
+- Full source export includes actual current C++/UI/native code, all original
+  untracked dependency sources/headers/fonts, required Login.h, all 40 original
+  prebuilt libraries, build scripts and documentation. Git-only export avoided.
+- Separate private media archive: five mapped CC0 runtime alternatives, 57
+  unchanged licensed originals/creator readme, six unchanged unmapped uploaded
+  OGGs. No character artwork/original Rias voice fabricated or newly acquired.
+- No tracked application source or original build script changed; HEAD/history
+  unchanged. Added ANDROID_BUILD_INSTRUCTIONS.md and this progress entry only.
+- Confirmed all tracked files exist, original include structure, no exportable
+  symlinks, 20 referenced AArch64 libraries, archive CRC/entry/byte/hash equality
+  and finite credential scan without high-confidence findings. Source/media
+  inventories/checksums and local recovery helpers accompany the export.
+- Reran 37 bindings/ranges/callback extraction, menu/C1/audio/theme/store/Aurora/
+  effects/C2/C3 host tests and media validation. Fresh strict portable-header
+  and C3 builds pass. Existing regression binaries reuse unchanged source.
+
+DELIVERABLES:
+/workspace/kenny-android-export/KennyPvtHax-Android-Build-Source.zip
+/workspace/kenny-android-export/KennyPvtHax-Private-Media.zip
+ANDROID_BUILD_INSTRUCTIONS.md, EXPORT_MANIFEST.txt, SHA256SUMS.txt,
+SOURCE_FILE_INVENTORY.json, PRIVATE_MEDIA_INVENTORY.json, VERIFY_EXPORT.py,
+DOWNLOAD_HELP.md and smaller byte-exact download parts are in that export folder.
+Archive hashes/file counts are recorded outside the source ZIP to avoid a
+self-referential archive checksum. No Git/public/external upload performed.
+
+KNOWN LIMITATIONS / NEXT ACTION:
+- Restore genuine original SDK at jni/SDK/. NDK/version unavailable/unknown.
+- This build produces arm64-v8a libAnoy.so, not an APK. Original app packaging/
+  runtime integration must be supplied; no replacement APK system invented.
+- Android compile/link/OpenSL/GLES/private staging/device performance remain
+  unverified. Rias artwork/original voice permissions/content unresolved.
+- Download copies/parts are prepared; actual Android browser retrieval cannot
+  be verified from the tools. No generic artifact-upload API is exposed. If all
+  links fail, use authenticated workspace retrieval or separately authorize a
+  private source/media transfer destination; never the preview repository.
+- STOP after export. Next separately authorized task: original SDK restoration
+  and the first real Android build. No more UI/Anime/key-entry work now.
+
+---
+
 CURRENT STAGE:
 Phase C3 — Asset Acquisition and Validation — completed feasible integration,
 host-verified. Parent: 6f300ae. Rias rights/content/artwork unresolved; original

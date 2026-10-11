@@ -1,0 +1,202 @@
+[
+  {
+    "module": "libdobby",
+    "path": "jni/Dobby/libraries/arm64-v8a/libdobby.a",
+    "exists": true,
+    "bytes": 366194,
+    "machines": [
+      "AArch64"
+    ],
+    "readelf_returncode": 0
+  },
+  {
+    "module": "libcurl",
+    "path": "jni/curl/curl-android-arm64-v8a/lib/libcurl.a",
+    "exists": true,
+    "bytes": 969004,
+    "machines": [
+      "AArch64"
+    ],
+    "readelf_returncode": 0
+  },
+  {
+    "module": "libssl",
+    "path": "jni/curl/openssl-android-arm64-v8a/lib/libssl.a",
+    "exists": true,
+    "bytes": 675792,
+    "machines": [
+      "AArch64"
+    ],
+    "readelf_returncode": 0
+  },
+  {
+    "module": "libcrypto",
+    "path": "jni/curl/openssl-android-arm64-v8a/lib/libcrypto.a",
+    "exists": true,
+    "bytes": 4155536,
+    "machines": [
+      "AArch64"
+    ],
+    "readelf_returncode": 0
+  },
+  {
+    "module": "shadowhook",
+    "path": "jni/shadowhook/libshadowhook.a",
+    "exists": true,
+    "bytes": 827178,
+    "machines": [
+      "AArch64"
+    ],
+    "readelf_returncode": 0
+  },
+  {
+    "module": "tools",
+    "path": "jni/prebuilt/fuck/Tools.a",
+    "exists": true,
+    "bytes": 341184,
+    "machines": [
+      "AArch64"
+    ],
+    "readelf_returncode": 0
+  },
+  {
+    "module": "KittyMemory",
+    "path": "jni/prebuilt/fuck/KittyMemory/KittyMemory.a",
+    "exists": true,
+    "bytes": 355880,
+    "machines": [
+      "AArch64"
+    ],
+    "readelf_returncode": 0
+  },
+  {
+    "module": "MemoryPatch",
+    "path": "jni/prebuilt/fuck/KittyMemory/MemoryPatch.a",
+    "exists": true,
+    "bytes": 230336,
+    "machines": [
+      "AArch64"
+    ],
+    "readelf_returncode": 0
+  },
+  {
+    "module": "MemoryBackup",
+    "path": "jni/prebuilt/fuck/KittyMemory/MemoryBackup.a",
+    "exists": true,
+    "bytes": 191416,
+    "machines": [
+      "AArch64"
+    ],
+    "readelf_returncode": 0
+  },
+  {
+    "module": "KittyUtils",
+    "path": "jni/prebuilt/fuck/KittyMemory/KittyUtils.a",
+    "exists": true,
+    "bytes": 406616,
+    "machines": [
+      "AArch64"
+    ],
+    "readelf_returncode": 0
+  },
+  {
+    "module": "hde64",
+    "path": "jni/prebuilt/fuck/Substrate/hde64.a",
+    "exists": true,
+    "bytes": 15016,
+    "machines": [
+      "AArch64"
+    ],
+    "readelf_returncode": 0
+  },
+  {
+    "module": "SubstrateHook",
+    "path": "jni/prebuilt/fuck/Substrate/SubstrateHook.a",
+    "exists": true,
+    "bytes": 3528,
+    "machines": [
+      "AArch64"
+    ],
+    "readelf_returncode": 0
+  },
+  {
+    "module": "SubstrateDebug",
+    "path": "jni/prebuilt/fuck/Substrate/SubstrateDebug.a",
+    "exists": true,
+    "bytes": 13320,
+    "machines": [
+      "AArch64"
+    ],
+    "readelf_returncode": 0
+  },
+  {
+    "module": "SubstratePosixMemory",
+    "path": "jni/prebuilt/fuck/Substrate/SubstratePosixMemory.a",
+    "exists": true,
+    "bytes": 8264,
+    "machines": [
+      "AArch64"
+    ],
+    "readelf_returncode": 0
+  },
+  {
+    "module": "base64",
+    "path": "jni/prebuilt/fuck/base64/base64.a",
+    "exists": true,
+    "bytes": 264152,
+    "machines": [
+      "AArch64"
+    ],
+    "readelf_returncode": 0
+  },
+  {
+    "module": "ElfImg",
+    "path": "jni/prebuilt/fuck/ElfImg.a",
+    "exists": true,
+    "bytes": 466808,
+    "machines": [
+      "AArch64"
+    ],
+    "readelf_returncode": 0
+  },
+  {
+    "module": "fake_dlfcn",
+    "path": "jni/prebuilt/fuck/fake_dlfcn.a",
+    "exists": true,
+    "bytes": 31080,
+    "machines": [
+      "AArch64"
+    ],
+    "readelf_returncode": 0
+  },
+  {
+    "module": "android_native_app_glue",
+    "path": "jni/prebuilt/fuck/android_native_app_glue.a",
+    "exists": true,
+    "bytes": 80984,
+    "machines": [
+      "AArch64"
+    ],
+    "readelf_returncode": 0
+  },
+  {
+    "module": "plthook_elf",
+    "path": "jni/prebuilt/fuck/plthook_elf.a",
+    "exists": true,
+    "bytes": 48032,
+    "machines": [
+      "AArch64"
+    ],
+    "readelf_returncode": 0
+  },
+  {
+    "module": "And64InlineHook",
+    "path": "jni/prebuilt/fuck/And64InlineHook/And64InlineHook.a",
+    "exists": true,
+    "bytes": 60912,
+    "machines": [
+      "AArch64"
+    ],
+    "readelf_returncode": 0
+  }
+]
