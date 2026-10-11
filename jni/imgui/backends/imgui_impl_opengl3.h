@@ -31,6 +31,9 @@ IMGUI_IMPL_API bool     ImGui_ImplOpenGL3_CreateFontsTexture();
 IMGUI_IMPL_API void     ImGui_ImplOpenGL3_DestroyFontsTexture();
 IMGUI_IMPL_API bool     ImGui_ImplOpenGL3_CreateDeviceObjects();
 IMGUI_IMPL_API void     ImGui_ImplOpenGL3_DestroyDeviceObjects();
+// Context was lost/replaced: forget names without deleting objects in another
+// context's namespace. Follow with Shutdown and reinitialize on the new context.
+IMGUI_IMPL_API void     ImGui_ImplOpenGL3_ForgetDeviceObjects();
 
 // Specific OpenGL ES versions
 //#define IMGUI_IMPL_OPENGL_ES2     // Auto-detected on Emscripten

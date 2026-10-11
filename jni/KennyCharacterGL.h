@@ -33,13 +33,13 @@ inline void StageFile(int directory,const std::string& path,const std::vector<ui
     if(out>=0){size_t n=0;while(n<bytes.size()){ssize_t done=write(out,bytes.data()+n,bytes.size()-n);if(done<=0)break;n+=size_t(done);}bool ok=n==bytes.size()&&fsync(out)==0;close(out);if(!ok)unlinkat(fd,file.c_str(),0);}
     close(fd);
 }
-inline void StageAPK(AAssetManager* manager,const char* directory){
+inline bool StageAPK(AAssetManager* manager,const char* directory){
     std::vector<uint8_t> bytes;nlohmann::json index;
-    if(!directory||!APKRead(manager,"anime/index.json",32768,bytes)||!Registry::JSON(bytes,index))return;
-    auto packs=index.find("characters");if(packs==index.end()||!packs->is_array()||packs->size()>8)return;
-    int activity=open(directory,O_RDONLY|O_DIRECTORY|O_NOFOLLOW|O_CLOEXEC);if(activity<0)return;
-    int assets=PrivateDirectory(activity,"assets");close(activity);if(assets<0)return;
-    int root=PrivateDirectory(assets,"anime");close(assets);if(root<0)return;
+    if(!directory||!APKRead(manager,"anime/index.json",32768,bytes)||!Registry::JSON(bytes,index))return false;
+    auto packs=index.find("characters");if(packs==index.end()||!packs->is_array()||packs->size()>8)return false;
+    int activity=open(directory,O_RDONLY|O_DIRECTORY|O_NOFOLLOW|O_CLOEXEC);if(activity<0)return false;
+    int assets=PrivateDirectory(activity,"assets");close(activity);if(assets<0)return false;
+    int root=PrivateDirectory(assets,"anime");close(assets);if(root<0)return false;
     size_t copied=0;
     for(const auto& value:*packs){if(!value.is_string())continue;auto id=value.get<std::string>();if(!KennyAssets::Token(id))continue;
         const std::string prefix="anime/"+id+"/";nlohmann::json manifest;
@@ -51,11 +51,12 @@ inline void StageAPK(AAssetManager* manager,const char* directory){
             if(!pack.is_object())continue;auto events=pack.find("events");if(events==pack.end()||!events->is_object())continue;
             for(const char* name:EventNames){auto files=events->find(name);if(files==events->end()||!files->is_array()||files->size()>3)continue;for(const auto& file:*files)if(file.is_string())copy(file.get<std::string>(),1048576,".wav");}
         }close(target);
-    }close(root);
+    }close(root);return true;
 }
 inline KennyThemeBackground::ArtworkFrame UploadGL(void*,const KennyAssets::Image& image){
+    if(eglGetCurrentContext()==EGL_NO_CONTEXT)return {};
     GLint limit=0;glGetIntegerv(GL_MAX_TEXTURE_SIZE,&limit);
-    if(!image.width||!image.height||image.width>unsigned(limit)||image.height>unsigned(limit)||image.rgba.size()!=size_t(image.width)*image.height*4)return {};
+    if(limit<=0||!image.width||!image.height||image.width>unsigned(limit)||image.height>unsigned(limit)||image.rgba.size()!=size_t(image.width)*image.height*4)return {};
     GLint binding=0,alignment=4;glGetIntegerv(GL_TEXTURE_BINDING_2D,&binding);glGetIntegerv(GL_UNPACK_ALIGNMENT,&alignment);
     GLuint id=0;glGenTextures(1,&id);if(!id)return {};
     glBindTexture(GL_TEXTURE_2D,id);glPixelStorei(GL_UNPACK_ALIGNMENT,1);

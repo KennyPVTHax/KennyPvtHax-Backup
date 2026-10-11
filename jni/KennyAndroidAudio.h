@@ -12,6 +12,7 @@ class AndroidBackend {
     Bank bank;
     Mixer mixer;
     bool attempted=false,ready=false;
+    unsigned lastError=0;
     const char* status="UI audio unavailable in this host preview.";
 #ifdef __ANDROID__
     SLObjectItf engineObject=nullptr,mixObject=nullptr,playerObject=nullptr;
@@ -50,22 +51,22 @@ public:
         attempted=true;
 #ifdef __ANDROID__
         bank.Initialize();mixer.bank=&bank;
-        if(slCreateEngine(&engineObject,0,nullptr,0,nullptr,nullptr)!=SL_RESULT_SUCCESS) return Fail();
-        if((*engineObject)->Realize(engineObject,SL_BOOLEAN_FALSE)!=SL_RESULT_SUCCESS ||
-           (*engineObject)->GetInterface(engineObject,SL_IID_ENGINE,&engine)!=SL_RESULT_SUCCESS) return Fail();
-        if((*engine)->CreateOutputMix(engine,&mixObject,0,nullptr,nullptr)!=SL_RESULT_SUCCESS ||
-           (*mixObject)->Realize(mixObject,SL_BOOLEAN_FALSE)!=SL_RESULT_SUCCESS) return Fail();
+        if(!Check(slCreateEngine(&engineObject,0,nullptr,0,nullptr,nullptr),"OpenSL engine creation failed."))return false;
+        if(!Check((*engineObject)->Realize(engineObject,SL_BOOLEAN_FALSE),"OpenSL engine realization failed."))return false;
+        if(!Check((*engineObject)->GetInterface(engineObject,SL_IID_ENGINE,&engine),"OpenSL engine interface unavailable."))return false;
+        if(!Check((*engine)->CreateOutputMix(engine,&mixObject,0,nullptr,nullptr),"OpenSL output mix creation failed."))return false;
+        if(!Check((*mixObject)->Realize(mixObject,SL_BOOLEAN_FALSE),"OpenSL output mix realization failed."))return false;
         SLDataLocator_AndroidSimpleBufferQueue locator={SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE,2};
         SLDataFormat_PCM format={SL_DATAFORMAT_PCM,1,SL_SAMPLINGRATE_48,SL_PCMSAMPLEFORMAT_FIXED_16,
                                 SL_PCMSAMPLEFORMAT_FIXED_16,SL_SPEAKER_FRONT_CENTER,SL_BYTEORDER_LITTLEENDIAN};
         SLDataSource source={&locator,&format};
         SLDataLocator_OutputMix output={SL_DATALOCATOR_OUTPUTMIX,mixObject};SLDataSink sink={&output,nullptr};
         const SLInterfaceID ids[]={SL_IID_ANDROIDSIMPLEBUFFERQUEUE};const SLboolean required[]={SL_BOOLEAN_TRUE};
-        if((*engine)->CreateAudioPlayer(engine,&playerObject,&source,&sink,1,ids,required)!=SL_RESULT_SUCCESS ||
-           (*playerObject)->Realize(playerObject,SL_BOOLEAN_FALSE)!=SL_RESULT_SUCCESS ||
-           (*playerObject)->GetInterface(playerObject,SL_IID_PLAY,&play)!=SL_RESULT_SUCCESS ||
-           (*playerObject)->GetInterface(playerObject,SL_IID_ANDROIDSIMPLEBUFFERQUEUE,&buffers)!=SL_RESULT_SUCCESS ||
-           (*buffers)->RegisterCallback(buffers,Callback,this)!=SL_RESULT_SUCCESS) return Fail();
+        if(!Check((*engine)->CreateAudioPlayer(engine,&playerObject,&source,&sink,1,ids,required),"OpenSL player creation failed."))return false;
+        if(!Check((*playerObject)->Realize(playerObject,SL_BOOLEAN_FALSE),"OpenSL player realization failed."))return false;
+        if(!Check((*playerObject)->GetInterface(playerObject,SL_IID_PLAY,&play),"OpenSL play interface unavailable."))return false;
+        if(!Check((*playerObject)->GetInterface(playerObject,SL_IID_ANDROIDSIMPLEBUFFERQUEUE,&buffers),"OpenSL buffer queue unavailable."))return false;
+        if(!Check((*buffers)->RegisterCallback(buffers,Callback,this),"OpenSL callback registration failed."))return false;
         running.store(true,std::memory_order_release);ready=true;
         dispatcher.mixer=&mixer;status="UI sound profiles are ready.";
 #endif
@@ -73,6 +74,7 @@ public:
     }
     const char* Status() const{return status;}
     bool Ready() const{return ready;}
+    unsigned LastError() const{return lastError;}
     void Pump(const KennyAppearance::Preferences& p) {
         dispatcher.Refresh(p);
 #ifdef __ANDROID__
@@ -83,10 +85,10 @@ public:
         (*buffers)->Clear(buffers);idleSamples=0;slot=0;
         for(auto& block:pcm) {
             mixer.Render(block.data(),block.size());
-            if((*buffers)->Enqueue(buffers,block.data(),block.size()*sizeof(int16_t))!=SL_RESULT_SUCCESS){Fail();return;}
+            if(!Check((*buffers)->Enqueue(buffers,block.data(),block.size()*sizeof(int16_t)),"OpenSL buffer enqueue failed."))return;
         }
         playing.store(true,std::memory_order_release);
-        if((*play)->SetPlayState(play,SL_PLAYSTATE_PLAYING)!=SL_RESULT_SUCCESS)Fail();
+        Check((*play)->SetPlayState(play,SL_PLAYSTATE_PLAYING),"OpenSL play start failed.");
 #endif
     }
     void Shutdown() {
@@ -105,6 +107,8 @@ public:
 #endif
     }
 private:
-    bool Fail(){Shutdown();status="UI audio could not start on this device; sounds are unavailable.";return false;}
+#ifdef __ANDROID__
+    bool Check(SLresult result,const char* reason){if(result==SL_RESULT_SUCCESS)return true;lastError=result;Shutdown();status=reason;return false;}
+#endif
 };
 } // namespace KennyAudio

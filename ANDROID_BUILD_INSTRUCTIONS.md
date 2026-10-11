@@ -4,6 +4,23 @@ Export date: 11 October 2026 (Asia/Calcutta). Application checkpoint: `3436f47`.
 No UI, theme, gameplay, licensing, native integration or SDK reference was changed
 for this export. Build documentation is added without changing Git HEAD.
 
+## Emergency startup diagnostic build
+
+See [KENNY_ANDROID_CRASH_DIAGNOSTICS.md](KENNY_ANDROID_CRASH_DIAGNOSTICS.md)
+for startup checkpoint logging, private report rotation, authorized host FD
+export to Documents, ADB recovery and matching-symbol instructions. The latest
+pre-fix Actions build at `7381b71` passed with NDK **25.2.9519653 (r25c)**; the
+workflow retains that version for diagnostic builds. This is compilation evidence,
+not proof of device stability. Older notes about the exact NDK being unknown
+below describe the original export, before the workflow was supplied.
+
+Private logs: `<activity.internalDataPath>/KennyPvtHax/CrashReports/`.
+Documents export requires the original Android host's SAF/MediaStore bridge;
+no broad storage permission or automatic external upload is added. A public
+repository cannot hold plaintext private symbols: the workflow uploads them
+only encrypted when `KPH_SYMBOLS_AGE_RECIPIENT` is configured. The normal native
+filename remains `libs/arm64-v8a/libAnoy.so`.
+
 ## Current repository update — original SDK included
 
 The owner has now supplied `SDK.zip`; its 2,391 original source/header files are

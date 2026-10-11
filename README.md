@@ -14,6 +14,15 @@ voice mappings. All **37 original controls, bindings and numerical ranges** are
 retained. Rias artwork, launcher artwork and original character recordings are
 not installed; their safe fallbacks remain.
 
+## Startup diagnostics
+
+The startup diagnostic correction and report retrieval procedure are in
+[KENNY_ANDROID_CRASH_DIAGNOSTICS.md](KENNY_ANDROID_CRASH_DIAGNOSTICS.md).
+Current Actions uses NDK **25.2.9519653 (r25c)**, whose prior ARM64 build passed.
+Device startup stability is not established. Reports stay app-private; authorized
+Documents export needs host integration. Private symbols are encrypted or omitted
+from this public repository's artifacts.
+
 ## Clone with the original SDK
 
 ```sh

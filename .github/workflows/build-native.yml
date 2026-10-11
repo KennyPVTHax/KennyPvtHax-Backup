@@ -3,6 +3,12 @@ name: KennyPvtHax Native Build
 
 on:
   workflow_dispatch:
+    inputs:
+      isolation:
+        description: "Presentation-only diagnosis; full preserves all features"
+        type: choice
+        default: full
+        options: [full, no_audio, no_artwork, no_preferences, classic, no_menu]
 
 permissions:
   contents: read
@@ -15,6 +21,8 @@ jobs:
 
     env:
       NDK_VERSION: "25.2.9519653"
+      KPH_ISOLATION: ${{ inputs.isolation || 'full' }}
+      KPH_SYMBOLS_AGE_RECIPIENT: ${{ secrets.KPH_SYMBOLS_AGE_RECIPIENT }}
 
     steps:
       - name: Checkout source
@@ -70,6 +78,9 @@ jobs:
             NDK_PROJECT_PATH=. \
             APP_BUILD_SCRIPT=jni/Android.mk \
             NDK_APPLICATION_MK=jni/Application.mk \
+            KPH_DIAGNOSTICS=1 \
+            KPH_BUILD_ID="$GITHUB_SHA" \
+            KPH_ISOLATION="$KPH_ISOLATION" \
             -j2
 
       - name: Verify compiled library
@@ -86,13 +97,54 @@ jobs:
           "$READELF" -h "$SO" | grep -E 'Class:|Machine:'
           "$READELF" -h "$SO" | grep -q 'AArch64'
 
+          mkdir -p .verification
+          SYMBOLS="obj/local/arm64-v8a/libAnoy.so"
+          test -s "$SYMBOLS"
+          "$READELF" -S "$SYMBOLS" | grep -q '.debug_info'
+          "$READELF" -Ws "$SO" | grep -q 'KennyPvtHaxDiagnosticsExportToFd'
+          {
+            echo "commit=$GITHUB_SHA"
+            echo "ndk=$NDK_VERSION"
+            echo "isolation=$KPH_ISOLATION"
+            sha256sum "$SO" "$SYMBOLS"
+            "$READELF" -n "$SO"
+            "$READELF" -n "$SYMBOLS"
+          } > .verification/build-info.txt
+
           echo "ARM64 native library verified."
 
       - name: Upload compiled SO
         uses: actions/upload-artifact@v4
         with:
           name: KennyPvtHax-ARM64-SO
-          path: libs/arm64-v8a/libAnoy.so
+          path: |
+            libs/arm64-v8a/libAnoy.so
+            .verification/build-info.txt
           if-no-files-found: error
+          include-hidden-files: true
           retention-days: 30
+
+      # This repository is public: never upload plaintext unstripped symbols.
+      # Set an age public recipient secret to allow only its private-key owner
+      # to decrypt the additional debugging artifact.
+      - name: Encrypt matching private symbols when configured
+        if: env.KPH_SYMBOLS_AGE_RECIPIENT != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y age
+          tar -czf .verification/symbols.tar.gz obj/local/arm64-v8a/libAnoy.so .verification/build-info.txt
+          age -r "$KPH_SYMBOLS_AGE_RECIPIENT" -o .verification/symbols.tar.gz.age .verification/symbols.tar.gz
+          rm .verification/symbols.tar.gz
+
+      - name: Upload encrypted symbols only
+        if: env.KPH_SYMBOLS_AGE_RECIPIENT != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: KennyPvtHax-encrypted-debug-symbols
+          path: .verification/symbols.tar.gz.age
+          if-no-files-found: error
+          include-hidden-files: true
+          retention-days: 7
           

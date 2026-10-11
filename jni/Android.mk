@@ -137,6 +137,31 @@ LOCAL_SRC_FILES :=  main.cpp \
 
 LOCAL_CPP_FEATURES := exceptions
 
+# Diagnostic builds keep matching unstripped obj/ symbols locally. ndk-build
+# still installs a stripped release library at libs/arm64-v8a/libAnoy.so.
+ifeq ($(KPH_DIAGNOSTICS),1)
+LOCAL_CPPFLAGS := $(filter-out -s,$(LOCAL_CPPFLAGS)) -g -fno-omit-frame-pointer
+LOCAL_LDFLAGS := -Wl,--gc-sections -llog
+endif
+ifneq ($(KPH_BUILD_ID),)
+LOCAL_CPPFLAGS += -DKPH_BUILD_ID=\"$(KPH_BUILD_ID)\"
+endif
+ifeq ($(KPH_ISOLATION),no_audio)
+LOCAL_CPPFLAGS += -DKPH_DIAGNOSTIC_NO_AUDIO=1
+endif
+ifeq ($(KPH_ISOLATION),no_artwork)
+LOCAL_CPPFLAGS += -DKPH_DIAGNOSTIC_NO_ARTWORK=1
+endif
+ifeq ($(KPH_ISOLATION),no_preferences)
+LOCAL_CPPFLAGS += -DKPH_DIAGNOSTIC_NO_PREFERENCES=1
+endif
+ifeq ($(KPH_ISOLATION),classic)
+LOCAL_CPPFLAGS += -DKPH_DIAGNOSTIC_CLASSIC=1
+endif
+ifeq ($(KPH_ISOLATION),no_menu)
+LOCAL_CPPFLAGS += -DKPH_DIAGNOSTIC_NO_MENU=1
+endif
+
 LOCAL_LDLIBS := -llog -landroid -lOpenSLES -lEGL -lGLESv2 -lGLESv3 -lGLESv1_CM -lz
 
 LOCAL_STATIC_LIBRARIES := libdobby libcurl libssl libcrypto And64InlineHook ElfImg fake_dlfcn android_native_app_glue plthook_elf tools base64 SubstrateDebug SubstrateHook hde64 SubstratePosixMemory KittyMemory MemoryPatch MemoryBackup KittyUtils shadowhook

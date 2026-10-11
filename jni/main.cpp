@@ -1,3 +1,6 @@
+#include "KennyDiagnostics.h"
+#include "KennyStartup.h"
+#include <atomic>
 #include "Helper/include.h"
 #include "Helper/definition.h"
 #include "Helper/Items.h"
@@ -17,6 +20,19 @@
 #include "KennyPanels.h"
 #include "Lua_Buffer.cpp"
 
+
+static std::atomic<bool> NativeGlobalsReady{false};
+static std::atomic<android_app*> PresentationApp{nullptr};
+
+// The Android host may call these through a JNI bridge/dlsym on a worker thread.
+extern "C" __attribute__((visibility("default"))) bool KennyPvtHaxDiagnosticsSetStorage(const char* directory) {
+    const bool ok=KennyDiagnostics::SetStorage(directory);
+    KennyDiagnostics::Once(27,ok?KennyDiagnostics::Severity::Info:KennyDiagnostics::Severity::Warning,ok?0:errno,ok,"Host private-storage registration");
+    return ok;
+}
+extern "C" __attribute__((visibility("default"))) bool KennyPvtHaxDiagnosticsExportToFd(int destination,unsigned previous) {
+    return KennyDiagnostics::ExportToFd(destination,previous);
+}
 
 json items_data;
 std::map<int, bool> Items;
@@ -61,48 +77,38 @@ int32_t _ANativeWindow_getWidth(ANativeWindow *window) {
 
 void (*orig_onInputEvent)(void *thiz, void *ex_ab, void *ex_ac);
 void _OI(void *thiz, void *ex_ab, void *ex_ac) {
-    orig_onInputEvent(thiz, ex_ab, ex_ac);
-    if (initImGui) {
-        ImGui_ImplAndroid_HandleInputEvent((AInputEvent*)thiz, {(float)screenWidth/(float)glWidth, (float)screenHeight/(float)glHeight});
-    }
+    // These libinput hooks receive InputConsumer/MotionEvent C++ instances,
+    // not AInputEvent handles. Preserve forwarding; never reinterpret thiz for UI.
+    if(orig_onInputEvent)orig_onInputEvent(thiz, ex_ab, ex_ac);
 }
 
 int (*orig_AInputQueue_getEvent)(AInputQueue*, AInputEvent**);
-
 int _HAI(AInputQueue* q, AInputEvent** e) {
-    int r = orig_AInputQueue_getEvent(q, e);
-    if (r >= 0 && *e) {
-        int32_t t = AInputEvent_getType(*e);
-
-        // Volume button block REMOVED
-
-        if (t == AINPUT_EVENT_TYPE_MOTION) {
-            int32_t a = AMotionEvent_getAction(*e) & AMOTION_EVENT_ACTION_MASK;
-            int32_t p = (AMotionEvent_getAction(*e) & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
-            float x = AMotionEvent_getX(*e, p);
-            float y = AMotionEvent_getY(*e, p);
-            float sx = (x * glWidth) / screenWidth;
-            float sy = (y * glHeight) / screenHeight;
-            ImGuiIO& io = ImGui::GetIO();
-
-            switch (a) {
-            case AMOTION_EVENT_ACTION_DOWN:
-            case AMOTION_EVENT_ACTION_POINTER_DOWN:
-                io.MousePos = ImVec2(sx, sy);
-                io.MouseDown[0] = true;
-                break;
-            case AMOTION_EVENT_ACTION_UP:
-            case AMOTION_EVENT_ACTION_POINTER_UP:
-                io.MousePos = ImVec2(sx, sy);
-                io.MouseDown[0] = false;
-                break;
-            case AMOTION_EVENT_ACTION_MOVE:
-                io.MousePos = ImVec2(sx, sy);
-                break;
-            }
+    if(!orig_AInputQueue_getEvent)return -1;
+    const int r=orig_AInputQueue_getEvent(q,e);
+    if(r<0||!e||!*e)return r;
+    const int type=AInputEvent_getType(*e);
+    if(type==AINPUT_EVENT_TYPE_MOTION){
+        const int raw=AMotionEvent_getAction(*e);
+        const int action=raw&AMOTION_EVENT_ACTION_MASK;
+        const size_t index=(raw&AMOTION_EVENT_ACTION_POINTER_INDEX_MASK)>>AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
+        if(index>=AMotionEvent_getPointerCount(*e))return r;
+        if(action==AMOTION_EVENT_ACTION_DOWN||action==AMOTION_EVENT_ACTION_POINTER_DOWN||
+           action==AMOTION_EVENT_ACTION_UP||action==AMOTION_EVENT_ACTION_POINTER_UP||
+           action==AMOTION_EVENT_ACTION_MOVE||action==AMOTION_EVENT_ACTION_CANCEL){
+            KennyStartup::Input input;
+            input.x=AMotionEvent_getX(*e,index);input.y=AMotionEvent_getY(*e,index);
+            input.transition=action!=AMOTION_EVENT_ACTION_MOVE;
+            input.down=action==AMOTION_EVENT_ACTION_DOWN||action==AMOTION_EVENT_ACTION_POINTER_DOWN;
+            if(action==AMOTION_EVENT_ACTION_CANCEL)input.down=false;
+            KennyStartup::Inputs().Push(input);
         }
+    }else if(type==AINPUT_EVENT_TYPE_KEY){
+        KennyStartup::Input input;input.kind=KennyStartup::Input::Key;
+        input.code=AKeyEvent_getKeyCode(*e);input.modifiers=AKeyEvent_getMetaState(*e);input.down=AKeyEvent_getAction(*e)==AKEY_EVENT_ACTION_DOWN;
+        if(input.code>=0&&input.code<512)KennyStartup::Inputs().Push(input);
     }
-    return r;
+    return r; // Never consumes or filters the host application's input.
 }
 
 
@@ -929,28 +935,75 @@ void AutoEspOn()
  
 EGLBoolean (*orig_eglSwapBuffers)(EGLDisplay dpy, EGLSurface surface);
 EGLBoolean _eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
-    eglQuerySurface(dpy, surface, EGL_WIDTH,  &glWidth);
-    eglQuerySurface(dpy, surface, EGL_HEIGHT, &glHeight);
-
-    if (glWidth <= 0 || glHeight <= 0)
-        return orig_eglSwapBuffers(dpy, surface);
-
-    if (!g_App)
-        return orig_eglSwapBuffers(dpy, surface);
-
-    screenWidth  = ANativeWindow_getWidth(g_App->window);
-    screenHeight = ANativeWindow_getHeight(g_App->window);
-    density      = AConfiguration_getDensity(g_App->config);
-
+    using KennyDiagnostics::Severity;
+    const auto forward=[&]{return orig_eglSwapBuffers?orig_eglSwapBuffers(dpy,surface):EGL_FALSE;};
+    if(!orig_eglSwapBuffers){KennyDiagnostics::Once(30,Severity::Error,0,false,"Swap forwarding unavailable");return EGL_FALSE;}
+    auto* app=PresentationApp.load(std::memory_order_acquire);
+    if(!app){KennyDiagnostics::Once(4,Severity::Warning,0,false,"Application context not available; UI deferred");return forward();}
+    static bool renderStorageAttempted=false;
+    if(!renderStorageAttempted&&app->activity&&app->activity->internalDataPath){
+        renderStorageAttempted=true;
+        const bool stored=KennyDiagnostics::SetStorage(app->activity->internalDataPath);
+        KennyDiagnostics::Once(27,stored?Severity::Info:Severity::Warning,stored?0:errno,stored,stored?"App-private persistent diagnostics ready":"Private diagnostic storage unavailable; retain logcat");
+    }
+    auto* window=app->window;auto* configuration=app->config;
+    if(!window||!configuration){KennyDiagnostics::Once(5,Severity::Warning,0,false,"Native window/configuration not available; UI deferred");return forward();}
+    KennyDiagnostics::Once(5,Severity::Info,0,true,"Native window/configuration available");
+    const EGLContext current=eglGetCurrentContext();
+    if(dpy==EGL_NO_DISPLAY||surface==EGL_NO_SURFACE||eglGetCurrentDisplay()!=dpy||eglGetCurrentSurface(EGL_DRAW)!=surface){
+        KennyDiagnostics::Once(6,Severity::Warning,eglGetError(),false,"EGL display/draw surface not current; UI deferred");return forward();
+    }
+    if(current==EGL_NO_CONTEXT){KennyDiagnostics::Once(7,Severity::Warning,0,false,"No current EGL context; UI deferred");return forward();}
+    KennyDiagnostics::Once(6,Severity::Info,0,true,"EGL display/draw surface current");
+    KennyDiagnostics::Once(7,Severity::Info,0,true,"EGL context available");
+    EGLint width=0,height=0;
+    if(!eglQuerySurface(dpy,surface,EGL_WIDTH,&width)||!eglQuerySurface(dpy,surface,EGL_HEIGHT,&height)||width<=0||height<=0){
+        KennyDiagnostics::Once(29,Severity::Warning,eglGetError(),false,"EGL dimensions unavailable; UI deferred");return forward();
+    }
+    KennyStartup::RenderGuard rendering;if(!rendering.acquired)return forward();
+    glWidth=width;glHeight=height;
+    screenWidth=ANativeWindow_getWidth(window);screenHeight=ANativeWindow_getHeight(window);
+    if(screenWidth<=0||screenHeight<=0){rendering.Release();return forward();}
+    density=AConfiguration_getDensity(configuration);
+    if(density<=0||density>1000)density=160;
+    static ImGuiContext* uiContext=nullptr;
+    static EGLContext rendererContext=EGL_NO_CONTEXT;
+    static KennyMenu::State menuState;
+    static KennyLauncher::State launcher;
+    static KennyAudio::AndroidBackend uiAudio;
+    static bool stagedCharacters=false,modulesLogged=false,rendererFailed=false;
+    ImGuiContext* previous=ImGui::GetCurrentContext();
+    struct RestoreContext {ImGuiContext*& previous;~RestoreContext(){ImGui::SetCurrentContext(previous);}} restore{previous};
+    if(uiContext&&rendererContext!=current){
+        if(previous==uiContext)previous=nullptr;
+        ImGui::SetCurrentContext(uiContext);
+        launcher.logo.Clear();menuState.characters.ClearTextures(true);
+        ImGui_ImplOpenGL3_ForgetDeviceObjects();ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplAndroid_Shutdown();ImGui::DestroyContext(uiContext);
+        uiContext=nullptr;initImGui=false;KennyMenu::Font=nullptr;font2=nullptr;
+        KennyDiagnostics::Event(28,Severity::Warning,0,true,"Graphics context changed; UI resources rebuilt without deleting foreign GL names");
+    }
+    if(rendererContext!=current)rendererFailed=false;
+    rendererContext=current;
+    if(rendererFailed){rendering.Release();return forward();}
+    KennyDiagnostics::Once(31,Severity::Info,0,true,"Application/native window/EGL preconditions ready");
     // ----------------------------------------------------------------
     // One-time init
     // ----------------------------------------------------------------
     if (!initImGui) {
-        ImGui::CreateContext();
+        GLint major=0;glGetIntegerv(GL_MAJOR_VERSION,&major);
+        if(major<3||!glGetString(GL_VERSION)){rendererFailed=true;KennyDiagnostics::Event(7,Severity::Error,0,false,"Current graphics context is not usable GLES3");rendering.Release();return forward();}
+        KennyDiagnostics::Once(8,Severity::Info,0,true,"ImGui context creation started");
+        uiContext=ImGui::CreateContext();
+        if(!uiContext){rendererFailed=true;KennyDiagnostics::Event(9,Severity::Error,ENOMEM,false,"ImGui context creation failed");rendering.Release();return forward();}
+        ImGui::SetCurrentContext(uiContext);
+        KennyDiagnostics::Once(9,Severity::Info,0,true,"ImGui context created");
+        KennyDiagnostics::Once(10,Severity::Info,0,true,"Embedded font initialization started");
         ImGuiIO& io = ImGui::GetIO();
 
         // Icons config (merge into base font)
         ImFontConfig icons_cfg;
+        icons_cfg.FontDataOwnedByAtlas = false;
         icons_cfg.MergeMode   = true;
         icons_cfg.PixelSnapH  = true;
         icons_cfg.OversampleH = 2;
@@ -958,16 +1011,20 @@ EGLBoolean _eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
         static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
 
         // Base UI font
+        ImFontConfig base_cfg;
+        base_cfg.FontDataOwnedByAtlas = false;
         io.Fonts->AddFontFromMemoryTTF((void*)Custom_data, Custom_size, 16.0f,
-                                       nullptr, io.Fonts->GetGlyphRangesDefault());
+                                       &base_cfg, io.Fonts->GetGlyphRangesDefault());
 
         // Icon font merged into base
         io.Fonts->AddFontFromMemoryTTF((void*)fontAwesome, sizeof(fontAwesome),
                                        15.0f, &icons_cfg, icons_ranges);
 
         // Small ESP/mono font (kept for existing usage)
+        ImFontConfig esp_cfg;
+        esp_cfg.FontDataOwnedByAtlas = false;
         font2 = io.Fonts->AddFontFromMemoryTTF((void*)voidespfont,
-                                               sizeof(voidespfont), 16.0f);
+                                               sizeof(voidespfont), 16.0f, &esp_cfg);
 
         // Default fallback
         ImFontConfig cfg;
@@ -985,44 +1042,89 @@ EGLBoolean _eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
         io.Fonts->AddFontFromMemoryTTF((void*)fontAwesome, sizeof(fontAwesome),
                                        30.0f, &menu_icons, icons_ranges);
 
+        if(!io.Fonts->Build()||!font2||!KennyMenu::Font){
+            KennyDiagnostics::Event(11,Severity::Error,0,false,"Font atlas build failed; UI deferred");
+            ImGui::DestroyContext(uiContext);uiContext=nullptr;KennyMenu::Font=nullptr;font2=nullptr;
+            rendererFailed=true;rendering.Release();return forward();
+        }
+        KennyDiagnostics::Once(11,Severity::Info,0,true,"Embedded font atlas built");
+
         // Apply the KennyPvtHax black/crimson theme
         Claude::Apply();
 
-        ImGui_ImplAndroid_Init();
-        ImGui_ImplOpenGL3_Init(OBFUSCATE("#version 300 es"));
+        KennyDiagnostics::Once(12,Severity::Info,0,true,"Android/OpenGL backend initialization started");
+        const bool androidReady=ImGui_ImplAndroid_Init();
+        const bool rendererReady=androidReady&&ImGui_ImplOpenGL3_Init(OBFUSCATE("#version 300 es"));
+        const bool devicesReady=rendererReady&&ImGui_ImplOpenGL3_CreateDeviceObjects();
+        if(!devicesReady){
+            KennyDiagnostics::Event(13,Severity::Error,int(glGetError()),false,"Android/OpenGL backend initialization failed; UI deferred");
+            if(rendererReady)ImGui_ImplOpenGL3_Shutdown();if(androidReady)ImGui_ImplAndroid_Shutdown();
+            ImGui::DestroyContext(uiContext);uiContext=nullptr;KennyMenu::Font=nullptr;font2=nullptr;
+            rendererFailed=true;rendering.Release();return forward();
+        }
         initImGui = true;
+        KennyDiagnostics::Once(13,Severity::Info,0,true,"Android/OpenGL backend initialized");
     }
 
+    ImGui::SetCurrentContext(uiContext);
     ImGuiIO& io = ImGui::GetIO();
+    KennyStartup::Inputs().Drain([&](const KennyStartup::Input& input){
+        if(input.kind==KennyStartup::Input::Motion){
+            if(std::isfinite(input.x)&&std::isfinite(input.y))io.MousePos=ImVec2(input.x*glWidth/screenWidth,input.y*glHeight/screenHeight);
+            if(input.transition)io.MouseDown[0]=input.down;
+        }else if(input.code>=0&&input.code<IM_ARRAYSIZE(io.KeysDown)){
+            io.KeysDown[input.code]=input.down;
+            io.KeyCtrl=(input.modifiers&AMETA_CTRL_ON)!=0;io.KeyShift=(input.modifiers&AMETA_SHIFT_ON)!=0;io.KeyAlt=(input.modifiers&AMETA_ALT_ON)!=0;
+        }
+    });
+    KennyDiagnostics::Once(19,Severity::Info,0,true,"First ImGui frame started");
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplAndroid_NewFrame(glWidth, glHeight);
     ImGui::NewFrame();
 
-    // Persistent UI state and one-time, UI-owned audio resources.
-    static KennyMenu::State menuState;
-    static KennyLauncher::State launcher;
-    static KennyAudio::AndroidBackend uiAudio;
-    menuState.storage.Configure(g_App->activity ? g_App->activity->internalDataPath : nullptr,
-                                menuState.appearance);
-    static bool stagedCharacters=false;
-    if(!stagedCharacters){stagedCharacters=true;KennyCharacters::StageAPK(g_App->activity ? g_App->activity->assetManager : nullptr,
-        g_App->activity ? g_App->activity->internalDataPath : nullptr);}
-    menuState.characters.Configure(g_App->activity ? g_App->activity->internalDataPath : nullptr);
-    static EGLContext characterContext=EGL_NO_CONTEXT;
-    if(characterContext!=eglGetCurrentContext()){launcher.logo.Clear();menuState.characters.ClearTextures(true);characterContext=eglGetCurrentContext();}
-    menuState.characters.upload=KennyCharacters::UploadGL;menuState.characters.release=KennyCharacters::ReleaseGL;
-    uiAudio.Initialize();
-    menuState.audio=uiAudio.Ready() ? &uiAudio.dispatcher : nullptr;
-    menuState.audioStatus=uiAudio.Status();
+    const char* privateDirectory=app->activity?app->activity->internalDataPath:nullptr;
+    if(!KPH_DIAGNOSTIC_NO_PREFERENCES&&privateDirectory&&!menuState.storage.configured){
+        KennyDiagnostics::Event(14,Severity::Info,0,false,"Appearance load started");
+        menuState.storage.Configure(privateDirectory,menuState.appearance);
+        KennyDiagnostics::Event(14,menuState.storage.available?Severity::Info:Severity::Warning,0,menuState.storage.available,"%s",menuState.storage.status);
+    }
+    KennyDiagnostics::Once(14,Severity::Info,0,true,"Appearance initialization reached (see isolation/storage availability)");
+    if(!stagedCharacters&&privateDirectory&&app->activity){
+        stagedCharacters=true;
+        KennyDiagnostics::Event(16,Severity::Info,0,false,"APK pack staging started");
+        const bool staged=KennyCharacters::StageAPK(app->activity->assetManager,privateDirectory);
+        KennyDiagnostics::Once(16,staged?Severity::Info:Severity::Warning,0,staged,staged?"APK pack staging completed":"APK pack unavailable; safe missing-asset fallback");
+    }
+    if(privateDirectory&&!menuState.characters.configured){
+        KennyDiagnostics::Event(15,Severity::Info,0,false,"Character registry load started");
+        menuState.characters.Configure(privateDirectory);
+        KennyDiagnostics::Event(15,Severity::Info,0,true,"Registry load completed: characters=%u, decodedBytes=%zu",menuState.characters.count,menuState.characters.decodedBytes);
+    }
+    KennyDiagnostics::Once(15,Severity::Info,0,true,"Character registry initialization reached; missing packs remain optional");
+    menuState.characters.upload=KPH_DIAGNOSTIC_NO_ARTWORK?nullptr:KennyCharacters::UploadGL;
+    menuState.characters.release=KennyCharacters::ReleaseGL;
+    if(!modulesLogged&&!KPH_DIAGNOSTIC_NO_AUDIO)KennyDiagnostics::Event(17,Severity::Info,0,false,"Optional OpenSL audio initialization started");
+    if(!KPH_DIAGNOSTIC_NO_AUDIO)uiAudio.Initialize();
+    menuState.audio=uiAudio.Ready()?&uiAudio.dispatcher:nullptr;
+    menuState.audioStatus=KPH_DIAGNOSTIC_NO_AUDIO?"UI audio isolated in this diagnostic build.":uiAudio.Status();
+    KennyDiagnostics::Once(17,uiAudio.Ready()?Severity::Info:Severity::Warning,uiAudio.LastError(),uiAudio.Ready(),menuState.audioStatus);
+    if(KPH_DIAGNOSTIC_CLASSIC)menuState.appearance.theme=KennyAppearance::Theme::Classic;
+    if(!modulesLogged)KennyDiagnostics::Event(34,Severity::Info,0,false,"Character textures/voice routing preparation started");
     menuState.characters.Prepare(menuState.appearance,menuState.audio);
+    KennyDiagnostics::Once(34,Severity::Info,0,true,"Character textures/voice routing preparation completed");
+    if(!modulesLogged){
+        modulesLogged=true;
+        KennyDiagnostics::Event(32,Severity::Info,0,true,"Isolation: audio=%d artwork=%d preferences=%d classic=%d menu=%d",KPH_DIAGNOSTIC_NO_AUDIO,KPH_DIAGNOSTIC_NO_ARTWORK,KPH_DIAGNOSTIC_NO_PREFERENCES,KPH_DIAGNOSTIC_CLASSIC,KPH_DIAGNOSTIC_NO_MENU);
+    }
     auto& selectedCharacter=menuState.characters.Selected(menuState.appearance);
     if(menuState.appearance.theme==KennyAppearance::Theme::Anime && menuState.appearance.characterLauncher && selectedCharacter.launcherTexture.Valid())
         launcher.logo.Set(selectedCharacter.launcherTexture);
     else launcher.logo.Clear();
-    KennyLauncher::Draw(launcher,menuState.appearance,menuState.audio,
+    if(!KPH_DIAGNOSTIC_NO_MENU)KennyLauncher::Draw(launcher,menuState.appearance,menuState.audio,
                         ImVec2(static_cast<float>(glWidth),static_cast<float>(glHeight)));
     launcher.Advance(io.DeltaTime,menuState.appearance.reducedMotion);
-    if (launcher.DrawMenu()) {
+    KennyDiagnostics::Once(18,Severity::Info,0,true,"Launcher initialization/draw reached");
+    if (!KPH_DIAGNOSTIC_NO_MENU && launcher.DrawMenu()) {
         bool opened=true;
         KennyMenu::Draw(menuState, opened, Settings::Tab,
                         ImVec2(static_cast<float>(glWidth), static_cast<float>(glHeight)), [] {
@@ -1124,18 +1226,22 @@ EGLBoolean _eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
                 }
             }
         },launcher.alpha,launcher.target);
+        KennyDiagnostics::Once(21,Severity::Info,0,true,"First menu rendering completed");
         if(!opened)launcher.Request(false,menuState.appearance,menuState.audio,ImGui::GetTime());
     }
 
     // Completed audio/appearance changes also flush after menu closure.
     // Flush only completed appearance edits; hidden themes do no rendering.
-    menuState.storage.Sync(menuState.appearance,!launcher.target || !ImGui::IsAnyItemActive());
-    uiAudio.Pump(menuState.appearance);
+    if(!KPH_DIAGNOSTIC_NO_PREFERENCES&&!KPH_DIAGNOSTIC_CLASSIC)menuState.storage.Sync(menuState.appearance,!launcher.target || !ImGui::IsAnyItemActive());
+    if(!KPH_DIAGNOSTIC_NO_AUDIO)uiAudio.Pump(menuState.appearance);
+    if(uiAudio.LastError())KennyDiagnostics::Once(33,Severity::Warning,uiAudio.LastError(),false,uiAudio.Status());
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-    return orig_eglSwapBuffers(dpy, surface);
+    KennyDiagnostics::Once(20,Severity::Info,0,true,"First ImGui frame and GL submission completed");
+    rendering.Release();
+    return forward();
 }
 
 void (*oReceiveDrawHUD)(AHUD *pHUD, int SizeX, int SizeY);
@@ -1206,31 +1312,19 @@ void initOffset()
 
 void FixGameCrash()
 {
-    system("rm -rf /data/data/com.pubg.imobile/files");
-    system("rm -rf /data/data/com.pubg.imobile/files/ano_tmp");
-    system("touch /data/data/com.pubg.imobile/files/ano_tmp");
-    system("chmod 000 /data/data/com.pubg.imobile/files/ano_tmp");
-    system("rm -rf /data/data/com.pubg.imobile/files/obblib");
-    system("touch /data/data/com.pubg.imobile/files/obblib");
-    system("chmod 000 /data/data/com.pubg.imobile/files/obblib");
-    system("rm -rf /data/data/com.pubg.imobile/files/xlog");
-    system("touch /data/data/com.pubg.imobile/files/xlog");
-    system("chmod 000 /data/data/com.pubg.imobile/files/xlog");
-    system("rm -rf /data/data/com.pubg.imobile/app_bugly");
-    system("touch /data/data/com.pubg.imobile/app_bugly");
-    system("chmod 000 /data/data/com.pubg.imobile/app_bugly");
-    system("rm -rf /data/data/com.pubg.imobile/app_crashrecord");
-    system("touch /data/data/com.pubg.imobile/app_crashrecord");
-    system("chmod 000 /data/data/com.pubg.imobile/app_crashrecord");
-    system("rm -rf /data/data/com.pubg.imobile/app_crashSight");
-    system("touch /data/data/com.pubg.imobile/app_crashSight");
-    system("chmod 000 /data/data/com.pubg.imobile/app_crashSight");
+    // Disabled: previously deleted private files and obstructed crash reporters.
+    // Original implementation remains in Git history; no replacement suppression.
+    KennyDiagnostics::Once(22,KennyDiagnostics::Severity::Info,0,true,"Destructive startup deletion/crash-report suppression disabled");
 }
 
 
 void *RunGame(void *) 
 {
-FixGameCrash();
+    KennyDiagnostics::Once(3,KennyDiagnostics::Severity::Info,0,true,"Startup thread running");
+    while(!NativeGlobalsReady.load(std::memory_order_acquire))usleep(1000);
+    KennyDiagnostics::Once(26,KennyDiagnostics::Severity::Info,0,true,"Translation-unit C++ globals initialized");
+    FixGameCrash();
+    KennyDiagnostics::Once(23,KennyDiagnostics::Severity::Info,0,true,"Waiting for original native runtime");
 
     Cheat::libUE4Base = Tools::GetBaseAddress("libUE4.so");
 
@@ -1246,6 +1340,13 @@ FixGameCrash();
         sleep(1);
     }
 
+    PresentationApp.store(g_App,std::memory_order_release);
+    KennyDiagnostics::Once(24,KennyDiagnostics::Severity::Info,0,true,"Original application context discovered");
+    if(g_App->activity&&g_App->activity->internalDataPath){
+        const bool stored=KennyDiagnostics::SetStorage(g_App->activity->internalDataPath);
+        KennyDiagnostics::Once(27,stored?KennyDiagnostics::Severity::Info:KennyDiagnostics::Severity::Warning,stored?0:errno,stored,"App-private diagnostic storage initialization");
+    }
+    KennyDiagnostics::Once(25,KennyDiagnostics::Severity::Info,0,true,"Waiting for original SDK globals");
     FName::GNames = GetGNames();
 
     while (!FName::GNames) 
@@ -1256,7 +1357,9 @@ FixGameCrash();
 
     UObject::GUObjectArray = (FUObjectArray *)(Cheat::libUE4Base + Cheat::GUObject_Offset);
     
-    shadowhook_init(shadowhook_mode_t::SHADOWHOOK_MODE_UNIQUE, 0);
+    KennyDiagnostics::Once(36,KennyDiagnostics::Severity::Info,0,true,"Existing native integration registration starting");
+    const int hookInit=shadowhook_init(shadowhook_mode_t::SHADOWHOOK_MODE_UNIQUE, 0);
+    KennyDiagnostics::Event(36,hookInit==0?KennyDiagnostics::Severity::Info:KennyDiagnostics::Severity::Warning,hookInit,hookInit==0,"Existing hook library initialization result");
     
     shadowhook_hook_func_addr((void *)(Cheat::libUE4Base + 0xAD5866C), (void *)hkReceiveDrawHUD, (void **)&oReceiveDrawHUD);
   
@@ -1292,14 +1395,24 @@ FixGameCrash();
         (void*)_ANativeWindow_getHeight, (void**)&orig_ANativeWindow_getHeight);
 	
 	//initOffset();
+	KennyDiagnostics::Once(37,KennyDiagnostics::Severity::Info,0,true,"Existing integration registration reached; original Lua initialization next");
 	InitLuaHooks(Cheat::libUE4Base);
+    KennyDiagnostics::Once(38,KennyDiagnostics::Severity::Info,0,true,"Original Lua initialization returned; existing item parse next");
     items_data = json::parse(JSON_ITEMS);
     AutoEspOn();
+    KennyDiagnostics::Once(39,KennyDiagnostics::Severity::Info,0,true,"Original startup configuration completed");
     return nullptr;
 }
 
 __attribute__ ((constructor))
-void _init() 
+void _init()
 {
-    pthread_create(&t, NULL, RunGame, NULL);
+    KennyDiagnostics::Once(1,KennyDiagnostics::Severity::Info,0,true,"Native constructor entered; build=" KPH_BUILD_ID);
+    const int result=pthread_create(&t,nullptr,RunGame,nullptr);
+    KennyDiagnostics::Once(2,result==0?KennyDiagnostics::Severity::Info:KennyDiagnostics::Severity::Error,result,result==0,"Startup thread creation");
+    if(result==0)pthread_detach(t);
 }
+// Explicitly release the worker only after this translation unit's dynamic
+// globals (JSON, maps, strings and existing configuration) have been initialized.
+struct NativeGlobalsBarrier {NativeGlobalsBarrier(){NativeGlobalsReady.store(true,std::memory_order_release);}};
+static NativeGlobalsBarrier nativeGlobalsBarrier;

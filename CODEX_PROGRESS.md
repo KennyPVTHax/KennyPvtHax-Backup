@@ -1,6 +1,52 @@
 PROJECT: KennyPvtHax
 
 CURRENT TASK:
+Emergency Android startup diagnostics and targeted lifecycle corrections.
+Base: latest successful Actions source 7381b71 (NDK 25.2.9519653).
+
+COMPLETED:
+- Independent early logcat + bounded app-private checkpoint logger, durable
+  rotation, failure handling and host-authorized FD export interface.
+- Disabled destructive FixGameCrash deletion/report obstruction.
+- Removed input-thread/pre-context ImGui access and invalid libinput thiz casts;
+  bounded render-thread input handoff, global-init barrier and app publication.
+- Checked window/EGL/dimensions/GLES3/backends; corrected embedded font ownership
+  and context-loss GL-name lifecycle. Optional audio/asset failures are diagnosed.
+- Preserved all 37 original full binding/range/callback statements and all offsets.
+- Presentation-only isolation profiles; unchanged working NDK/module/ABI.
+  Matching symbols retained locally and only uploaded encrypted if configured.
+
+MODIFIED FILES:
+jni/main.cpp; jni/KennyDiagnostics.h; jni/KennyStartup.h;
+jni/KennyAndroidAudio.h; jni/KennyCharacterGL.h; jni/Android.mk;
+jni/imgui/backends/imgui_impl_opengl3.cpp and .h;
+.github/workflows/build-native.yml; tests/kenny_diagnostics_check.cpp;
+tests/kenny_startup_audit.py; CODEX_PROGRESS.md; ANDROID_BUILD_INSTRUCTIONS.md;
+KENNY_ANDROID_CRASH_DIAGNOSTICS.md; README.md.
+
+VERIFICATION:
+Strict host logger/input checks pass, including actual SIGKILL persistence,
+rotation/permissions/failure/concurrent writes/export. Actual embedded font atlas
+build/clear/recreation passes ASan/UBSan. All 37 exact binding/range checks and
+source startup gates pass. Rebuilt menu/C1/audio/theme/Aurora/effects/C2/C3 host
+regressions pass. Diagnostic Actions result is recorded after dispatch below.
+
+KNOWN LIMITATIONS:
+Actual device root cause is not established. No Android runtime/GPU/audio or
+Documents export has been tested here. The supplied project lacks the Java/Kotlin
+host needed for authorized public export. Do not tap the retained manual Guest
+Reset during diagnosis. Plain symbols are never uploaded to this public repo;
+configure the age public-recipient secret for encrypted symbol retention.
+
+NEXT ACTION:
+Install the exact diagnostic ARM64 artifact through the original host pipeline,
+record logcat before launch, retrieve private reports through authorized host/ADB,
+and correlate the last successful checkpoint with a matching fatal backtrace.
+No UI redesign or unrelated gameplay/SDK changes.
+
+---
+
+CURRENT TASK:
 Owner-supplied original SDK restoration — completed locally for GitHub commit.
 
 COMPLETED:

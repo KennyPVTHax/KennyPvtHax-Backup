@@ -512,6 +512,8 @@ bool ImGui_ImplOpenGL3_CreateFontsTexture()
     GLint last_texture;
     glGetIntegerv(GL_TEXTURE_BINDING_2D, &last_texture);
     glGenTextures(1, &bd->FontTexture);
+    if (!bd->FontTexture || !pixels || width <= 0 || height <= 0)
+        return false;
     glBindTexture(GL_TEXTURE_2D, bd->FontTexture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -725,20 +727,20 @@ bool    ImGui_ImplOpenGL3_CreateDeviceObjects()
     GLuint vert_handle = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vert_handle, 2, vertex_shader_with_version, NULL);
     glCompileShader(vert_handle);
-    CheckShader(vert_handle, "vertex shader");
+    bool compiled = CheckShader(vert_handle, "vertex shader");
 
     const GLchar* fragment_shader_with_version[2] = { bd->GlslVersionString, fragment_shader };
     GLuint frag_handle = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(frag_handle, 2, fragment_shader_with_version, NULL);
     glCompileShader(frag_handle);
-    CheckShader(frag_handle, "fragment shader");
+    compiled = CheckShader(frag_handle, "fragment shader") && compiled;
 
     // Link
     bd->ShaderHandle = glCreateProgram();
     glAttachShader(bd->ShaderHandle, vert_handle);
     glAttachShader(bd->ShaderHandle, frag_handle);
     glLinkProgram(bd->ShaderHandle);
-    CheckProgram(bd->ShaderHandle, "shader program");
+    const bool linked = CheckProgram(bd->ShaderHandle, "shader program");
 
     glDetachShader(bd->ShaderHandle, vert_handle);
     glDetachShader(bd->ShaderHandle, frag_handle);
@@ -755,7 +757,7 @@ bool    ImGui_ImplOpenGL3_CreateDeviceObjects()
     glGenBuffers(1, &bd->VboHandle);
     glGenBuffers(1, &bd->ElementsHandle);
 
-    ImGui_ImplOpenGL3_CreateFontsTexture();
+    const bool fontsReady = compiled && linked && ImGui_ImplOpenGL3_CreateFontsTexture();
 
     // Restore modified GL state
     glBindTexture(GL_TEXTURE_2D, last_texture);
@@ -764,6 +766,10 @@ bool    ImGui_ImplOpenGL3_CreateDeviceObjects()
     glBindVertexArray(last_vertex_array);
 #endif
 
+    if (!compiled || !linked || !fontsReady || !bd->VboHandle || !bd->ElementsHandle) {
+        ImGui_ImplOpenGL3_DestroyDeviceObjects();
+        return false;
+    }
     return true;
 }
 
@@ -774,4 +780,12 @@ void    ImGui_ImplOpenGL3_DestroyDeviceObjects()
     if (bd->ElementsHandle) { glDeleteBuffers(1, &bd->ElementsHandle); bd->ElementsHandle = 0; }
     if (bd->ShaderHandle)   { glDeleteProgram(bd->ShaderHandle); bd->ShaderHandle = 0; }
     ImGui_ImplOpenGL3_DestroyFontsTexture();
+}
+
+void ImGui_ImplOpenGL3_ForgetDeviceObjects()
+{
+    ImGui_ImplOpenGL3_Data* bd = ImGui_ImplOpenGL3_GetBackendData();
+    if (!bd) return;
+    bd->VboHandle = bd->ElementsHandle = bd->ShaderHandle = bd->FontTexture = 0;
+    ImGui::GetIO().Fonts->SetTexID(0);
 }
