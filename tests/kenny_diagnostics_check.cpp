@@ -58,6 +58,9 @@ int main(int argc,char** argv){
     auto up=down;up.down=false;assert(queue.Push(down));assert(queue.Push(up));unsigned applied=0;
     queue.Drain([&](auto event){++applied;assert(event.down);});assert(applied==1&&queue.count==1);
     queue.Drain([&](auto event){++applied;assert(!event.down);});assert(applied==2&&queue.count==0);
+    down.x=-10;assert(queue.Push(down));KennyStartup::Input moved;moved.x=100;assert(queue.Push(moved));
+    queue.Drain([](auto event){assert(event.transition&&event.x==-10);});assert(queue.count==1);
+    queue.Drain([](auto event){assert(!event.transition&&event.x==100);});assert(queue.count==0);
     for(unsigned i=0;i<10000;++i){KennyStartup::Input move;move.x=float(i);queue.Push(move);}
     assert(queue.count==1);queue.Drain([](auto event){assert(event.x==9999);});
     for(unsigned i=0;i<65;++i)queue.Push(down);
@@ -65,9 +68,11 @@ int main(int argc,char** argv){
     // A real persistent append failure must degrade safely, independently of
     // the already-tested destination-export failure.
     const int reportFd=Get().report;
+    const size_t reportBytes=Get().bytes;
     const int full=open("/dev/full",O_WRONLY);assert(full>=0);Get().report=full;
+    Get().bytes=0; // Prior cap test must not bypass this separate I/O test.
     Event(42,Severity::Error,0,false,"persistent write failure test");
     assert(Get().ioFailed&&!SetStorage(temp));
-    Get().report=reportFd;close(full);
+    Get().report=reportFd;Get().bytes=reportBytes;close(full);
     std::puts("PASS independent startup logger: early bounded buffering, timestamps/TIDs/status, symlink/unavailable/permission failure, SIGKILL-persistent checkpoints, safe rotation/interrupted evidence, 64KiB cap, 0600 reports, concurrent writes, one-time events, authorized FD export/write failures; fixed input queue, coalescing/press-release/overflow recovery.");
 }

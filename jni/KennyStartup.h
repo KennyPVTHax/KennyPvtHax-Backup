@@ -40,6 +40,10 @@ struct Queue {
         while(count&&n++<events.size()){
             const Input event=events[head];if(event.transition&&button)break;
             head=(head+1)%events.size();--count;apply(event);button|=event.transition;
+            // Preserve the physical press origin for this frame. Applying a
+            // later move before NewFrame would turn an outside-origin drag
+            // into an apparent click inside the menu.
+            if(event.transition)break;
         }
         pthread_mutex_unlock(&mutex);
     }
