@@ -74,7 +74,7 @@ inline float Spark(const Seed& seed, double time) {
     const float v=std::max(0.0f,1.0f-std::abs(age-6.0f)/0.8f);
     return v*v*(3-2*v);
 }
-struct Lighting { ImVec2 crown,eclipse,shade,far; float breath; };
+struct Lighting { ImVec2 crown,eclipse,shade,farGlow; float breath; };
 inline Lighting Lights(ImVec2 size, double time) {
     const float sway=static_cast<float>(std::sin(time*0.31)*0.024+std::sin(time*0.19)*0.010);
     const ImVec2 eclipse(size.x*(0.83f-sway*0.5f),size.y*0.91f);
@@ -86,7 +86,7 @@ inline ImVec4 Material(ImVec2 p, ImVec2 size, const Lighting& lights, float head
     const float corona=std::clamp((Bloom(p,lights.eclipse,size.x*0.36f,size.y*0.53f)
         -1.4f*Bloom(p,lights.shade,size.x*0.30f,size.y*0.47f))*2.2f,0.0f,1.0f);
     const float crownLight=Bloom(p,lights.crown,size.x*0.39f,size.y*0.62f)*lights.breath;
-    const float farLight=Bloom(p,lights.far,size.x*0.28f,size.y*0.40f)*0.26f;
+    const float farLight=Bloom(p,lights.farGlow,size.x*0.28f,size.y*0.40f)*0.26f;
     ImVec4 material=Claude::Hex(0x100B0F,0.20f);
     material=KennyMotion::Mix(material,Claude::Hex(0x6F2437,0.46f),crownLight*0.72f);
     material=KennyMotion::Mix(material,Claude::Hex(0x963B4C,0.38f),corona*0.85f);
