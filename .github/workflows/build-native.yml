@@ -1,0 +1,98 @@
+
+name: KennyPvtHax Native Build
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build ARM64 Library
+    runs-on: ubuntu-22.04
+    timeout-minutes: 45
+
+    env:
+      NDK_VERSION: "25.2.9519653"
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK tools
+        uses: android-actions/setup-android@v4
+
+      - name: Install Android NDK
+        shell: bash
+        run: |
+          sdkmanager --install "ndk;${NDK_VERSION}"
+          NDK="$ANDROID_SDK_ROOT/ndk/$NDK_VERSION"
+          test -x "$NDK/ndk-build"
+          echo "ANDROID_NDK_HOME=$NDK" >> "$GITHUB_ENV"
+          "$NDK/ndk-build" --version
+
+      - name: Verify project and SDK
+        shell: bash
+        run: |
+          set -e
+          test -f jni/Android.mk
+          test -f jni/Application.mk
+          test -f jni/main.cpp
+
+          for f in \
+            PUBGM_BangJO.hpp \
+            PUBGM_Basic.cpp \
+            PUBGM_Basic_functions.cpp \
+            PUBGM_CoreUObject_functions.cpp \
+            PUBGM_Engine_functions.cpp \
+            PUBGM_ShadowTrackerExtra_functions.cpp \
+            PUBGM_Client_functions.cpp
+          do
+            test -s "jni/SDK/$f" || {
+              echo "Missing SDK file: $f"
+              exit 1
+            }
+          done
+
+          echo "SDK entry files verified."
+
+      - name: Build KennyPvtHax SO
+        shell: bash
+        run: |
+          "$ANDROID_NDK_HOME/ndk-build" \
+            NDK_PROJECT_PATH=. \
+            APP_BUILD_SCRIPT=jni/Android.mk \
+            NDK_APPLICATION_MK=jni/Application.mk \
+            -j2
+
+      - name: Verify compiled library
+        shell: bash
+        run: |
+          set -e
+          SO="libs/arm64-v8a/libAnoy.so"
+          test -s "$SO"
+
+          file "$SO"
+          sha256sum "$SO"
+
+          READELF="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf"
+          "$READELF" -h "$SO" | grep -E 'Class:|Machine:'
+          "$READELF" -h "$SO" | grep -q 'AArch64'
+
+          echo "ARM64 native library verified."
+
+      - name: Upload compiled SO
+        uses: actions/upload-artifact@v4
+        with:
+          name: KennyPvtHax-ARM64-SO
+          path: libs/arm64-v8a/libAnoy.so
+          if-no-files-found: error
+          retention-days: 30
+          
