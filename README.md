@@ -14,27 +14,21 @@ voice mappings. All **37 original controls, bindings and numerical ranges** are
 retained. Rias artwork, launcher artwork and original character recordings are
 not installed; their safe fallbacks remain.
 
-## Clone and restore the original SDK
+## Clone with the original SDK
 
 ```sh
 git clone https://github.com/KennyPVTHax/KennyPvtHax-Backup.git KennyPvtHax
 cd KennyPvtHax
 ```
 
-Restore your genuine original generated SDK into **`KennyPvtHax/jni/SDK/`**
-(`jni/SDK/` from the project root). It is deliberately absent and Git-ignored;
-no replacements or stub SDK headers were created. Preserve case and avoid a
-duplicate `SDK/SDK/` nesting. Restore the entire matching SDK, including:
-
-```text
-jni/SDK/PUBGM_BangJO.hpp
-jni/SDK/PUBGM_Basic.cpp
-jni/SDK/PUBGM_Basic_functions.cpp
-jni/SDK/PUBGM_CoreUObject_functions.cpp
-jni/SDK/PUBGM_Engine_functions.cpp
-jni/SDK/PUBGM_ShadowTrackerExtra_functions.cpp
-jni/SDK/PUBGM_Client_functions.cpp
-```
+The owner's uploaded original SDK is now included at **`jni/SDK/`**
+(`KennyPvtHax/jni/SDK/` after the clone above). All 2,391 files were imported
+byte-for-byte from `SDK.zip`; no stubs, generated replacements or SDK changes
+were introduced. The archive CRC, file hashes, required build inputs and local
+quoted includes were checked. See [SDK_IMPORT_VALIDATION.json](SDK_IMPORT_VALIDATION.json).
+Older source export ZIPs still omit the SDK; use this current repository for the
+complete tree. The original `BACKUP_VERIFICATION.json` describes that earlier
+export, not the newly restored SDK.
 
 Existing include paths and `Android.mk` SDK entries are unchanged. This generated
 application SDK is distinct from Google's Android SDK/NDK.
@@ -53,7 +47,7 @@ Current `jni/Application.mk` selects:
 - Platform: `android-21`
 - C++17, `c++_static`, release optimization
 
-From the project root after restoring the SDK:
+From the cloned project root:
 
 ```sh
 "/path/to/your/android-ndk/ndk-build" \
@@ -124,7 +118,8 @@ later public authorization covers only vetted source and the five CC0 clips.
   checks also pass. Fresh GitHub clone verification is performed after upload
   and reported separately; host PCM is not Android playback.
 - **Android compilation/linking has not passed or been attempted without the
-  genuine omitted SDK and NDK.** Exact toolchain/prebuilt/host compatibility,
+  Android NDK.** The genuine original SDK is now included. Exact
+  toolchain/prebuilt/host compatibility,
   APK asset staging, GLES transparency/resource lifecycle, OpenSL ES playback,
   app-private restart, real touch and device performance remain unverified.
 - Rias image alpha/quality, launcher and original voice permissions/content
@@ -146,7 +141,7 @@ Additional records: [tests/README.md](tests/README.md),
 
 Do not invoke the original destructive `ResetLogin` action during an initial
 UI smoke test unless its application-data deletion is intended. No callback
-behavior was changed. Next task: restore the original SDK and validate the real
+behavior was changed. Next task: select the compatible NDK and validate the real
 Android build; no new UI, character acquisition or key-entry work is started.
 
 Existing third-party notices remain intact. No blanket license for third-party

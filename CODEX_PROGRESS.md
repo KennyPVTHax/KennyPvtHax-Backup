@@ -1,6 +1,36 @@
 PROJECT: KennyPvtHax
 
 CURRENT TASK:
+Owner-supplied original SDK restoration — completed locally for GitHub commit.
+
+COMPLETED:
+- Imported all 2,391 original SDK files unchanged to jni/SDK/ from SDK.zip.
+- Removed the obsolete SDK ignore rule and updated current build documentation.
+- Kept Android.mk, Application.mk, all application/UI code and existing media intact.
+
+MODIFIED FILES:
+jni/SDK/* (new), .gitignore, README.md, ANDROID_BUILD_INSTRUCTIONS.md,
+SDK_IMPORT_VALIDATION.json, CODEX_PROGRESS.md.
+
+VERIFICATION:
+Archive CRC and safe paths pass; all SDK files match original archive bytes.
+All seven required SDK build/header inputs exist; all quoted SDK includes resolve.
+Credential signature scan found no matches. Exact 37 binding/range checks pass.
+Prior complete host regression results remain valid for unchanged application code.
+Post-upload SDK file coverage/hashes are verified and reported separately.
+
+KNOWN LIMITATIONS:
+Android NDK unavailable; compatible release unknown. No native Android compilation,
+linking, GPU/audio playback or device verification claimed. Prior export metadata
+remains a historical record of the previously SDK-less ZIP.
+
+NEXT ACTION:
+Use a compatible genuine NDK to compile the existing native libAnoy.so project;
+retain the original Android host/loader integration. No UI development started.
+
+---
+
+CURRENT TASK:
 GitHub build backup — prepared for explicitly authorized PUBLIC publication.
 Original application checkpoint: 3436f47; all 12 development commits preserved.
 Destination: KennyPVTHax/KennyPvtHax-Backup, default branch main.

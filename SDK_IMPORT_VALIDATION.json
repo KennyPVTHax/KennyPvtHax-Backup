@@ -1,0 +1,15 @@
+{
+  "archive_sha256": "45bb63bc76325f12e39d35c07a0e1184f273764326061dc8af0baa23e85c8199",
+  "sdk_files": 2391,
+  "expanded_bytes": 55931071,
+  "credential_scan_findings": [],
+  "missing_required_files": [],
+  "unresolved_quoted_includes": [],
+  "android_build": "Not attempted; NDK absent, exact compatible release unknown.",
+  "archive_filename": "SDK.zip",
+  "destination": "jni/SDK/",
+  "source_bytes_preserved": true,
+  "required_build_inputs": "All six SDK .cpp entries from Android.mk and SDK/PUBGM_BangJO.hpp present.",
+  "scope": "Original owner-uploaded SDK only; build scripts and application code unchanged.",
+  "credential_scan_limits": "Finite private-key/token/credential-literal signature scan, not an exhaustive semantic guarantee."
+}

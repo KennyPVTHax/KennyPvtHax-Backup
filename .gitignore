@@ -57,5 +57,4 @@ previews/phase_c3/
 !assets/anime/highschool_dxd_rias/voice/cici_okay_happy.wav
 !assets/anime/highschool_dxd_rias/voice/cici_okay_normal.wav
 !assets/anime/highschool_dxd_rias/voice/cici_no_problem.wav
-# Restore the owner's original SDK locally; it is not part of the public backup
-jni/SDK/
+# The owner-supplied original jni/SDK/ is tracked in this repository.

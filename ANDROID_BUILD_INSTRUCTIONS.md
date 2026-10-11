@@ -4,6 +4,20 @@ Export date: 11 October 2026 (Asia/Calcutta). Application checkpoint: `3436f47`.
 No UI, theme, gameplay, licensing, native integration or SDK reference was changed
 for this export. Build documentation is added without changing Git HEAD.
 
+## Current repository update — original SDK included
+
+The owner has now supplied `SDK.zip`; its 2,391 original source/header files are
+tracked unchanged under `jni/SDK/`. A current Git clone includes them, so no
+separate SDK restoration is necessary. Archive/source hash and path validation
+are recorded in `SDK_IMPORT_VALIDATION.json`. The instructions below about
+restoring the omitted SDK describe the older standalone export ZIP only.
+
+The Android NDK is still unavailable in the verification environment, and the
+compatible NDK release remains unknown. Android compilation/linking, runtime
+loading, GPU/audio behavior and device performance have not been verified.
+Existing build scripts, internal library naming and application behavior remain
+unchanged.
+
 ## What this project builds
 
 `jni/Android.mk` uses `BUILD_SHARED_LIBRARY`, `LOCAL_MODULE := Anoy`.
@@ -41,7 +55,7 @@ does not constitute a valid device test.
   Android SDK **platform-tools/adb** is useful for device diagnostics. It is not
   a replacement for the omitted generated application SDK described below.
 
-## Restore the original generated SDK — mandatory
+## Restore the original generated SDK — older source ZIP only
 
 After extracting the source archive, restore your genuine original SDK to:
 
@@ -63,8 +77,9 @@ jni/SDK/PUBGM_Client_functions.cpp
 ```
 
 `jni/SDK.hpp` already includes `SDK/PUBGM_BangJO.hpp`; SDK C++ sources remain in
-`Android.mk`. The SDK is **not included**, recreated or replaced. Restore the
-complete matching original SDK, not just the seven listed files.
+`Android.mk`. The old source ZIP omitted the SDK; the current Git repository
+includes the owner-supplied original files. For an old ZIP, restore the complete
+matching original SDK, not just the seven listed files.
 
 ## Native dependencies already included
 
@@ -83,7 +98,8 @@ archive parsing and contain AArch64 objects. Exact paths/machine checks are in
 System linker dependencies from the unchanged makefile:
 `log`, `android`, `OpenSLES`, `EGL`, `GLESv1_CM`, `GLESv2`, `GLESv3`, `z`;
 static libc++ is selected separately by `Application.mk`. No extra audio/image
-framework is required. Missing SDK/NDK blocked native compilation here.
+framework is required. The unavailable NDK still blocks native compilation here;
+the original SDK is now included in the Git repository.
 
 ## Media restoration — separate private archive
 
@@ -120,7 +136,8 @@ for loaded assets is immediate. Native staging has not been tested on Android.
 
 ## First build commands
 
-Unzip both archives, restore the genuine SDK, then from the `KennyPvtHax` root:
+From the current cloned `KennyPvtHax` root (or after restoring the SDK into an
+older source ZIP checkout):
 
 ```sh
 test -f jni/SDK/PUBGM_BangJO.hpp
@@ -212,7 +229,7 @@ intend that existing destructive action. This export does not alter it.
 - Missing `SDK/...`: restore the complete original `jni/SDK/` with correct case;
   do not add stub headers or remove sources from the makefile.
 - `ndk-build` absent: use your original compatible NDK. The exact release remains
-  unknown; no Android compilation was attempted without it and the genuine SDK.
+  unknown; no Android compilation was attempted without the NDK.
 - Prebuilt linker errors: compare AArch64, original NDK/libc++ provenance and
   required symbols; preserve original libraries before any separately authorized
   rebuilding. The legacy compiler tags do not guarantee current toolchain support.
