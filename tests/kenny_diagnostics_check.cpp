@@ -62,5 +62,12 @@ int main(int argc,char** argv){
     assert(queue.count==1);queue.Drain([](auto event){assert(event.x==9999);});
     for(unsigned i=0;i<65;++i)queue.Push(down);
     assert(queue.count<=64);
+    // A real persistent append failure must degrade safely, independently of
+    // the already-tested destination-export failure.
+    const int reportFd=Get().report;
+    const int full=open("/dev/full",O_WRONLY);assert(full>=0);Get().report=full;
+    Event(42,Severity::Error,0,false,"persistent write failure test");
+    assert(Get().ioFailed&&!SetStorage(temp));
+    Get().report=reportFd;close(full);
     std::puts("PASS independent startup logger: early bounded buffering, timestamps/TIDs/status, symlink/unavailable/permission failure, SIGKILL-persistent checkpoints, safe rotation/interrupted evidence, 64KiB cap, 0600 reports, concurrent writes, one-time events, authorized FD export/write failures; fixed input queue, coalescing/press-release/overflow recovery.");
 }

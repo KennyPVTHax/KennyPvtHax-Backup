@@ -968,6 +968,7 @@ EGLBoolean _eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
     if(density<=0||density>1000)density=160;
     static ImGuiContext* uiContext=nullptr;
     static EGLContext rendererContext=EGL_NO_CONTEXT;
+    static EGLDisplay rendererDisplay=EGL_NO_DISPLAY;
     static KennyMenu::State menuState;
     static KennyLauncher::State launcher;
     static KennyAudio::AndroidBackend uiAudio;
@@ -975,6 +976,13 @@ EGLBoolean _eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
     ImGuiContext* previous=ImGui::GetCurrentContext();
     struct RestoreContext {ImGuiContext*& previous;~RestoreContext(){ImGui::SetCurrentContext(previous);}} restore{previous};
     if(uiContext&&rendererContext!=current){
+        EGLint ownerVersion=0;
+        if(eglQueryContext(rendererDisplay,rendererContext,EGL_CONTEXT_CLIENT_VERSION,&ownerVersion)==EGL_TRUE){
+            // Another live context is not context loss. Retain the existing
+            // resources instead of allocating new textures on every swap.
+            KennyDiagnostics::Once(40,Severity::Warning,0,false,"Secondary live EGL context; UI remains on its original owner");
+            rendering.Release();return forward();
+        }
         if(previous==uiContext)previous=nullptr;
         ImGui::SetCurrentContext(uiContext);
         launcher.logo.Clear();menuState.characters.ClearTextures(true);
@@ -985,6 +993,7 @@ EGLBoolean _eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
     }
     if(rendererContext!=current)rendererFailed=false;
     rendererContext=current;
+    rendererDisplay=dpy;
     if(rendererFailed){rendering.Release();return forward();}
     KennyDiagnostics::Once(31,Severity::Info,0,true,"Application/native window/EGL preconditions ready");
     // ----------------------------------------------------------------

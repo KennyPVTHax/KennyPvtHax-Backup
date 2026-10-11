@@ -13,6 +13,7 @@ input_code = source[source.index("void _OI("):source.index("bool logged")]
 assert "ImGui::" not in input_code and "ImGui_Impl" not in input_code
 assert "AInputEvent*)thiz" not in input_code
 assert "NativeGlobalsReady.load" in source and "PresentationApp.store" in source
+assert "eglQueryContext(rendererDisplay,rendererContext" in source
 logger = Path("jni/KennyDiagnostics.h").read_text()
 assert not any(x in logger for x in ("#include \"imgui", "sigaction(", "signal(", "/storage/emulated", "curl"))
 assert "KennyPvtHaxDiagnosticsExportToFd" in source

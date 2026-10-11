@@ -29,8 +29,9 @@ reported crash's root cause is **not established**.
   are now returned instead of ignored. Native lifecycle/GPU behavior needs a
   device test; non-null checks do not validate arbitrary game pointers.
 - The renderer owns its ImGui context. A try-lock serializes UI render calls;
-  on an EGL context change it forgets old GL names without deleting names in the
-  replacement namespace, then recreates UI resources. Navigation/launcher state
+  secondary live EGL contexts are forwarded without creating more UI resources.
+  When the old owner is no longer a valid EGL context it forgets old GL names
+  without deleting names in the replacement namespace, then recreates resources. Navigation/launcher state
   and appearance remain. This GPU path has not been exercised on Android here.
 - The constructor records diagnostics and checks thread creation. A constant-
   initialized atomic barrier delays the worker until this translation unit's
@@ -126,6 +127,7 @@ sorted. INFO completion and WARNING readiness messages can both appear once.
 | 033 | Later optional audio failure |
 | 034 | Character texture/voice routing preparation start/result |
 | 036–039 | Existing native integrations / Lua / item configuration boundaries |
+| 040 | Secondary live EGL context skipped; original UI owner retained |
 
 If the process dies before 027, app-private persistence may not have been
 possible. Record logcat before launch; the host can register private storage
