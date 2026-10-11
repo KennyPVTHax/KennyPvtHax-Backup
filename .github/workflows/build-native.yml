@@ -94,14 +94,18 @@ jobs:
           sha256sum "$SO"
 
           READELF="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf"
-          "$READELF" -h "$SO" | grep -E 'Class:|Machine:'
-          "$READELF" -h "$SO" | grep -q 'AArch64'
-
           mkdir -p .verification
+          # grep -q closes a pipe early; LLVM readelf can then exit 74 under
+          # pipefail even when the matching ELF field is present.
+          "$READELF" -h "$SO" > .verification/elf-header.txt
+          grep -E 'Class:|Machine:' .verification/elf-header.txt
+          grep -q 'AArch64' .verification/elf-header.txt
           SYMBOLS="obj/local/arm64-v8a/libAnoy.so"
           test -s "$SYMBOLS"
-          "$READELF" -S "$SYMBOLS" | grep -q '.debug_info'
-          "$READELF" -Ws "$SO" | grep -q 'KennyPvtHaxDiagnosticsExportToFd'
+          "$READELF" -S "$SYMBOLS" > .verification/symbol-sections.txt
+          grep -q '.debug_info' .verification/symbol-sections.txt
+          "$READELF" -Ws "$SO" > .verification/runtime-symbols.txt
+          grep -q 'KennyPvtHaxDiagnosticsExportToFd' .verification/runtime-symbols.txt
           {
             echo "commit=$GITHUB_SHA"
             echo "ndk=$NDK_VERSION"
