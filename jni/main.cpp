@@ -92,17 +92,20 @@ int _HAI(AInputQueue* q, AInputEvent** e) {
         const int raw=AMotionEvent_getAction(*e);
         const int action=raw&AMOTION_EVENT_ACTION_MASK;
         const size_t index=(raw&AMOTION_EVENT_ACTION_POINTER_INDEX_MASK)>>AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
-        if(index>=AMotionEvent_getPointerCount(*e))return r;
-        if(action==AMOTION_EVENT_ACTION_DOWN||action==AMOTION_EVENT_ACTION_POINTER_DOWN||
-           action==AMOTION_EVENT_ACTION_UP||action==AMOTION_EVENT_ACTION_POINTER_UP||
-           action==AMOTION_EVENT_ACTION_MOVE||action==AMOTION_EVENT_ACTION_CANCEL){
-            KennyStartup::Input input;
-            input.x=AMotionEvent_getX(*e,index);input.y=AMotionEvent_getY(*e,index);
-            input.transition=action!=AMOTION_EVENT_ACTION_MOVE;
-            input.down=action==AMOTION_EVENT_ACTION_DOWN||action==AMOTION_EVENT_ACTION_POINTER_DOWN;
-            if(action==AMOTION_EVENT_ACTION_CANCEL)input.down=false;
-            KennyStartup::Inputs().Push(input);
+        using Action=KennyStartup::Action;
+        Action motion;
+        switch(action){
+        case AMOTION_EVENT_ACTION_DOWN:motion=Action::Down;break;
+        case AMOTION_EVENT_ACTION_UP:motion=Action::Up;break;
+        case AMOTION_EVENT_ACTION_MOVE:motion=Action::Move;break;
+        case AMOTION_EVENT_ACTION_CANCEL:motion=Action::Cancel;break;
+        case AMOTION_EVENT_ACTION_POINTER_DOWN:motion=Action::PointerDown;break;
+        case AMOTION_EVENT_ACTION_POINTER_UP:motion=Action::PointerUp;break;
+        default:return r;
         }
+        KennyStartup::Inputs().Motion(motion,index,AMotionEvent_getPointerCount(*e),[&](size_t i){
+            return KennyStartup::Pointer{AMotionEvent_getPointerId(*e,i),AMotionEvent_getX(*e,i),AMotionEvent_getY(*e,i)};
+        });
     }else if(type==AINPUT_EVENT_TYPE_KEY){
         KennyStartup::Input input;input.kind=KennyStartup::Input::Key;
         input.code=AKeyEvent_getKeyCode(*e);input.modifiers=AKeyEvent_getMetaState(*e);input.down=AKeyEvent_getAction(*e)==AKEY_EVENT_ACTION_DOWN;
@@ -1078,7 +1081,10 @@ EGLBoolean _eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
     ImGui::SetCurrentContext(uiContext);
     ImGuiIO& io = ImGui::GetIO();
     KennyStartup::Inputs().Drain([&](const KennyStartup::Input& input){
-        if(input.kind==KennyStartup::Input::Motion){
+        if(input.kind==KennyStartup::Input::Reset){
+            io.MouseDown[0]=false;for(bool& key:io.KeysDown)key=false;
+            io.KeyCtrl=io.KeyShift=io.KeyAlt=false;
+        }else if(input.kind==KennyStartup::Input::Motion){
             if(std::isfinite(input.x)&&std::isfinite(input.y))io.MousePos=ImVec2(input.x*glWidth/screenWidth,input.y*glHeight/screenHeight);
             if(input.transition)io.MouseDown[0]=input.down;
         }else if(input.code>=0&&input.code<IM_ARRAYSIZE(io.KeysDown)){

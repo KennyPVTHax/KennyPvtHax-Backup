@@ -15,7 +15,7 @@ success is not evidence of working device startup, GPU, audio or Android storage
 
 ## Findings delivered before application changes
 
-Counts: **P0 0 / P1 4 / P2 6 / P3 2**. These include explicitly labeled risks;
+Counts: **P0 0 / P1 4 / P2 7 / P3 2**. These include explicitly labeled risks;
 there are no newly established unconditional startup crash causes. Locations
 below refer to the frozen baseline, not line numbers after corrections.
 
@@ -33,6 +33,8 @@ below refer to the frozen baseline, not line numbers after corrections.
 | A10 P2 confirmed limitation | jni/KennyDiagnostics.h:108 | Directory fsync after report rename ignored; mid-rotation failure has no transaction recovery beyond preserved moved reports. | Power-loss metadata durability weaker than process-kill durability. Check failure and preserve discoverable evidence; do not reduce milestone fsync before measuring. | Moderate; filesystem fault/power interruption tests; high source, no device data-loss evidence. |
 | A11 P3 confirmed | jni/KennyMenu.h:93; jni/main.cpp:1120 | Registry Prepare called before launcher and again inside open menu. | Duplicate cached checks, not duplicate uploads. Measure before removing; keep actual successful interaction routing. | Low; voice routing/100 theme switches and CPU benchmark; high, minor. |
 | A12 P3 confirmed | jni/imgui/backends/imgui_impl_opengl3.cpp:409 | Temporary VAO generated/deleted every submitted UI frame. | Driver overhead, not proven mobile bottleneck; avoid optimization without GPU timing/context correctness. | Moderate; real driver profiling and recreation tests; high source, performance magnitude unknown. |
+
+| A13 P2 confirmed | jni/KennyStartup.h:39-48 | Key down/up drain in one frame; overflow injects mouse release only. | Fast key taps disappear or dropped key-up leaves a held key. Preserve keyboard frame boundaries and reset all input on overflow. | Low/moderate; stress queue plus actual ImGui keyboard tests; high. |
 
 ## Ten highest-impact recommendations
 
@@ -70,7 +72,7 @@ runtime clips are in the public repository; unverified OGGs remain excluded.
 
 ## Implementation decision following this report
 
-Implement only A01/A06/A07 (one preferences commit), A05 (input commit), and A02
+Implement only A01/A06/A07 (one preferences commit), A05/A13 (input commit), and A02
 (upload commit) on the audit branch. A03/A04/A08/A09/A10/A11/A12 remain explicit
 follow-up items; their integration risk does not justify speculative edits during
 ongoing device diagnosis. Add reproducible host benchmark/regression automation
