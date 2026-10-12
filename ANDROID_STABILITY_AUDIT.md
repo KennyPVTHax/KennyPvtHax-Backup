@@ -15,7 +15,7 @@ success is not evidence of working device startup, GPU, audio or Android storage
 
 ## Findings delivered before application changes
 
-Counts: **P0 0 / P1 4 / P2 7 / P3 2**. These include explicitly labeled risks;
+Counts: **P0 0 / P1 4 / P2 8 / P3 2**. These include explicitly labeled risks;
 there are no newly established unconditional startup crash causes. Locations
 below refer to the frozen baseline, not line numbers after corrections.
 
@@ -35,6 +35,8 @@ below refer to the frozen baseline, not line numbers after corrections.
 | A12 P3 confirmed | jni/imgui/backends/imgui_impl_opengl3.cpp:409 | Temporary VAO generated/deleted every submitted UI frame. | Driver overhead, not proven mobile bottleneck; avoid optimization without GPU timing/context correctness. | Moderate; real driver profiling and recreation tests; high source, performance magnitude unknown. |
 
 | A13 P2 confirmed | jni/KennyStartup.h:39-48 | Key down/up drain in one frame; overflow injects mouse release only. | Fast key taps disappear or dropped key-up leaves a held key. Preserve keyboard frame boundaries and reset all input on overflow. | Low/moderate; stress queue plus actual ImGui keyboard tests; high. |
+
+| A14 P2 compatibility risk | jni/Application.mk:2; diagnostic ELF program headers | Actual c975a6d runtime LOAD alignment is 0x1000; current r25c setup has no explicit 16 KiB-page opt-in. | Native loading on 16 KiB Android 15/16 devices/host packaging may require alignment changes. First collect getconf PAGE_SIZE and loader errors; do not alter the ongoing binary or NDK. | Moderate build/packaging risk; 16 KiB device/emulator and APK alignment test required; high ELF evidence, device compatibility unverified. |
 
 ## Ten highest-impact recommendations
 

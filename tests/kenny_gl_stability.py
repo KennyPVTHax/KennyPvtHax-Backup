@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Real software EGL/OpenGL driver, no mocked GL/SDK headers."""
-import ctypes as c, subprocess
+import ctypes as c, subprocess, os
+os.environ.setdefault("MESA_SHADER_CACHE_DISABLE","true")
 from pathlib import Path
 Path('.verification').mkdir(exist_ok=True)
 args=['g++','-std=c++17','-O1','-fPIC','-shared','-I','jni','tests/kenny_gl_stability_check.cpp']
