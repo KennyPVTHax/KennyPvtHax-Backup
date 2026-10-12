@@ -1,12 +1,17 @@
 """Diagnostic fixtures ONLY: RGBA test pixels and generated test tone, not Rias art/voice."""
 from pathlib import Path
-from PIL import Image
-import json,math,struct,wave
+import json,math,struct,wave,zlib
 root=Path('.verification/c2-assets');pack=root/'assets/anime/highschool_dxd_rias';pack.mkdir(parents=True,exist_ok=True)
-image=Image.new('RGBA',(32,64));image.putdata([(x*7,y*3,91,0 if x<8 else 128 if x<16 else 255) for y in range(64) for x in range(32)])
-image.save(pack/'character.png');image.resize((32,32)).save(pack/'launcher.png')
-image.tobytes();(root/'expected.rgba').write_bytes(image.tobytes())
-Image.new('RGBA',(32,64),(255,255,255,255)).save(pack/'opaque.png')
+# Tiny standards-compliant RGBA fixtures need only the Python standard library.
+# Exact character test pixels remain unchanged; no real media is synthesized.
+def png(path,width,height,pixels):
+ def chunk(kind,data):return struct.pack('>I',len(data))+kind+data+struct.pack('>I',zlib.crc32(kind+data))
+ rows=b''.join(b'\0'+pixels[y*width*4:(y+1)*width*4] for y in range(height))
+ path.write_bytes(b'\x89PNG\r\n\x1a\n'+chunk(b'IHDR',struct.pack('>IIBBBBB',width,height,8,6,0,0,0))+chunk(b'IDAT',zlib.compress(rows))+chunk(b'IEND',b''))
+pixels=bytes(v for y in range(64) for x in range(32) for v in (x*7,y*3,91,0 if x<8 else 128 if x<16 else 255))
+png(pack/'character.png',32,64,pixels);(root/'expected.rgba').write_bytes(pixels)
+png(pack/'launcher.png',32,32,b''.join(pixels[y*2*128:(y*2+1)*128] for y in range(32)))
+png(pack/'opaque.png',32,64,bytes((255,255,255,255))*32*64)
 (pack/'voice').mkdir(exist_ok=True)
 for name,frequency in [('a',330),('b',550)]:
  with wave.open(str(pack/'voice'/f'{name}.wav'),'wb') as out:

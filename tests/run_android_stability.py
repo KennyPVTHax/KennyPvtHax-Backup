@@ -6,7 +6,9 @@ p=argparse.ArgumentParser();p.add_argument('--sanitizers',action='store_true');p
 out=Path('.verification')/a.label;out.mkdir(parents=True,exist_ok=True)
 def command(args,log,limit=180):
     with log.open('w') as f:
-        subprocess.run(args,stdout=f,stderr=subprocess.STDOUT,check=True,timeout=limit)
+        try: subprocess.run(args,stdout=f,stderr=subprocess.STDOUT,check=True,timeout=limit)
+        except (subprocess.CalledProcessError,subprocess.TimeoutExpired):
+            f.flush();print(log.read_text()[-6000:],flush=True);raise
 for script in ('kenny_host_fixture.py','kenny_startup_audit.py','kenny_c2_fixtures.py'):
     command(['python3','tests/'+script],out/(script+'.log'),45)
 imgui=['jni/imgui/'+s+'.cpp' for s in ('imgui','imgui_draw','imgui_widgets','imgui_tables')]
