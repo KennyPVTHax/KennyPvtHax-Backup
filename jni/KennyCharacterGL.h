@@ -4,6 +4,7 @@
 #ifdef __ANDROID__
 #include <GLES3/gl3.h>
 #include <EGL/egl.h>
+#include "KennyGLUpload.h"
 #include <android/asset_manager.h>
 namespace KennyCharacters {
 // Copy an optional offline APK pack into app-private storage once. Existing
@@ -57,14 +58,8 @@ inline KennyThemeBackground::ArtworkFrame UploadGL(void*,const KennyAssets::Imag
     if(eglGetCurrentContext()==EGL_NO_CONTEXT)return {};
     GLint limit=0;glGetIntegerv(GL_MAX_TEXTURE_SIZE,&limit);
     if(limit<=0||!image.width||!image.height||image.width>unsigned(limit)||image.height>unsigned(limit)||image.rgba.size()!=size_t(image.width)*image.height*4)return {};
-    GLint binding=0,alignment=4;glGetIntegerv(GL_TEXTURE_BINDING_2D,&binding);glGetIntegerv(GL_UNPACK_ALIGNMENT,&alignment);
-    GLuint id=0;glGenTextures(1,&id);if(!id)return {};
-    glBindTexture(GL_TEXTURE_2D,id);glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
-    glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,image.width,image.height,0,GL_RGBA,GL_UNSIGNED_BYTE,image.rgba.data());
-    const bool ok=glGetError()==GL_NO_ERROR;glPixelStorei(GL_UNPACK_ALIGNMENT,alignment);glBindTexture(GL_TEXTURE_2D,binding);
-    if(!ok){glDeleteTextures(1,&id);return {};}
+    const GLuint id=KennyGL::UploadRGBA(image.rgba.data(),int(image.width),int(image.height),true,true);
+    if(!id)return {};
     return {reinterpret_cast<ImTextureID>(uintptr_t(id)),int(image.width),int(image.height)};
 }
 inline void ReleaseGL(void*,KennyThemeBackground::ArtworkFrame frame){GLuint id=GLuint(reinterpret_cast<uintptr_t>(frame.texture));if(id)glDeleteTextures(1,&id);}

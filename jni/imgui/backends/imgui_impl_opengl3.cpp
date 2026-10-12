@@ -125,6 +125,8 @@
 #include "imgui_impl_opengl3_loader.h"
 #endif
 
+#include "../../KennyGLUpload.h"
+
 // Vertex arrays are not supported on ES2/WebGL1 unless Emscripten which uses an extension
 #ifndef IMGUI_IMPL_OPENGL_ES2
 #define IMGUI_IMPL_OPENGL_USE_VERTEX_ARRAY
@@ -508,25 +510,13 @@ bool ImGui_ImplOpenGL3_CreateFontsTexture()
     int width, height;
     io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);   // Load as RGBA 32-bit (75% of the memory is wasted, but default font is so small) because it is more likely to be compatible with user's existing shaders. If your ImTextureId represent a higher-level concept than just a GL texture id, consider calling GetTexDataAsAlpha8() instead to save on GPU memory.
 
-    // Upload texture to graphics system
-    GLint last_texture;
-    glGetIntegerv(GL_TEXTURE_BINDING_2D, &last_texture);
-    glGenTextures(1, &bd->FontTexture);
-    if (!bd->FontTexture || !pixels || width <= 0 || height <= 0)
+    if (bd->FontTexture)
+        return true; // An existing atlas is not uploaded twice.
+    const GLuint texture = KennyGL::UploadRGBA(pixels, width, height, bd->GlVersion >= 300);
+    if (!texture)
         return false;
-    glBindTexture(GL_TEXTURE_2D, bd->FontTexture);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-#ifdef GL_UNPACK_ROW_LENGTH // Not on WebGL/ES
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-#endif
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-
-    // Store our identifier
-    io.Fonts->SetTexID((ImTextureID)(intptr_t)bd->FontTexture);
-
-    // Restore state
-    glBindTexture(GL_TEXTURE_2D, last_texture);
+    bd->FontTexture = texture;
+    io.Fonts->SetTexID((ImTextureID)(intptr_t)texture);
 
     return true;
 }
