@@ -271,3 +271,17 @@ intend that existing destructive action. This export does not alter it.
 
 Stop after this export. The next task is restoring your original SDK and testing
 the real Android build, not further UI/asset/key-entry development.
+
+
+## Unmerged stability audit branch
+
+The device-test diagnostic remains c975a6d, with main at a4d7eea. New reliability
+work is confined to audit/android-stability. Native code b14eb6b and all 12 CI
+sanitizer suites passed in Actions run 38196241061 with unchanged NDK r25c.
+The separate artifact is KennyPvtHax-Audit-ARM64-SO; installing it is an owner
+choice after the ongoing diagnostic test, not an automatic replacement.
+See ANDROID_STABILITY_AUDIT.md / ANDROID_STABILITY_TEST_PLAN.md for exact findings,
+checks, hashes and commands. 16 KiB-page compatibility is not established; existing
+LOAD segment alignment is 4 KiB. Original SDK and 40 libraries are already present.
+Documents export and actual Android GPU/OpenSL/lifecycle still require original
+host/device integration evidence. No main merge or native loading change occurred.

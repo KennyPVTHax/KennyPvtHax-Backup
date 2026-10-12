@@ -1,0 +1,606 @@
+{
+  "baseline_commit": "a4d7eea8c98e3a0f6f1ffc32d89f5c6c9fc536f5",
+  "preserved_diagnostic_code": "c975a6de76c626fba0b4a079d55d9521a2aa82c1",
+  "branch": "audit/android-stability",
+  "native_code_commit": "b14eb6b5415b30aee5c79cc2697c84c926aad732",
+  "native_run_id": 38196241061,
+  "native_job_result": "success",
+  "native_artifact_id": 11723363117,
+  "native_zip_sha256": "8f27583918f88899965c2cb102b3570bb0990f07e7bfd23bd40b32365eed6dea",
+  "native_runtime_sha256": "c510806619e7c5ac4b7b14be42b2db11f18a67931fe84a5217585c2231803716",
+  "native_build_id": "e536ae3c760d78bd857bab16964e211b2ef91b00",
+  "ndk": "25.2.9519653",
+  "local_asan_ubsan": {
+    "commit": "cda9b9678577bc2d113b7c69b28ae903dc5b32b3",
+    "sanitizers": true,
+    "tests": [
+      {
+        "test": "menu",
+        "result": "PASS",
+        "elapsed_seconds": 116.592
+      },
+      {
+        "test": "launcher",
+        "result": "PASS",
+        "elapsed_seconds": 116.086
+      },
+      {
+        "test": "audio",
+        "result": "PASS",
+        "elapsed_seconds": 5.21
+      },
+      {
+        "test": "theme",
+        "result": "PASS",
+        "elapsed_seconds": 77.105
+      },
+      {
+        "test": "aurora",
+        "result": "PASS",
+        "elapsed_seconds": 76.678
+      },
+      {
+        "test": "effects",
+        "result": "PASS",
+        "elapsed_seconds": 69.802
+      },
+      {
+        "test": "characters",
+        "result": "PASS",
+        "elapsed_seconds": 83.259
+      },
+      {
+        "test": "media",
+        "result": "PASS",
+        "elapsed_seconds": 14.003
+      },
+      {
+        "test": "diagnostics",
+        "result": "PASS",
+        "elapsed_seconds": 1.998
+      },
+      {
+        "test": "fonts",
+        "result": "PASS",
+        "elapsed_seconds": 66.926
+      },
+      {
+        "test": "storage",
+        "result": "PASS",
+        "elapsed_seconds": 1.947
+      },
+      {
+        "test": "input",
+        "result": "PASS",
+        "elapsed_seconds": 1.103
+      }
+    ]
+  },
+  "real_mesa_gl": "PASS",
+  "benchmark_before": {
+    "host_only": true,
+    "viewport": [
+      1920,
+      872
+    ],
+    "font_cpu_init_ms": 38.9909,
+    "font_rgba_bytes": 16777216,
+    "cases": [
+      {
+        "mode": "aurora",
+        "hz": 30,
+        "cpu_mean_ms": 0.49092,
+        "cpu_p95_ms": 0.6299,
+        "cpu_max_ms": 5.2021,
+        "vertices": 10175,
+        "indices": 47688,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "aurora",
+        "hz": 60,
+        "cpu_mean_ms": 0.50086,
+        "cpu_p95_ms": 0.66726,
+        "cpu_max_ms": 1.70325,
+        "vertices": 10175,
+        "indices": 47688,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "aurora",
+        "hz": 90,
+        "cpu_mean_ms": 0.49377,
+        "cpu_p95_ms": 0.6711,
+        "cpu_max_ms": 2.50696,
+        "vertices": 10175,
+        "indices": 47688,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "aurora",
+        "hz": 120,
+        "cpu_mean_ms": 0.46855,
+        "cpu_p95_ms": 0.62023,
+        "cpu_max_ms": 3.51742,
+        "vertices": 10175,
+        "indices": 47688,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "classic",
+        "hz": 30,
+        "cpu_mean_ms": 0.0355,
+        "cpu_p95_ms": 0.04633,
+        "cpu_max_ms": 0.15784,
+        "vertices": 2974,
+        "indices": 9672,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "classic",
+        "hz": 60,
+        "cpu_mean_ms": 0.0361,
+        "cpu_p95_ms": 0.04899,
+        "cpu_max_ms": 0.15162,
+        "vertices": 2974,
+        "indices": 9672,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "classic",
+        "hz": 90,
+        "cpu_mean_ms": 0.0382,
+        "cpu_p95_ms": 0.07715,
+        "cpu_max_ms": 0.16964,
+        "vertices": 2974,
+        "indices": 9672,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "classic",
+        "hz": 120,
+        "cpu_mean_ms": 0.03805,
+        "cpu_p95_ms": 0.06425,
+        "cpu_max_ms": 0.1708,
+        "vertices": 2974,
+        "indices": 9672,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "anime_missing",
+        "hz": 30,
+        "cpu_mean_ms": 0.03777,
+        "cpu_p95_ms": 0.05776,
+        "cpu_max_ms": 0.22654,
+        "vertices": 2974,
+        "indices": 9672,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "anime_missing",
+        "hz": 60,
+        "cpu_mean_ms": 0.03748,
+        "cpu_p95_ms": 0.05616,
+        "cpu_max_ms": 0.14058,
+        "vertices": 2974,
+        "indices": 9672,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "anime_missing",
+        "hz": 90,
+        "cpu_mean_ms": 0.03885,
+        "cpu_p95_ms": 0.06971,
+        "cpu_max_ms": 0.24224,
+        "vertices": 2974,
+        "indices": 9672,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "anime_missing",
+        "hz": 120,
+        "cpu_mean_ms": 0.03853,
+        "cpu_p95_ms": 0.06678,
+        "cpu_max_ms": 0.28126,
+        "vertices": 2974,
+        "indices": 9672,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "aurora_reduced",
+        "hz": 30,
+        "cpu_mean_ms": 0.50211,
+        "cpu_p95_ms": 0.85879,
+        "cpu_max_ms": 4.85934,
+        "vertices": 10159,
+        "indices": 47664,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "aurora_reduced",
+        "hz": 60,
+        "cpu_mean_ms": 0.47916,
+        "cpu_p95_ms": 0.61162,
+        "cpu_max_ms": 2.54982,
+        "vertices": 10159,
+        "indices": 47664,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "aurora_reduced",
+        "hz": 90,
+        "cpu_mean_ms": 0.46581,
+        "cpu_p95_ms": 0.59218,
+        "cpu_max_ms": 4.22488,
+        "vertices": 10159,
+        "indices": 47664,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "aurora_reduced",
+        "hz": 120,
+        "cpu_mean_ms": 0.44402,
+        "cpu_p95_ms": 0.55563,
+        "cpu_max_ms": 1.33162,
+        "vertices": 10159,
+        "indices": 47664,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "launcher",
+        "hz": 30,
+        "cpu_mean_ms": 0.00438,
+        "cpu_p95_ms": 0.00447,
+        "cpu_max_ms": 0.1438,
+        "vertices": 310,
+        "indices": 1002,
+        "draw_commands": 1,
+        "imgui_allocations_600": 0,
+        "live_allocations": 86
+      },
+      {
+        "mode": "launcher",
+        "hz": 60,
+        "cpu_mean_ms": 0.00394,
+        "cpu_p95_ms": 0.00391,
+        "cpu_max_ms": 0.02004,
+        "vertices": 310,
+        "indices": 1002,
+        "draw_commands": 1,
+        "imgui_allocations_600": 0,
+        "live_allocations": 86
+      },
+      {
+        "mode": "launcher",
+        "hz": 90,
+        "cpu_mean_ms": 0.0045,
+        "cpu_p95_ms": 0.00391,
+        "cpu_max_ms": 0.21806,
+        "vertices": 310,
+        "indices": 1002,
+        "draw_commands": 1,
+        "imgui_allocations_600": 0,
+        "live_allocations": 86
+      },
+      {
+        "mode": "launcher",
+        "hz": 120,
+        "cpu_mean_ms": 0.00393,
+        "cpu_p95_ms": 0.00391,
+        "cpu_max_ms": 0.02549,
+        "vertices": 310,
+        "indices": 1002,
+        "draw_commands": 1,
+        "imgui_allocations_600": 0,
+        "live_allocations": 86
+      }
+    ],
+    "pcm_bank_init_ms": 4.25198,
+    "logger_storage_ms": 0.05681,
+    "logger_32_durable_events_ms": 0.12256,
+    "sizeof_aurora": 1000,
+    "sizeof_audio_bank": 499308
+  },
+  "benchmark_after": {
+    "host_only": true,
+    "viewport": [
+      1920,
+      872
+    ],
+    "font_cpu_init_ms": 41.663,
+    "font_rgba_bytes": 16777216,
+    "cases": [
+      {
+        "mode": "aurora",
+        "hz": 30,
+        "cpu_mean_ms": 0.52534,
+        "cpu_p95_ms": 0.71057,
+        "cpu_max_ms": 4.84145,
+        "vertices": 10175,
+        "indices": 47688,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "aurora",
+        "hz": 60,
+        "cpu_mean_ms": 0.50557,
+        "cpu_p95_ms": 0.6993,
+        "cpu_max_ms": 2.94784,
+        "vertices": 10175,
+        "indices": 47688,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "aurora",
+        "hz": 90,
+        "cpu_mean_ms": 0.50039,
+        "cpu_p95_ms": 0.73915,
+        "cpu_max_ms": 2.6275,
+        "vertices": 10175,
+        "indices": 47688,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "aurora",
+        "hz": 120,
+        "cpu_mean_ms": 0.46032,
+        "cpu_p95_ms": 0.60787,
+        "cpu_max_ms": 1.14777,
+        "vertices": 10175,
+        "indices": 47688,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "classic",
+        "hz": 30,
+        "cpu_mean_ms": 0.04032,
+        "cpu_p95_ms": 0.08398,
+        "cpu_max_ms": 0.25745,
+        "vertices": 2974,
+        "indices": 9672,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "classic",
+        "hz": 60,
+        "cpu_mean_ms": 0.03996,
+        "cpu_p95_ms": 0.08309,
+        "cpu_max_ms": 0.21357,
+        "vertices": 2974,
+        "indices": 9672,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "classic",
+        "hz": 90,
+        "cpu_mean_ms": 0.03951,
+        "cpu_p95_ms": 0.08165,
+        "cpu_max_ms": 0.29641,
+        "vertices": 2974,
+        "indices": 9672,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "classic",
+        "hz": 120,
+        "cpu_mean_ms": 0.0399,
+        "cpu_p95_ms": 0.08065,
+        "cpu_max_ms": 0.23609,
+        "vertices": 2974,
+        "indices": 9672,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "anime_missing",
+        "hz": 30,
+        "cpu_mean_ms": 0.04117,
+        "cpu_p95_ms": 0.0928,
+        "cpu_max_ms": 0.25415,
+        "vertices": 2974,
+        "indices": 9672,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "anime_missing",
+        "hz": 60,
+        "cpu_mean_ms": 0.03716,
+        "cpu_p95_ms": 0.05848,
+        "cpu_max_ms": 0.11593,
+        "vertices": 2974,
+        "indices": 9672,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "anime_missing",
+        "hz": 90,
+        "cpu_mean_ms": 0.03873,
+        "cpu_p95_ms": 0.07814,
+        "cpu_max_ms": 0.13467,
+        "vertices": 2974,
+        "indices": 9672,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "anime_missing",
+        "hz": 120,
+        "cpu_mean_ms": 0.04507,
+        "cpu_p95_ms": 0.11046,
+        "cpu_max_ms": 0.32238,
+        "vertices": 2974,
+        "indices": 9672,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "aurora_reduced",
+        "hz": 30,
+        "cpu_mean_ms": 0.44034,
+        "cpu_p95_ms": 0.55824,
+        "cpu_max_ms": 1.46841,
+        "vertices": 10159,
+        "indices": 47664,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "aurora_reduced",
+        "hz": 60,
+        "cpu_mean_ms": 0.43986,
+        "cpu_p95_ms": 0.56977,
+        "cpu_max_ms": 1.10094,
+        "vertices": 10159,
+        "indices": 47664,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "aurora_reduced",
+        "hz": 90,
+        "cpu_mean_ms": 0.4444,
+        "cpu_p95_ms": 0.55406,
+        "cpu_max_ms": 0.93661,
+        "vertices": 10159,
+        "indices": 47664,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "aurora_reduced",
+        "hz": 120,
+        "cpu_mean_ms": 0.48892,
+        "cpu_p95_ms": 0.68053,
+        "cpu_max_ms": 3.64472,
+        "vertices": 10159,
+        "indices": 47664,
+        "draw_commands": 3,
+        "imgui_allocations_600": 0,
+        "live_allocations": 77
+      },
+      {
+        "mode": "launcher",
+        "hz": 30,
+        "cpu_mean_ms": 0.0045,
+        "cpu_p95_ms": 0.00451,
+        "cpu_max_ms": 0.07281,
+        "vertices": 310,
+        "indices": 1002,
+        "draw_commands": 1,
+        "imgui_allocations_600": 0,
+        "live_allocations": 86
+      },
+      {
+        "mode": "launcher",
+        "hz": 60,
+        "cpu_mean_ms": 0.00452,
+        "cpu_p95_ms": 0.00457,
+        "cpu_max_ms": 0.05475,
+        "vertices": 310,
+        "indices": 1002,
+        "draw_commands": 1,
+        "imgui_allocations_600": 0,
+        "live_allocations": 86
+      },
+      {
+        "mode": "launcher",
+        "hz": 90,
+        "cpu_mean_ms": 0.00448,
+        "cpu_p95_ms": 0.00509,
+        "cpu_max_ms": 0.139,
+        "vertices": 310,
+        "indices": 1002,
+        "draw_commands": 1,
+        "imgui_allocations_600": 0,
+        "live_allocations": 86
+      },
+      {
+        "mode": "launcher",
+        "hz": 120,
+        "cpu_mean_ms": 0.00482,
+        "cpu_p95_ms": 0.00429,
+        "cpu_max_ms": 0.11493,
+        "vertices": 310,
+        "indices": 1002,
+        "draw_commands": 1,
+        "imgui_allocations_600": 0,
+        "live_allocations": 86
+      }
+    ],
+    "pcm_bank_init_ms": 5.13509,
+    "logger_storage_ms": 0.15405,
+    "logger_32_durable_events_ms": 0.17414,
+    "sizeof_aurora": 1000,
+    "sizeof_audio_bank": 499308
+  },
+  "device_runtime_verified": false,
+  "documents_export_verified": false,
+  "original_artifact_sha256_unchanged": "2befd89516a51ef3e713319dd2e9714c5b8be38ec22961c3f81231718e906d67",
+  "notes": [
+    "Baseline runner initially lacked C2 ImGui link inputs; corrected helper, baseline C2 rerun passed.",
+    "Original theme assertion expected a failed adjustment to become clean; updated to require dirty/retry retention.",
+    "Initial audit CI native job passed; host fixture generation failed. Replaced diagnostic-only Pillow fixture creation with stdlib RGBA generation.",
+    "Native artifact ZIP digest, CRC/entries, ARM64 ELF, host exports and runtime digest checked locally.",
+    "No private symbols or device logs uploaded. No crash root cause established."
+  ],
+  "combined_ci_result": "success",
+  "ci_host_sanitizer_result": "success",
+  "ci_host_suites": 12,
+  "ci_host_result_artifact_id": 11723473187
+}

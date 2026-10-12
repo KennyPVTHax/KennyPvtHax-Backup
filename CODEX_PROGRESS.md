@@ -1,5 +1,55 @@
 PROJECT: KennyPvtHax
 
+CURRENT TASK:
+Android stability/performance/compatibility audit — completed on separate branch.
+Baseline/main a4d7eea; current device-test diagnostic c975a6d/artifact 11694306093
+preserved unchanged. Branch audit/android-stability, compiled checkpoint b14eb6b.
+No main merge or force push. Prior records below remain historical.
+
+COMPLETED:
+- Read-only prioritized report committed before application code changes.
+- 14 findings (P0=0/P1=4/P2=8/P3=2); six addressed, eight explicit follow-ups.
+- Preferences: regular bounded nonblocking reads, short/EINTR transfer recovery,
+  formatting limit, atomic file/directory durability check, bounded failed-save retry.
+- Input: primary pointer ID ownership, secondary-finger isolation, cancellation,
+  keyboard frame transitions and full-device overflow reset.
+- Shared font/character GL upload: restore PBO/row/skip/alignment/binding state,
+  reject failed uploads, prevent duplicate font texture creation.
+- Bounded reproducible host regression/benchmark runner and immutable CI action
+  pins; branch-specific runtime artifact; unchanged r25c native configuration.
+
+MODIFIED FILES:
+Exact 23-file application/test/documentation inventory in ANDROID_STABILITY_AUDIT.md.
+No SDK offsets/worker/loader/gameplay/callback/native library naming changed.
+No approved Aurora, Classic, Anime design or original audio engine changes.
+
+VERIFICATION:
+All 12 local and CI ASan/UBSan suites pass; 37 exact bindings/ranges/full callback
+pass. Real Mesa EGL/OpenGL state/alpha readback + 100 recreation cycles pass.
+30/60/90/120 Hz host CPU/draw/allocator baselines recorded; draw geometry unchanged.
+NDK 25.2.9519653 ARM64 build passes in Actions run 38196241061. Downloaded audit
+artifact ZIP/CRC/entry/hash/ELF/exports checked. Native source b14eb6b, separate
+runtime SHA256 c510806619e7c5ac4b7b14be42b2db11f18a67931fe84a5217585c2231803716.
+Main and known diagnostic artifact digest remain unchanged.
+
+KNOWN LIMITATIONS:
+No device startup root cause or Android runtime/audio/GPU/storage/16KiB support
+claim. OpenSL lifecycle, host lifecycle synchronization, interrupted asset install,
+GLES sampler/context behavior and logger power-loss metadata need follow-up.
+Documents still needs original Android host authorized FD bridge. Private
+plaintext symbols/crash reports/unverified OGGs were not published.
+
+NEXT ACTION:
+STOP audit work. Review device c975a6d checkpoint/backtrace evidence and findings;
+owner chooses any audit-build testing and merge review. Do not merge automatically.
+Reports: ANDROID_STABILITY_AUDIT.md, ANDROID_PERFORMANCE_BASELINE.md,
+ANDROID_COMPATIBILITY_MATRIX.md, ANDROID_STABILITY_TEST_PLAN.md and
+ANDROID_AUDIT_VERIFICATION.json. No new UI/features/release work.
+
+---
+
+PROJECT: KennyPvtHax
+
 FINAL DIAGNOSTIC BUILD VERIFICATION:
 Code commit c975a6d; Actions run 38117222977 SUCCESS using unchanged NDK
 25.2.9519653, arm64-v8a and full presentation. Runtime artifact 11694306093.

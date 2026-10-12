@@ -80,3 +80,85 @@ follow-up items; their integration risk does not justify speculative edits durin
 ongoing device diagnosis. Add reproducible host benchmark/regression automation
 and separate branch artifact metadata. Final verification follows in a later
 section; this report is first committed before application code changes.
+
+## Final results — audit branch only
+
+**Six findings addressed:** A01/A06/A07 in c2df83e; A05/A13 in 182f35f;
+A02 in 38af445. Separate report commit 09c25bd preceded application changes.
+Automation/CI additions: cda9b96 and b14eb6b. All commits are independently
+reversible; no main merge, force push or diagnostic artifact replacement.
+
+**Remaining:** A03/A04/A08/A09/A10/A11/A12/A14. Original 14 findings comprise
+P0=0, P1=4, P2=8, P3=2; remaining after scoped corrections: P1=2, P2=4, P3=2.
+Two P1 entries are explicitly integration/concurrency risks requiring evidence,
+not newly demonstrated crashes. Asset interrupted installation (A08) and logger
+metadata durability (A10) remain confirmed limitations needing separately scoped
+fault/lifecycle tests. No device startup root cause has been established.
+
+### Verification
+
+- Baseline host suites passed after correcting the new runner's omitted ImGui
+  link inputs for C2. The original application did not need a correction for that.
+- All **12** local ASan/UBSan suites passed: menu, launcher, PCM/audio, themes/store,
+  Aurora, effects, characters, CC0 media, diagnostics/input queue, real embedded
+  fonts, injected storage failures and pointer/keyboard stress.
+- All **12 CI ASan/UBSan suites** passed on b14eb6b in
+  [run 38196241061](https://github.com/KennyPVTHax/KennyPvtHax-Backup/actions/runs/38196241061).
+  The initial audit workflow run's native job passed but its host fixture-generation
+  step failed; synthetic RGBA generation now uses only Python stdlib, with no new
+  Pillow installation. Failure logs now surface in CI. No production media changed.
+- Actual Mesa EGL/desktop OpenGL upload/state/readback and 100 resource cycles
+  passed. This does not establish Android GLES driver/context-loss behavior.
+- Original 37 bindings/ranges/full callback, native worker/constructor/registration,
+  SDK/40 libraries, Aurora, existing menu/launcher/audio/registry/decoder/logger
+  modules remain unchanged byte-for-byte except the specifically listed fixes.
+- Tracked-source inventory: 3,407 paths at the source checkpoint; no missing tracked
+  files; no high-confidence private-key/GitHub/AWS token signatures. This is a focused
+  scan, not a guarantee of absence of every possible secret. No new media, crash
+  reports, credentials or plaintext debugging symbols were uploaded.
+- Host timing/draw/allocation results and actual downloaded ELF metadata are in
+  ANDROID_AUDIT_VERIFICATION.json and ANDROID_PERFORMANCE_BASELINE.md.
+
+### Native audit artifact — separate from device-test diagnostic
+
+Compiled source: **b14eb6b5415b30aee5c79cc2697c84c926aad732**; NDK r25c unchanged.
+Both host and native jobs succeeded. Output remains libs/arm64-v8a/libAnoy.so.
+[Audit runtime artifact](https://github.com/KennyPVTHax/KennyPvtHax-Backup/actions/runs/38196241061/artifacts/11723363117).
+ZIP SHA256: 8f27583918f88899965c2cb102b3570bb0990f07e7bfd23bd40b32365eed6dea.
+Runtime SHA256: c510806619e7c5ac4b7b14be42b2db11f18a67931fe84a5217585c2231803716.
+BuildID: e536ae3c760d78bd857bab16964e211b2ef91b00.
+Downloaded ZIP digest/CRC/two expected entries, ARM64 ELF and both diagnostic
+exported interfaces were checked. CI asserts runtime/unstripped BuildIDs match.
+Private encrypted symbols were not retained because recipient setup is absent;
+plaintext symbols are never published. Actual device reports remain local.
+
+Original artifact 11694306093 remains unexpired and has unchanged digest
+2befd89516a51ef3e713319dd2e9714c5b8be38ec22961c3f81231718e906d67.
+GitHub main remains a4d7eea8c98e3a0f6f1ffc32d89f5c6c9fc536f5.
+Continue the existing diagnostic device test before deciding whether to test the
+audit build. No root cause, crash-free startup, mobile FPS, OpenSL playback,
+Android 10–16 support or Documents export success is claimed.
+
+### Exact changed files
+
+Application: jni/KennyAppearanceStore.h, jni/KennyStartup.h, jni/main.cpp
+(input adapter/reset only), jni/KennyCharacterGL.h, jni/KennyGLUpload.h (new),
+jni/imgui/backends/imgui_impl_opengl3.cpp.
+
+Tests/automation: .github/workflows/build-native.yml; tests/run_android_stability.py;
+tests/kenny_storage_stability_check.cpp; tests/kenny_input_stability_check.cpp;
+tests/kenny_gl_stability.py; tests/kenny_gl_stability_check.cpp;
+tests/kenny_benchmark.py; tests/kenny_performance_baseline.cpp;
+tests/kenny_theme_check.cpp; tests/kenny_c2_fixtures.py.
+
+Documentation: ANDROID_STABILITY_AUDIT.md; ANDROID_PERFORMANCE_BASELINE.md;
+ANDROID_COMPATIBILITY_MATRIX.md; ANDROID_STABILITY_TEST_PLAN.md;
+ANDROID_AUDIT_VERIFICATION.json; CODEX_PROGRESS.md; ANDROID_BUILD_INSTRUCTIONS.md.
+
+### Next action
+
+Review the findings and current c975a6d device checkpoints/backtrace. Preserve the
+exact binary identity. Test the targeted branch corrections only when the owner
+chooses; confirm OpenSL callback lifetime, host window synchronization and actual
+GLES/context behavior before further integration edits or merge review. No UI
+redesign, new asset acquisition, key-entry features or release stage was started.
