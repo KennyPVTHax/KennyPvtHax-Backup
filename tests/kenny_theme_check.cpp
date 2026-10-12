@@ -57,7 +57,7 @@ int main() {
     Store missing;Preferences disabled;missing.Configure(nullptr,disabled);disabled.opacity=86;missing.Sync(disabled,true);assert(!missing.available);
     std::string nowhere=std::string(directory)+"/not-created";Store failure;Preferences failed;
     failure.Configure(nowhere.c_str(),failed);failed.theme=Theme::Classic;failure.Sync(failed,true);
-    assert(std::strstr(failure.status,"Could not save") && Equal(failure.observed,failed));
+    assert(std::strstr(failure.status,"failed") && !Equal(failure.observed,failed) && failure.retryPending);
     failed.opacity=std::numeric_limits<float>::quiet_NaN();Normalize(failed);assert(failed.opacity==97);
     failed.uiVolume=std::numeric_limits<float>::quiet_NaN();failed.soundProfile=99;Normalize(failed);
     assert(failed.uiVolume==35 && failed.soundProfile==2);
