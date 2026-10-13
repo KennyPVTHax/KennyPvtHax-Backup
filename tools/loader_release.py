@@ -30,7 +30,7 @@ def package(binary,out,commit,run,contract):
         info=zipfile.ZipInfo('libloader.so',(2020,1,1,0,0,0));info.compress_type=zipfile.ZIP_DEFLATED;info.external_attr=0o100644<<16
         z.writestr(info,data)
     raw=target.read_bytes();assert archive(raw,contract)==data
-    report={'source_commit':commit,'source_run':run,'ndk':'25.2.9519653','library_sha256':digest(data),'internal_library':'libloader.so','zip_name':name,'zip_sha256':digest(raw),'zip_bytes':len(raw)}
+    report={'source_commit':commit,'source_run':run,'source_run_url':'https://github.com/'+SOURCE+'/actions/runs/'+str(run),'ndk':'25.2.9519653','library_sha256':digest(data),'internal_library':'libloader.so','zip_name':name,'zip_sha256':digest(raw),'zip_bytes':len(raw)}
     (out/'release.json').write_text(json.dumps(report,indent=2)+'\n');return report
 
 def next_version(current,policy):
@@ -40,6 +40,16 @@ def next_version(current,policy):
     step=decimal.Decimal(policy['step']);old=decimal.Decimal(current)
     assert step.is_finite() and step>0;value=old+step;assert value>old
     s=format(value,'f');return s if '.' in s else s+'.0'
+def release_version(current,policy,subjects):
+    # Tool-created publication records survive rollback without adding manifest
+    # fields or an extra destination ledger. Refuse oversized histories safely.
+    lines=subjects.splitlines();assert len(lines)<100000,'Release history requires migration'
+    versions=[current]
+    for line in lines:
+        m=re.fullmatch(r'Publish [0-9a-f]{40} from source run \S+ manifest_version (\d+\.\d+)',line)
+        if m:versions.append(m[1])
+    return next_version(max(versions,key=decimal.Decimal),policy)
+
 def edit_manifest(data,fields):
     result=json.loads(json.dumps(data));target=game(result)
     assert set(fields)==set(KEYS) and all(isinstance(v,str) for v in fields.values())
@@ -102,11 +112,11 @@ def publish(bundle,contract,rollback=None):
                         return dict(report,result='already-published',destination_commit=git(repo,'rev-parse','HEAD').stdout.strip(),manifest_version=target['drm_verion'],raw_url=target['drm'],rebuilt_library_sha256=report['library_sha256'],library_sha256=digest(installed),zip_sha256=digest(existing),zip_bytes=len(existing))
                     raise RuntimeError('Release archive already exists; refuse automatic replay after rollback')
                 path.write_bytes(raw)
-                fields={'drm':'https://raw.githubusercontent.com/'+DEST+'/'+BRANCH+'/'+name,'drm_name':name,'drm_verion':next_version(target['drm_verion'],contract['version_policy'])}
+                fields={'drm':'https://raw.githubusercontent.com/'+DEST+'/'+BRANCH+'/'+name,'drm_name':name,'drm_verion':release_version(target['drm_verion'],contract['version_policy'],git(repo,'log','--max-count=100000','--format=%s').stdout)}
             updated=edit_manifest(before,fields);(repo/'kenny.json').write_text(json.dumps(updated,ensure_ascii=False,indent=4)+'\n')
             git(repo,'add','--','kenny.json',*([] if rollback else [name]))
             changed=git(repo,'diff','--cached','--name-only').stdout.splitlines();assert set(changed)==({'kenny.json'} if rollback else {'kenny.json',name})
-            git(repo,'commit','-m',('Rollback loader to '+rollback) if rollback else 'Publish '+commit+' from source run '+report['source_run'])
+            git(repo,'commit','-m',('Rollback loader to '+rollback) if rollback else 'Publish '+commit+' from source run '+report['source_run']+' manifest_version '+fields['drm_verion'])
             dest_commit=git(repo,'rev-parse','HEAD').stdout.strip()
             current_source(commit) # Last possible branch-head check before atomic fast-forward push.
             if git(repo,'push','origin','HEAD:'+BRANCH,env=env,check=False).returncode:continue

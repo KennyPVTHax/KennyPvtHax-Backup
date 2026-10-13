@@ -44,6 +44,10 @@ with tempfile.TemporaryDirectory() as temp:
  replay=r.publish(root/'retry',contract);assert replay['library_sha256']==original_digest and replay['rebuilt_library_sha256']==retry['library_sha256']
  rollback=r.publish(bundle,contract,old);assert rollback['manifest_version']=='0.2';assert run('--git-dir',remote,'show','main:kenny.json')==json.dumps(original,indent=4)
  assert run('--git-dir',remote,'ls-tree','--name-only','main',report['zip_name'])==report['zip_name']
+ # Subsequent release must exceed the previous high-water version after rollback.
+ os.environ['GITHUB_SHA']='b'*40
+ r.package(so,root/'next','b'*40,'next-run',contract)
+ assert r.publish(root/'next',contract)['manifest_version']=='0.4'
  os.environ['GITHUB_REF']='refs/heads/main'
  try:r.publish(bundle,contract)
  except AssertionError:pass

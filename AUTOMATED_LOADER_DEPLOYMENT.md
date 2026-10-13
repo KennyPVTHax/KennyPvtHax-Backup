@@ -155,3 +155,9 @@ through the verified rollback mechanism and retain previous ZIPs/checksums.
 Release ruleset read access succeeded, but creating the requested source branch
 protections returned HTTP 403 (Resource not accessible by integration). No rule
 was applied; repository administrator setup remains required.
+
+For the candidate numeric policy, later releases advance beyond the highest
+tool-recorded manifest version in destination commit subjects, not just the live
+manifest after rollback. Legacy version high-water values must be reviewed when
+confirming the initial policy. History inspection is bounded and fails closed
+at its migration limit; no extra manifest fields or destination ledger are added.
