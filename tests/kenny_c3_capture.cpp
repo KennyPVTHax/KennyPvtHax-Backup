@@ -46,6 +46,8 @@ int main(){
     menu.audio=&audio;menu.audioStatus="Host PCM test sink; Android playback unverified.";
     Frame();Frame();Click(NativeCenter("Character voice"));Frame();assert(!menu.appearance.characterVoice&&mixer.voiceVolume==0);
     Click(NativeCenter("Character voice"));Frame();assert(menu.appearance.characterVoice);
+    Click(NativeCenter("Control voice feedback"));Frame();assert(!menu.appearance.controlVoiceFeedback);
+    Click(NativeCenter("Control voice feedback"));Frame();assert(menu.appearance.controlVoiceFeedback);
     auto volume=nativeItems.at(ImHashStr("Voice volume",0,table));auto accepted=audio.accepted;
     Click(NativeSliderPoint(volume,0));Frame();assert(menu.appearance.characterVolume==0&&mixer.voiceVolume==0&&audio.accepted==accepted);
     volume=nativeItems.at(ImHashStr("Voice volume",0,table));Click(NativeSliderPoint(volume,.99f));Frame();assert(menu.appearance.characterVolume==100);

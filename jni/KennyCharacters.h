@@ -7,9 +7,9 @@
 #include <dirent.h>
 
 namespace KennyCharacters {
-enum class VoiceEvent:unsigned {Open,Close,Navigation,LoginSuccess,LoginFailure,Enabled,Disabled,Skins,Bullet,Confirmation,Error,Count};
+enum class VoiceEvent:unsigned {Open,Close,Navigation,LoginSuccess,LoginFailure,Enabled,Disabled,Skins,Bullet,Confirmation,Error,ThemeSwitch,SettingsNavigation,Count};
 constexpr unsigned EventCount=unsigned(VoiceEvent::Count);
-inline constexpr const char* EventNames[]={"launcher_open","launcher_close","menu_navigation","login_success","login_failure","feature_enabled","feature_disabled","skins_enabled","bullet_track_enabled","confirmation","error"};
+inline constexpr const char* EventNames[]={"launcher_open","launcher_close","menu_navigation","login_success","login_failure","feature_enabled","feature_disabled","skins_enabled","bullet_track_enabled","confirmation","error","theme_switch","settings_navigation"};
 struct EventClips {std::array<KennyAudio::Recording,3> clips;unsigned count=0,last=3;};
 struct VoicePack {std::string id,name;std::array<EventClips,EventCount> events;bool Available()const{for(const auto& e:events)if(e.count)return true;return false;}};
 struct Character {
@@ -119,9 +119,17 @@ public:
     }
     static bool Route(void* user,KennyAudio::Event event,const KennyAppearance::Preferences& p,double time,const char* label){
         auto& self=*static_cast<Registry*>(user);VoiceEvent voice;
+        if(!p.controlVoiceFeedback && (event==KennyAudio::Event::CheckboxOn || event==KennyAudio::Event::CheckboxOff || event==KennyAudio::Event::ButtonPressed))return false;
         switch(event){case KennyAudio::Event::MenuOpen:voice=VoiceEvent::Open;break;
         case KennyAudio::Event::MenuClose:voice=VoiceEvent::Close;break;
-        case KennyAudio::Event::PrimaryNavigation:case KennyAudio::Event::SecondaryNavigation:voice=VoiceEvent::Navigation;break;
+        case KennyAudio::Event::ThemeChanged:voice=VoiceEvent::ThemeSwitch;break;
+        case KennyAudio::Event::PrimaryNavigation:
+            if(label&&std::strcmp(label,"Settings")==0){
+                auto* c=self.Find(p.characterId);auto* pack=c?self.Pack(*c,p.voicePack):nullptr;
+                if(pack&&pack->events[unsigned(VoiceEvent::SettingsNavigation)].count){voice=VoiceEvent::SettingsNavigation;break;}
+            }
+            voice=VoiceEvent::Navigation;break;
+        case KennyAudio::Event::SecondaryNavigation:voice=VoiceEvent::Navigation;break;
         case KennyAudio::Event::CheckboxOn:voice=label&&std::strcmp(label,"Enable bullet track")==0?VoiceEvent::Bullet:VoiceEvent::Enabled;break;
         case KennyAudio::Event::CheckboxOff:voice=VoiceEvent::Disabled;break;
         case KennyAudio::Event::ButtonPressed:voice=VoiceEvent::Confirmation;break;
@@ -137,7 +145,7 @@ public:
 // entire face/hair, avoids a matte, and leaves controls in the foreground.
 inline void DrawCharacter(ImDrawList* draw,ImVec2 origin,ImVec2 size,float radius,float contentY,
                           const KennyThemeBackground::ArtworkFrame& frame,const KennyAppearance::Preferences& p){
-    if(!frame.Valid())return;
+    if(!p.artworkVisible || !frame.Valid())return;
     const float margin=std::max(radius+2,24.0f);
     float height=std::max(1.0f,size.y-contentY-margin-6),width=std::min(size.x*.42f,size.x-2*margin);
     float scale=std::min(width/frame.width,height/frame.height);ImVec2 fitted(frame.width*scale,frame.height*scale);

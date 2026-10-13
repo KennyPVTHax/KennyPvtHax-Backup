@@ -22,6 +22,7 @@ struct Preferences {
     float uiVolume = 35.0f;
     std::string characterId="highschool_dxd_rias",voicePack="default",characterArtwork="character.png";
     bool characterVoice=true,characterLauncher=true;
+    bool artworkVisible=true, controlVoiceFeedback=true;
     float characterVolume=70;
     int soundProfile = 0; // 0: theme, 1: Aurora soft, 2: Classic crisp.
 };
@@ -51,6 +52,7 @@ inline bool Equal(const Preferences& a, const Preferences& b) {
         a.touchAttraction==b.touchAttraction && a.artworkDim==b.artworkDim && a.artworkCover==b.artworkCover &&
         a.uiSounds==b.uiSounds && a.uiVolume==b.uiVolume && a.soundProfile==b.soundProfile && a.characterId==b.characterId && a.voicePack==b.voicePack &&
         a.characterArtwork==b.characterArtwork && a.characterVoice==b.characterVoice &&
-        a.characterLauncher==b.characterLauncher && a.characterVolume==b.characterVolume;
+        a.characterLauncher==b.characterLauncher && a.characterVolume==b.characterVolume &&
+        a.artworkVisible==b.artworkVisible && a.controlVoiceFeedback==b.controlVoiceFeedback;
 }
 } // namespace KennyAppearance

@@ -99,6 +99,7 @@ inline void DrawAnime(Preferences& p,KennyCharacters::Registry& registry,bool au
     }
     KennyPanels::Note(character.series.c_str());KennyPanels::Note(character.status.c_str());
     KennyPanels::Note(character.artworkTexture.Valid()?"Transparent artwork ready.":character.image.rgba.empty()?"Character artwork missing or invalid.":"Artwork decoded; texture rendering unavailable.");
+    KennyControls::Checkbox("Show character artwork",&p.artworkVisible);
     ImGui::BeginDisabled(!character.launcherTexture.Valid());KennyControls::Checkbox("Character launcher",&p.characterLauncher);ImGui::EndDisabled();
     KennyPanels::Note(character.launcherTexture.Valid()?"Character launcher ready.":"Launcher artwork unavailable; using the K emblem.");KennyPanels::EndSection();
     KennyPanels::Section("Character voice");
@@ -108,6 +109,7 @@ inline void DrawAnime(Preferences& p,KennyCharacters::Registry& registry,bool au
             for(unsigned i=0;i<character.packCount;++i){auto& v=character.packs[i];ImGui::PushID(v.id.c_str());if(ImGui::Selectable(v.name.c_str(),p.voicePack==v.id)){p.voicePack=v.id;KennyAudio::Emit(KennyAudio::Event::ButtonPressed);}ImGui::PopID();}ImGui::EndCombo();}}
     ImGui::BeginDisabled(!audioReady||!available);
     KennyControls::Checkbox("Character voice",&p.characterVoice);
+    KennyControls::Checkbox("Control voice feedback",&p.controlVoiceFeedback);
     KennyControls::SliderFloat("Voice volume",&p.characterVolume,0,100,"%.0f%%");ImGui::EndDisabled();
     KennyPanels::Note(!available?"Voice recordings unavailable. UI tones remain the fallback.":!audioReady?"Voice pack decoded; Android playback unavailable on this host.":"Local voice pack ready. Global UI mute takes precedence.");
     if(available){unsigned events=0;for(const auto& e:pack->events)events+=e.count>0;ImGui::Text("Mapped events: %u / %u",events,KennyCharacters::EventCount);}
@@ -145,7 +147,7 @@ inline void DrawSettings(Preferences& preferences, bool& centerRequested, bool a
             KennyAudio::Emit(KennyAudio::Event::ButtonPressed);
         ImGui::PopStyleVar(2);
         ImGui::EndDisabled();
-        KennyPanels::Note("Follow theme uses soft Aurora tones or crisp Classic feedback. Anime voices await your recordings.");
+        KennyPanels::Note("Follow theme uses soft Aurora tones or crisp Classic feedback. Anime uses the selected installed voice pack.");
         KennyPanels::EndSection();KennyPanels::End();
     }
     if(characters)DrawAnime(preferences,*characters,audioReady);

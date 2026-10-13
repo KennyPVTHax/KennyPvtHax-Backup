@@ -1,5 +1,32 @@
 PROJECT: KennyPvtHax
 
+CURRENT TASK: Full UI continuation on ui/full-theme-continuation.
+WORKING BASELINE: 793458200ab8906179af0c63d0b0cb1648b7dafa; owner confirms
+full Android build works; Actions 38407512326 succeeded. Removed component:
+jni/Helper/bypass.h contents. Empty header preserved; recovery branch unused.
+
+COMPLETED:
+Existing full feature inventory recorded in FULL_UI_CONTINUATION.md.
+Anime artwork visibility/control voice preferences, optional theme/Settings voice
+mappings, schema-4 migration. Existing licensed media and 37 bindings preserved.
+No startup/input/EGL/SDK/audio-engine/Aurora changes and no production publication.
+
+MODIFIED FILES:
+jni/KennyThemePreferences.h; jni/KennyAppearanceStore.h; jni/KennyCharacters.h;
+jni/KennyAppearance.h; jni/KennyMenu.h; tests/kenny_full_continuation_check.cpp;
+tests/kenny_c3_capture.cpp; FULL_UI_CONTINUATION.md; UI_DESIGN_NOTES.md;
+CODEX_PROGRESS.md.
+
+VERIFICATION: In progress; final host/native build results recorded below.
+KNOWN LIMITATIONS: Rias artwork/launcher/original voice missing. Installed clips
+are the CC0 Cici Fyre alternative. Android GPU/audio/new runtime needs device test.
+NEXT ACTION: Finish regressions, build full branch artifact, owner device test.
+Never update production loader before that test.
+
+--- Previous checkpoints ---
+
+PROJECT: KennyPvtHax
+
 FINAL DIAGNOSTIC BUILD VERIFICATION:
 Code commit c975a6d; Actions run 38117222977 SUCCESS using unchanged NDK
 25.2.9519653, arm64-v8a and full presentation. Runtime artifact 11694306093.

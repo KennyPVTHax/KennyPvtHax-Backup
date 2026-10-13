@@ -154,7 +154,7 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
                                ImVec2(tabWidth, l.navHeight - 12.0f * l.scale))) {
                 const bool changed=static_cast<int>(state.category)!=i;
                 state.Select(static_cast<Category>(i), tab);
-                if(changed)KennyAudio::Emit(KennyAudio::Event::PrimaryNavigation);
+                if(changed)KennyAudio::Emit(KennyAudio::Event::PrimaryNavigation,i==4?"Settings":nullptr);
             }
         }
         // One bounded, time-based underline; no per-tab animation allocations.

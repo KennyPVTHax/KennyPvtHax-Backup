@@ -37,9 +37,9 @@ struct Store {
                 &version,&theme,&loaded.opacity,&compact,&reduced,&loaded.auroraIntensity,
                 &loaded.particleActivity,&stars,&touch,&loaded.artworkDim,&cover,&consumed) : 0;
             int audioConsumed=0;
-            const bool audioValid=version==1 ? consumed==length : (version==2 || version==3) &&
+            const bool audioValid=version==1 ? consumed==length : (version==2 || version==3 || version==4) &&
                 std::sscanf(text+consumed,"%d %f %d %n",&sounds,&loaded.uiVolume,&profile,&audioConsumed)==3 &&
-                (version==3 || consumed+audioConsumed==length) && sounds>=0 && sounds<=1 && profile>=0 && profile<=2 && std::isfinite(loaded.uiVolume);
+                (version>=3 || consumed+audioConsumed==length) && sounds>=0 && sounds<=1 && profile>=0 && profile<=2 && std::isfinite(loaded.uiVolume);
             if(fields==11 && audioValid && theme>=0 && theme<=2 &&
                 compact>=0 && compact<=1 && reduced>=0 && reduced<=1 && stars>=0 && stars<=1 &&
                 touch>=0 && touch<=1 && cover>=0 && cover<=1 &&
@@ -48,12 +48,18 @@ struct Store {
                 loaded.theme=static_cast<Theme>(theme);loaded.compactRows=compact;loaded.reducedMotion=reduced;
                 loaded.starsVisible=stars;loaded.touchAttraction=touch;loaded.artworkCover=cover;
                 loaded.uiSounds=sounds;loaded.soundProfile=profile;
-                if(version==3){
+                if(version>=3){
                     char character[64]{},pack[64]{},artwork[64]{};int enabled=1,launcher=1,end=0;float voiceVolume=70;
                     int fields3=std::sscanf(text+consumed+audioConsumed,"%63s %63s %63s %d %f %d %n",character,pack,artwork,&enabled,&voiceVolume,&launcher,&end);
-                    if(fields3==6 && consumed+audioConsumed+end==length && enabled>=0 && enabled<=1 && launcher>=0 && launcher<=1 && std::isfinite(voiceVolume)){
+                    if(fields3==6 && (version==4 || consumed+audioConsumed+end==length) && enabled>=0 && enabled<=1 && launcher>=0 && launcher<=1 && std::isfinite(voiceVolume)){
                         loaded.characterId=character;loaded.voicePack=pack;loaded.characterArtwork=artwork;
                         loaded.characterVoice=enabled;loaded.characterVolume=voiceVolume;loaded.characterLauncher=launcher;
+                        if(version==4){int visible=1,feedback=1,tail=0;
+                            if(std::sscanf(text+consumed+audioConsumed+end,"%d %d %n",&visible,&feedback,&tail)==2 &&
+                               consumed+audioConsumed+end+tail==length && visible>=0 && visible<=1 && feedback>=0 && feedback<=1){
+                                loaded.artworkVisible=visible;loaded.controlVoiceFeedback=feedback;
+                            }else status="Anime visibility/feedback preferences invalid; earlier preferences retained.";
+                        }
                     }else status="Anime preferences were invalid; existing appearance/audio preferences retained.";
                 }
                 Normalize(loaded);p=loaded;
@@ -64,10 +70,10 @@ struct Store {
     bool Save(const Preferences& p) {
         char text[512];
         const int length=std::snprintf(text,sizeof(text),
-            "KennyPvtHaxAppearance 3\n%d %.9g %d %d %.9g %.9g %d %d %.9g %d\n%d %.9g %d\n%s %s %s %d %.9g %d\n",
+            "KennyPvtHaxAppearance 4\n%d %.9g %d %d %.9g %.9g %d %d %.9g %d\n%d %.9g %d\n%s %s %s %d %.9g %d\n%d %d\n",
             static_cast<int>(p.theme),p.opacity,p.compactRows,p.reducedMotion,p.auroraIntensity,
             p.particleActivity,p.starsVisible,p.touchAttraction,p.artworkDim,p.artworkCover,
-            p.uiSounds,p.uiVolume,p.soundProfile,p.characterId.c_str(),p.voicePack.c_str(),p.characterArtwork.c_str(),p.characterVoice,p.characterVolume,p.characterLauncher);
+            p.uiSounds,p.uiVolume,p.soundProfile,p.characterId.c_str(),p.voicePack.c_str(),p.characterArtwork.c_str(),p.characterVoice,p.characterVolume,p.characterLauncher,p.artworkVisible,p.controlVoiceFeedback);
         // Unique 0600 staging survives stale files from an interrupted save.
         char staging[1024];
         if(temporary.size()>=sizeof(staging)) return false;

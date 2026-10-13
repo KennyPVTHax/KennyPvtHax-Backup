@@ -1,3 +1,13 @@
+## Full UI continuation — working baseline 7934582
+
+Preserve the owner-confirmed full build and empty Helper/bypass.h. Existing
+Classic/Aurora geometry and physics remain unchanged. Anime Settings adds artwork
+visibility and optional control voice feedback inside the existing character
+section. New optional theme_switch/settings_navigation mappings use the existing
+voice engine and cooldown. Schema 4 preserves prior preferences. No substitute
+Rias media is introduced: installed recordings are the named Cici Fyre alternative;
+Rias artwork/launcher/original recordings remain missing. See FULL_UI_CONTINUATION.md.
+
 # KennyPvtHax — source map and reference design
 
 ## Current C3 — asset validation, 10 October 2026
