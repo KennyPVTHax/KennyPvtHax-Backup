@@ -1,7 +1,7 @@
 PROJECT: KennyPvtHax
 
 CURRENT STAGE:
-Original-based recovery Stage 1 — UI-only build preparation.
+Original-based recovery Stage 1 — built and verified; awaiting user Android test.
 Branch: recovery/ui-only-stage1. Golden original checkpoint b73a33a/anony.zip.
 User has already verified original startup/menu on Android; no original retest.
 
@@ -21,8 +21,16 @@ jni/Helper/definition.h and jni/Lua_Buffer.cpp (visible branding strings only).
 Original dependencies/SDK are recovered unchanged, including build/backend files.
 
 VERIFICATION:
-Source identity gates pass. Host sanitizer and genuine native Actions results will
-be recorded after completion. No Android runtime success or crash cause claimed.
+PASS golden-source gates and local/CI ASan/UBSan UI host checks.
+PASS native ARM64 build using unchanged NDK 25.2.9519653 (r25c).
+Source commit 3ce538cdedb9422f608b23d5cee2b814878418a1.
+Actions run 38362303903; artifact 11794839657.
+Downloaded ZIP CRC/two entries/digest and actual ARM64 ELF verified; no OpenSLES
+DT_NEEDED entry. libAnoy.so is 6565888 bytes.
+SHA256 43de845910a452dfadb83865cd34189b7015088e8b324aeb674518e0c8efd165.
+BuildID 264bcffa247ce6d25382373306ba62aadbb7dfe6.
+Actual host draw-list previews inspected at previews/recovery-stage1/ (ignored).
+No Android runtime success or crash cause claimed; original retest not requested.
 
 NEXT ACTION:
 Deliver exact Stage 1 libAnoy.so, source commit/checksum, then STOP for user device

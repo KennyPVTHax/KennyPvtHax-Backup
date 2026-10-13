@@ -3,3 +3,4 @@ obj/
 libs/
 previews/
 *.log
+*.bak

@@ -80,3 +80,42 @@ must be established by the next user test, not inferred from build success.
 
 main, prior diagnostic artifacts and audit/android-stability are untouched.
 No merge, force push, additional recovery stage or new asset acquisition.
+
+
+## Completed Stage 1 build
+
+Source commit: **3ce538cdedb9422f608b23d5cee2b814878418a1**.
+Actions run: https://github.com/KennyPVTHax/KennyPvtHax-Backup/actions/runs/38362303903
+Both native and original-source/ASan/UBSan UI host jobs passed with NDK r25c.
+Artifact: https://github.com/KennyPVTHax/KennyPvtHax-Backup/actions/runs/38362303903/artifacts/11794839657
+
+Extract **libs/arm64-v8a/libAnoy.so**; keep .verification/recovery-build-info.txt.
+Runtime size: 6,565,888 bytes.
+Runtime SHA256: 43de845910a452dfadb83865cd34189b7015088e8b324aeb674518e0c8efd165.
+BuildID: 264bcffa247ce6d25382373306ba62aadbb7dfe6.
+ZIP SHA256: 1d0374e5d5a6c8542835bd312c63b3ec137781e4cc7cff64a4f5f87b0e7cb1b8.
+
+The downloaded archive's CRC, two-entry allowlist, SHA256, ARM64 ELF, build metadata
+and absence of OpenSLES dependency were verified. This original release setup
+strips debugging information; no private symbols or device reports were uploaded.
+Machine-readable facts are in RECOVERY_STAGE1_BUILD_VERIFICATION.json.
+
+Actual host ImGui geometry was CPU-rasterized and visually inspected. The previews
+show the static crimson header/navigation, original square native widgets, native
+sliders and scrollable contents. No artwork/mockup/AI screenshot was generated.
+The original 16px font atlas is scaled for the menu; new high-resolution font
+atlases and custom-control implementations are deliberately not transferred yet.
+The host fixture's cleanup-only font ownership config is not an Android init change.
+
+**Next device test:** install this exact library using the already-working original
+host/loading pipeline. Expect the original **Menu** floating button, not a K logo.
+Tap Menu, switch Visual/Aim/Misc subpanels, drag/close/reopen, and check startup.
+Style/Settings preferences and cinematic features are deferred. Do not invoke the
+original manual Guest Reset action during this test. If it crashes, keep the exact
+binary identity and gather Android's fatal/backtrace/logcat evidence; Stage 1 has
+no new automatic logger or private report export interface. Do not retest the
+unchanged original. Do not move to Stage 2 or merge until this result is reviewed.
+
+This final verification update changes documents/ignore rules only; compiled source
+and all native inputs remain exactly at 3ce538c. Main is still a4d7eea, and the audit
+branch/previous diagnostic build are preserved.
