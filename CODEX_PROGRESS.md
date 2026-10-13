@@ -12,11 +12,13 @@ Bullet OFF clip absent; K/no-dialogue fallbacks retained. Central selected-chara
 routing, genuine widget edit guard and bounded per-event cooldown added. Existing
 startup/input/EGL/SDK/Aurora/audio/launcher engines and 37 bindings unchanged.
 
-VERIFICATION: In progress. Final build/test details recorded after checks finish.
+VERIFICATION: All 12 ASan/UBSan host suites PASS; full ARM64 build SUCCESS.
+Actual artifact/archive/ELF/hash validation PASS; see SUPPLIED_MEDIA_BUILD_VERIFICATION.json.
 PRIVATE MEDIA: .verification/user-media/; never stage original/derived media in Git.
 KNOWN LIMITATIONS: Android GPU/OpenSL playback/host asset installation require
 owner device test. Native .so alone does not package APK media. No supplied logo.
-NEXT ACTION: Complete regressions/captures, full ARM64 artifact and private bundle.
+NEXT ACTION: Owner installs matching 2a54a41 library plus private runtime pack,
+selects supplied voice pack, and tests on Android before promotion.
 No production loader publication.
 
 --- Previous checkpoints ---
@@ -753,3 +755,41 @@ No synthetic artwork, Android GPU screenshot or authentic Rias voice claim.
 The subsequent verification checkpoint changes only documentation, test timing
 and generated-preview ignore rules; application sources match the built commit.
 Next: owner tests this artifact on Android before any production promotion.
+
+## Final verification checkpoint
+
+Compiled source: `2a54a41b6ee7de42bf91a34437e66a499e599323`. Full ARM64 run
+https://github.com/KennyPVTHax/KennyPvtHax-Backup/actions/runs/38422703802 succeeded
+with unchanged NDK `25.2.9519653`; artifact `11826799895`.
+Actual downloaded ZIP: CRC/exact two entries, ELF64/AArch64, source/isolation/NDK
+metadata, and matching runtime hash verified.
+Library SHA-256: `e2fc6995a2741cd51f385c5b54a420eb168c0b6c51ffa1c0bbb9ab6787ca2b3f`.
+ZIP SHA-256: `7ddeaef30f88ab5c18ac574879a34c7537faa6743c015d548c28811f9b59ed6b`.
+Build ID: `e38cca0d9be6285cec43e7370e2faf3e4b61e784`.
+
+All twelve host ASan/UBSan suites PASS: menu, launcher, audio, theme, Aurora,
+effects, characters, media, diagnostics, fonts, continuation, supplied media.
+Exact 37 binding/range checks PASS. Protected runtime paths and existing source
+SDK/build configuration match the working full baseline. The supplied test
+uses actual user WAV samples and real native control clicks, verifies all four
+event mappings, rapid-toggle suppression, idle/unrelated/missing-event silence,
+selected-character isolation and 50 theme changes. PNG loader alpha, cached upload,
+visibility and K fallback PASS. Existing suites cover persistence, dragging,
+close/reopen, scrolling, viewport fit, corruption, resource reuse and allocation
+stability. No additional Android playback/GPU/runtime evidence is claimed.
+
+Five actual texture-aware C++/ImGui CPU captures are under previews/supplied-media/;
+Anime player/Settings screenshots and checkerboard alpha cutout visually inspected.
+Contact sheet/offline viewer included in private preview bundle. New host serializer
+embeds the real RGBA texture; it does not paint a mock character onto a screenshot.
+
+Private media bundle: KennyPvtHax-Supplied-Rias-Private-Media.zip, 19 files,
+2079652 bytes; SHA-256 `4c261812a836c0c026bfba37cd5996cc7c6b69ac39d218e891d7b1b4c2a70782`.
+ZIP CRC, each byte-exact original and each converted runtime digest match inventory.
+Rejected image-editor redraw, caches and build outputs are excluded. User media
+remain private; neither Git history nor public artifacts contain them.
+
+The final checkpoint updates documentation only. Runtime sources/assets metadata
+remain identical to the compiled commit above. Next: owner installs the exact .so
+AND private media pack, selects Rias / supplied event clips, and device-tests before
+any production promotion. No Anilxkenny/kenny.json update occurred.

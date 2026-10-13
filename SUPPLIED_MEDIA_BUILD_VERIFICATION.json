@@ -1,0 +1,100 @@
+{
+  "baseline": "793458200ab8906179af0c63d0b0cb1648b7dafa",
+  "integration_parent": "c0dec2689a303d4770ed01342bcaab9fc39eef0c",
+  "compiled_source": "2a54a41b6ee7de42bf91a34437e66a499e599323",
+  "branch": "ui/supplied-rias-media",
+  "run": 38422703802,
+  "artifact": 11826799895,
+  "build_result": "success",
+  "ndk": "25.2.9519653",
+  "isolation": "full",
+  "so_bytes": 6705184,
+  "so_sha256": "e2fc6995a2741cd51f385c5b54a420eb168c0b6c51ffa1c0bbb9ab6787ca2b3f",
+  "zip_sha256": "7ddeaef30f88ab5c18ac574879a34c7537faa6743c015d548c28811f9b59ed6b",
+  "build_id": "e38cca0d9be6285cec43e7370e2faf3e4b61e784",
+  "host_tests": [
+    {
+      "test": "menu",
+      "result": "PASS",
+      "seconds": 57.125
+    },
+    {
+      "test": "launcher",
+      "result": "PASS",
+      "seconds": 54.639
+    },
+    {
+      "test": "audio",
+      "result": "PASS",
+      "seconds": 14.717
+    },
+    {
+      "test": "theme",
+      "result": "PASS",
+      "seconds": 2.262
+    },
+    {
+      "test": "aurora",
+      "result": "PASS",
+      "seconds": 14.835
+    },
+    {
+      "test": "effects",
+      "result": "PASS",
+      "seconds": 3.709
+    },
+    {
+      "test": "characters",
+      "result": "PASS",
+      "seconds": 9.723
+    },
+    {
+      "test": "media",
+      "result": "PASS",
+      "seconds": 7.312
+    },
+    {
+      "test": "diagnostics",
+      "result": "PASS",
+      "seconds": 1.301
+    },
+    {
+      "test": "fonts",
+      "result": "PASS",
+      "seconds": 4.577
+    },
+    {
+      "test": "continuation",
+      "result": "PASS",
+      "seconds": 6.534
+    },
+    {
+      "test": "supplied",
+      "result": "PASS",
+      "seconds": 21.222
+    }
+  ],
+  "sanitizers": [
+    "AddressSanitizer",
+    "UndefinedBehaviorSanitizer"
+  ],
+  "native_device_test": "Pending owner installation and test; host CPU textures/PCM are not Android GPU/OpenSL verification",
+  "production_publication": false,
+  "media_publication": false,
+  "private_media": {
+    "filename": "KennyPvtHax-Supplied-Rias-Private-Media.zip",
+    "bytes": 2079652,
+    "sha256": "4c261812a836c0c026bfba37cd5996cc7c6b69ac39d218e891d7b1b4c2a70782",
+    "files": 19,
+    "runtime_required": true
+  },
+  "protected_paths": {
+    "jni/main.cpp": "0538b240574a0b1ad87bb5d738e02fdf690f1bbd3b4f47c6663c81103aade1f4",
+    "jni/Helper/bypass.h": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "jni/KennyAurora.h": "0fa261607334579bc487ee8766314389c910b6ec0e188df8554d12f3b1d74c9e",
+    "jni/KennyAndroidAudio.h": "2b1bc8aa755e187c7f20cc7f3aca10ff23fcc21e29521bb2d25b15aa47fcc2c6",
+    "jni/KennyCharacterGL.h": "3fd5d008be9c13096ed4af2f895423cbfcd042ed378b09b46231c9010f46c805",
+    "jni/KennyAudio.h": "3b1d0b68769eb903f632580abad0eef3b333e5a8aec40cea8f55d75c1aea9527",
+    "jni/KennyLauncher.h": "0d86fee994d065aeb6c0b8843235ae1e4db7ee3c07f4c432b25c1d3485d5006f"
+  }
+}
