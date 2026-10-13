@@ -38,6 +38,10 @@ with tempfile.TemporaryDirectory() as temp:
  published=r.publish(bundle,contract);assert published['manifest_version']=='0.3'
  changes=run('--git-dir',remote,'diff-tree','--no-commit-id','--name-only','-r',published['destination_commit']).splitlines();assert set(changes)=={'kenny.json',report['zip_name']}
  assert r.publish(bundle,contract)['result']=='already-published'
+ # An active immutable release stays intact across timestamp-varying rebuilds.
+ original_digest=report['library_sha256'];changed=bytearray(binary());changed[-1]=7;so.write_bytes(changed)
+ retry=r.package(so,root/'retry','a'*40,'second-run',contract)
+ replay=r.publish(root/'retry',contract);assert replay['library_sha256']==original_digest and replay['rebuilt_library_sha256']==retry['library_sha256']
  rollback=r.publish(bundle,contract,old);assert rollback['manifest_version']=='0.2';assert run('--git-dir',remote,'show','main:kenny.json')==json.dumps(original,indent=4)
  assert run('--git-dir',remote,'ls-tree','--name-only','main',report['zip_name'])==report['zip_name']
  os.environ['GITHUB_REF']='refs/heads/main'

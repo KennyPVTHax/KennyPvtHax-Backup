@@ -90,10 +90,15 @@ def publish(bundle,contract,rollback=None):
             else:
                 name=report['zip_name'];path=repo/name
                 if path.exists():
-                    assert path.read_bytes()==raw,'Immutable filename collision'
+                    existing=path.read_bytes();installed=archive(existing,contract)
                     if target['drm_name']==name:
                         assert target['drm']=='https://raw.githubusercontent.com/'+DEST+'/'+BRANCH+'/'+name
-                        return dict(report,result='already-published',destination_commit=git(repo,'rev-parse','HEAD').stdout.strip(),manifest_version=target['drm_verion'],raw_url=target['drm'])
+                        origin=git(repo,'log','--diff-filter=A','--format=%s','--',name).stdout
+                        assert ('Publish '+commit+' from source run ') in origin,'Unverified archive filename collision'
+                        # Original code uses compilation timestamps: rerunning the
+                        # same source may rebuild different bytes. Never replace
+                        # the active immutable release; report its actual hashes.
+                        return dict(report,result='already-published',destination_commit=git(repo,'rev-parse','HEAD').stdout.strip(),manifest_version=target['drm_verion'],raw_url=target['drm'],rebuilt_library_sha256=report['library_sha256'],library_sha256=digest(installed),zip_sha256=digest(existing),zip_bytes=len(existing))
                     raise RuntimeError('Release archive already exists; refuse automatic replay after rollback')
                 path.write_bytes(raw)
                 fields={'drm':'https://raw.githubusercontent.com/'+DEST+'/'+BRANCH+'/'+name,'drm_name':name,'drm_verion':next_version(target['drm_verion'],contract['version_policy'])}

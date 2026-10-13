@@ -87,7 +87,9 @@ by package com.pubg.imobile, preserve drm_verion spelling, and change only its
 three requested fields semantically. Full-commit ZIP filenames are immutable.
 No force push: up to five fetch/reset/recalculate attempts reconcile destination
 advancement. Reset affects only a disposable publication checkout. Previous ZIPs
-are retained. Retry of an already-active identical release is idempotent; replay
+are retained. Retry of an already-active tool-created release is idempotent; original compile
+timestamps can change rebuilt bytes, so the already-published verified archive
+is retained and both rebuilt and installed hashes are reported; replay
 of a historical ZIP after rollback is refused. Verification checks destination
 ancestry, committed JSON fields and exact committed archive bytes/hash/ELF.
 
@@ -147,3 +149,7 @@ secret, testing controlled dispatch and revoking the old token after success.
 A missing secret cannot be created from an unknown token; the owner supplies it
 through GitHub settings. Device crashes remain a separate Android issue: revert
 through the verified rollback mechanism and retain previous ZIPs/checksums.
+
+Release ruleset read access succeeded, but creating the requested source branch
+protections returned HTTP 403 (Resource not accessible by integration). No rule
+was applied; repository administrator setup remains required.
