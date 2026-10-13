@@ -1,0 +1,34 @@
+{
+  "source_commit": "e52f133cfcb4b55b7d6a2ad7a87ba064ee15256c",
+  "run": 38395934535,
+  "ndk": "25.2.9519653",
+  "job_results": {
+    "test": "success",
+    "build": "success",
+    "package": "success",
+    "publish": "skipped"
+  },
+  "package": {
+    "source_commit": "e52f133cfcb4b55b7d6a2ad7a87ba064ee15256c",
+    "source_run": "38395934535",
+    "source_run_url": "https://github.com/KennyPVTHax/KennyPvtHax-Backup/actions/runs/38395934535",
+    "ndk": "25.2.9519653",
+    "library_sha256": "c645c7ce5b428d6e88b736654786d49c7e75a92a54a4b5408a2475082a36fde9",
+    "internal_library": "libloader.so",
+    "zip_name": "kph-e52f133cfcb4b55b7d6a2ad7a87ba064ee15256c-arm64.zip",
+    "zip_sha256": "088e0d935ed0e28c65dad44f205728c81005d7bea0b143eca2be0245739a9e78",
+    "zip_bytes": 2837034
+  },
+  "package_artifact_id": 11811622423,
+  "native_artifact_id": 11811852261,
+  "downloaded_native_package_byte_equality_verified": true,
+  "destination_head_before": "6c8fbe409fb61c652743396578faf931f27e9954",
+  "destination_publication": "not attempted",
+  "loader_version_comparison_confirmed": false,
+  "token_secret_verified": false,
+  "branch_ruleset_creation": "GitHub HTTP 403; no protection applied",
+  "initial_recovery_device_approval": false,
+  "production_active": false,
+  "destination_head_after": "6c8fbe409fb61c652743396578faf931f27e9954",
+  "live_manifest_and_archive_tree_unchanged": true
+}

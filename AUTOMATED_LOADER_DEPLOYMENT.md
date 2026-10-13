@@ -161,3 +161,32 @@ tool-recorded manifest version in destination commit subjects, not just the live
 manifest after rollback. Legacy version high-water values must be reviewed when
 confirming the initial policy. History inspection is bounded and fails closed
 at its migration limit; no extra manifest fields or destination ledger are added.
+
+
+## Verified initial dry-run
+
+Implementation tested: e52f133cfcb4b55b7d6a2ad7a87ba064ee15256c.
+Actions run 38395934535: test SUCCESS, build SUCCESS, package SUCCESS,
+publish SKIPPED. This is not a successful live deployment or Android device test.
+Native source/build scripts unchanged from recovery Stage 1.
+
+Run: https://github.com/KennyPVTHax/KennyPvtHax-Backup/actions/runs/38395934535
+Package artifact: https://github.com/KennyPVTHax/KennyPvtHax-Backup/actions/runs/38395934535/artifacts/11811622423
+External ZIP: kph-e52f133cfcb4b55b7d6a2ad7a87ba064ee15256c-arm64.zip
+Internal entry: libloader.so
+Library SHA256: c645c7ce5b428d6e88b736654786d49c7e75a92a54a4b5408a2475082a36fde9
+ZIP SHA256: 088e0d935ed0e28c65dad44f205728c81005d7bea0b143eca2be0245739a9e78
+ZIP size: 2,837,034 bytes. NDK: 25.2.9519653.
+
+Both actual GitHub artifacts were downloaded; artifact hashes/CRC, exact package
+entry list, extracted-vs-compiled native byte equality and both release checksums
+were verified locally. Source/ref/JSON/immutable package/local atomic Git/rollback
+regressions and UI sanitizers passed. Live manifest remains version 0.2 at
+Anilxkenny main 6c8fbe409fb61c652743396578faf931f27e9954 before AND after the task.
+No destination commit, new raw deployment URL or manifest version was created.
+See LOADER_PIPELINE_DRY_RUN.json for machine-readable evidence.
+
+Activation still requires actual loader version comparison evidence, initial
+recovery device result, minimal destination PAT in the source secret, and
+administrator-applied release branch protections. Main and release/android were
+not promoted/merged by this task. The final evidence update is documentation only.

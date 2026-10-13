@@ -4,10 +4,15 @@ BRANCH: ci/loader-publish; original Stage 1 native code unchanged.
 COMPLETED: reference ZIP root libloader.so confirmed; immutable packaging, four
 CI jobs, guarded token-only destination Git publication, atomic two-file commit,
 source-head checks/concurrency/retries/idempotency, rollback and offline tests.
-PENDING: genuine CI dry-run; loader version-comparison source; initial device
-milestone approval; source secret access/configuration and release protection.
+VERIFIED: Actions dry-run 38395934535 passed test/build/package; publish skipped.
+Actual artifacts downloaded; exact libloader.so entry, extracted/compiled bytes,
+ELF identity, CRC and native/package hashes verified. Live destination HEAD and
+manifest unchanged at 6c8fbe4; initial live version remains 0.2.
+PENDING ACTIVATION: loader version-comparison source; initial device milestone
+approval; secret configuration/access and source release protection (HTTP 403).
 LIVE DESTINATION: kenny.json/test2.zip unchanged; no release branch promotion.
-NEXT: finish dry-run and report prerequisites; never publish unverified policy.
+NEXT: owner supplies comparison evidence/device result and configures secret +
+release protections, then promotes tested source. No production activation claimed.
 ---
 
 PROJECT: KennyPvtHax
