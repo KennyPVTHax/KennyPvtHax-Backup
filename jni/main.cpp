@@ -9,7 +9,8 @@
 #include <fstream>
 #include <unistd.h>
 #include <string>
-#include "ClaudeTheme.h"    // correct
+#include "ClaudeTheme.h"    // Original Apply call; appearance only.
+#include "KennyMenu.h"
 #include "Lua_Buffer.cpp"
 
 
@@ -1013,44 +1014,11 @@ EGLBoolean _eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
         ImGui::End();
     }
 
-    // ----------------------------------------------------------------
-    // Main window
-    // ----------------------------------------------------------------
+    // Recovery Stage 1: UI-only chrome; original widgets/conditions below.
     if (ShowMenu) {
-        ImGui::SetNextWindowSize(
-            ImVec2((float)glWidth * 0.46f, (float)glHeight * 0.58f),
-            ImGuiCond_Once);
-
-        static const ImGuiWindowFlags winFlags =
-            ImGuiWindowFlags_NoResize    | ImGuiWindowFlags_NoSavedSettings |
-            ImGuiWindowFlags_NoCollapse  | ImGuiWindowFlags_NoScrollbar;
-
-        // Sentence-case title. No version/build spam in the chrome.
-        if (ImGui::Begin("Anoy Hax", &opened, winFlags)) {
-
-            // ---------------- Left nav ----------------
-            ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, Claude::RadiusCard);
-            ImGui::PushStyleColor(ImGuiCol_ChildBg, Claude::Dark::surface);
-            ImGui::BeginChild("##nav", ImVec2(Claude::NavWidth, 0), true);
-            {
-                Claude::SectionHeader("Sections");
-                if (Claude::NavItem("Player ESP",     Settings::Tab == 1)) Settings::Tab = 1;
-                if (Claude::NavItem("World ESP",      Settings::Tab == 2)) Settings::Tab = 2;
-                if (Claude::NavItem("Aimbot",         Settings::Tab == 3)) Settings::Tab = 3;
-                if (Claude::NavItem("Bullet track",   Settings::Tab == 4)) Settings::Tab = 4;
-                if (Claude::NavItem("Extra features", Settings::Tab == 5)) Settings::Tab = 5;
-            }
-            ImGui::EndChild();
-            ImGui::PopStyleColor();
-            ImGui::PopStyleVar();
-
-            ImGui::SameLine();
-
-            // ---------------- Right content ----------------
-            ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, Claude::RadiusCard);
-            ImGui::PushStyleColor(ImGuiCol_ChildBg, Claude::Dark::surface);
-            ImGui::BeginChild("##content", ImVec2(0, 0), true);
-            {
+        static KennyMenu::State menuState;
+        KennyMenu::Draw(menuState, opened, Settings::Tab,
+                        ImVec2(static_cast<float>(glWidth), static_cast<float>(glHeight)), [] {
                 if (Settings::Tab == 1) {
                     Claude::SectionHeader("Player ESP");
                     ImGui::Checkbox("ESP line",     &Cheat::Esp::Line);
@@ -1112,12 +1080,7 @@ EGLBoolean _eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
                       ResetLogin();
                       }
                 }
-            }
-            ImGui::EndChild();
-            ImGui::PopStyleColor();
-            ImGui::PopStyleVar();
-        }
-        ImGui::End();
+        });
     }
 
     ImGui::Render();
@@ -1194,25 +1157,8 @@ void initOffset()
 
 void FixGameCrash()
 {
-    system("rm -rf /data/data/com.pubg.imobile/files");
-    system("rm -rf /data/data/com.pubg.imobile/files/ano_tmp");
-    system("touch /data/data/com.pubg.imobile/files/ano_tmp");
-    system("chmod 000 /data/data/com.pubg.imobile/files/ano_tmp");
-    system("rm -rf /data/data/com.pubg.imobile/files/obblib");
-    system("touch /data/data/com.pubg.imobile/files/obblib");
-    system("chmod 000 /data/data/com.pubg.imobile/files/obblib");
-    system("rm -rf /data/data/com.pubg.imobile/files/xlog");
-    system("touch /data/data/com.pubg.imobile/files/xlog");
-    system("chmod 000 /data/data/com.pubg.imobile/files/xlog");
-    system("rm -rf /data/data/com.pubg.imobile/app_bugly");
-    system("touch /data/data/com.pubg.imobile/app_bugly");
-    system("chmod 000 /data/data/com.pubg.imobile/app_bugly");
-    system("rm -rf /data/data/com.pubg.imobile/app_crashrecord");
-    system("touch /data/data/com.pubg.imobile/app_crashrecord");
-    system("chmod 000 /data/data/com.pubg.imobile/app_crashrecord");
-    system("rm -rf /data/data/com.pubg.imobile/app_crashSight");
-    system("touch /data/data/com.pubg.imobile/app_crashSight");
-    system("chmod 000 /data/data/com.pubg.imobile/app_crashSight");
+    // Recovery exception: do not restore destructive file deletion or crash
+    // reporting obstruction. Original call site/lifecycle is retained.
 }
 
 

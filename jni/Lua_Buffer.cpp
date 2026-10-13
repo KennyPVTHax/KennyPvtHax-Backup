@@ -2027,7 +2027,7 @@ local function ShowStatus()
         if not Msg or not Msg.Show then return end
         local message = BuildReport()
         -- Show(1, title, message, okCallback) → single-button popup
-        Msg.Show(1, "Anoy Hax", message, function() end)
+        Msg.Show(1, "KennyPvtHax", message, function() end)
     end)
 end
 
