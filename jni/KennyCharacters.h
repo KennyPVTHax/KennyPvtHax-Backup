@@ -114,7 +114,7 @@ public:
         if(p.theme!=KennyAppearance::Theme::Anime)return;
         auto& c=Selected(p);if(c.packCount&&!Pack(c,p.voicePack))p.voicePack=c.packs[0].id;
         if(c.artwork.size()<=63&&KennyAssets::Path(c.artwork))p.characterArtwork=c.artwork;
-        if(activeCharacter!=p.characterId || activePack!=p.voicePack){if(dispatchMixer)dispatchMixer->voiceEpoch.fetch_add(1);ResetCooldowns();activeCharacter=p.characterId;activePack=p.voicePack;KennyAudioDiagnostics::Log(KennyAudioDiagnostics::Code::PackSelected,"selected_registered_pack",0,activePack.c_str());}
+        if(activeCharacter!=p.characterId || activePack!=p.voicePack){if(dispatchMixer)dispatchMixer->voiceEpoch.fetch_add(1);ResetCooldowns();activeCharacter=p.characterId;activePack=p.voicePack;auto* installed=Pack(c,p.voicePack);KennyAudioDiagnostics::Log(installed?KennyAudioDiagnostics::Code::PackSelected:KennyAudioDiagnostics::Code::Unmapped,installed?"selected_installed_pack":"selected_pack_missing",0,installed?installed->id.c_str():"unavailable");}
         if(upload){if(!c.artTried&&!c.image.rgba.empty()){c.artTried=true;c.artworkTexture=upload(textureUser,c.image);}
             if(!c.logoTried&&!c.logo.rgba.empty()){c.logoTried=true;c.launcherTexture=upload(textureUser,c.logo);}}
     }
