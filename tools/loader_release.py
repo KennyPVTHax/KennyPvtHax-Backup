@@ -51,6 +51,7 @@ def preflight(contract):
     assert contract['destination']==DEST and contract['branch']==BRANCH and contract['entries']==['libloader.so']
     assert contract.get('initial_device_milestone_approved') is True,'Recovery Stage 1 device approval is pending'
     next_version('0.2',contract['version_policy'])
+    assert api(f'repos/{SOURCE}/branches/release/android').get('protected') is True,'release/android is not protected'
 def api(path):
     req=urllib.request.Request('https://api.github.com/'+path,headers={'Accept':'application/vnd.github+json','User-Agent':'KennyPvtHax-release'})
     with urllib.request.urlopen(req,timeout=30) as r:return json.load(r)

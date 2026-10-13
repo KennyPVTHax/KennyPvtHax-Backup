@@ -29,7 +29,7 @@ with tempfile.TemporaryDirectory() as temp:
  def local_git(path,*args,**kwargs):
   if args[0]=='clone':args=(*args[:4],str(remote),args[-1])
   return actual_git(path,*args,**kwargs)
- r.git=local_git;r.current_source=lambda commit:None
+ r.git=local_git;r.current_source=lambda commit:None;r.api=lambda path:{'protected':True}
  def local_raw(url,timeout):
   parts=url.split('/');commit=parts[-2];name=parts[-1];return io.BytesIO(subprocess.check_output(['git','--git-dir',str(remote),'show',commit+':'+name]))
  r.urllib.request.urlopen=local_raw

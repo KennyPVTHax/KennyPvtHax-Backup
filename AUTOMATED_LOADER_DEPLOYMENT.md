@@ -56,6 +56,8 @@ updates to release maintainers, forbid force pushes/deletion, require relevant C
 checks, and retain administrative enforcement where appropriate. Use the actual
 repository settings/ruleset UI; this task does not claim an unconfigured protection
 rule exists. Device-tested promotion is a maintainer decision, never a CI inference.
+The publisher also requires GitHub to report release/android as protected; a
+missing protection stops production even if the compatibility gates are edited.
 No per-deployment environment approval is needed after a tested milestone is merged.
 If only one maintainer exists, select an owner-controlled promotion policy suitable
 for that account instead of inventing an unavailable second approver.
