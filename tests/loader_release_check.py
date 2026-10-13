@@ -4,6 +4,14 @@ spec=importlib.util.spec_from_file_location('release','tools/loader_release.py')
 def run(*args):return subprocess.check_output(['git',*map(str,args)],stderr=subprocess.DEVNULL).decode().strip()
 def binary():
     b=bytearray(128);b[:7]=b'\x7fELF'+bytes((2,1,1));struct.pack_into('<HH',b,16,3,183);return bytes(b)
+for invalid in ('{"x":1,"x":2}','{"x":NaN}'):
+ try:r.parse_json(invalid)
+ except ValueError:pass
+ else:raise AssertionError('accepted malformed JSON')
+real_source_check=r.current_source;r.api=lambda path:{'object':{'sha':'b'*40}}
+try:real_source_check('a'*40)
+except AssertionError:pass
+else:raise AssertionError('stale source permitted')
 policy={'verified':True,'scheme':'decimal-step','step':'0.1','evidence':'Unit test only: numeric decimal comparison'}
 contract=r.load('tools/loader_contract.json');assert not contract['version_policy']['verified'];assert not contract['initial_device_milestone_approved']
 for version in ['nan','0.2.0','2','-0.2']:

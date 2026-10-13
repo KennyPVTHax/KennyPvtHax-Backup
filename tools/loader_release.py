@@ -4,7 +4,16 @@ import argparse, base64, decimal, hashlib, json, os, re, shutil, struct, subproc
 from pathlib import Path
 SOURCE='KennyPVTHax/KennyPvtHax-Backup'; DEST='KennyPVTHax/Anilxkenny'; BRANCH='main'; KEYS=('drm','drm_name','drm_verion')
 def digest(data):return hashlib.sha256(data).hexdigest()
-def load(path):return json.loads(Path(path).read_text())
+def parse_json(text):
+    def pairs(items):
+        out={}
+        for key,value in items:
+            if key in out:raise ValueError('Duplicate JSON key')
+            out[key]=value
+        return out
+    def invalid(value):raise ValueError('Nonfinite JSON number')
+    return json.loads(text,object_pairs_hook=pairs,parse_constant=invalid)
+def load(path):return parse_json(Path(path).read_text())
 def game(data):
     assert isinstance(data,dict) and isinstance(data.get('games'),list),'Invalid manifest'
     matches=[g for g in data['games'] if isinstance(g,dict) and g.get('package')=='com.pubg.imobile']
@@ -51,7 +60,7 @@ def release_version(current,policy,subjects):
     return next_version(max(versions,key=decimal.Decimal),policy)
 
 def edit_manifest(data,fields):
-    result=json.loads(json.dumps(data));target=game(result)
+    result=parse_json(json.dumps(data,allow_nan=False));target=game(result)
     assert set(fields)==set(KEYS) and all(isinstance(v,str) for v in fields.values())
     target.update(fields);game(result);return result
 
@@ -77,7 +86,7 @@ def publish(bundle,contract,rollback=None):
     token=os.environ.get('ANILXKENNY_PUBLISH_TOKEN');assert token,'ANILXKENNY_PUBLISH_TOKEN is not configured'
     report=load(Path(bundle)/'release.json') if not rollback else None
     if report:
-        assert report['source_commit']==commit
+        assert report['source_commit']==commit and report['zip_name']==f'kph-{commit}-arm64.zip' and report['ndk']=='25.2.9519653'
         raw=(Path(bundle)/report['zip_name']).read_bytes();assert digest(raw)==report['zip_sha256'];assert digest(archive(raw,contract))==report['library_sha256']
     with tempfile.TemporaryDirectory(prefix='kph-publish-') as tmp:
         tmp=Path(tmp);repo=tmp/'destination';ask=tmp/'askpass.py'
@@ -92,7 +101,7 @@ def publish(bundle,contract,rollback=None):
             before=load(repo/'kenny.json');target=game(before)
             if rollback:
                 assert re.fullmatch('[0-9a-f]{40}',rollback),'Full previous destination commit required'
-                prior=json.loads(git(repo,'show',rollback+':kenny.json').stdout);fields={k:game(prior)[k] for k in KEYS}
+                prior=parse_json(git(repo,'show',rollback+':kenny.json').stdout);fields={k:game(prior)[k] for k in KEYS}
                 name=fields['drm_name'];assert re.fullmatch(r'[A-Za-z0-9._-]+\.zip',name)
                 old=git(repo,'rev-parse',rollback+':'+name).stdout.strip();now=git(repo,'rev-parse','HEAD:'+name).stdout.strip();assert old==now,'Historical archive missing/changed'
                 archive((repo/name).read_bytes(),contract)
@@ -113,7 +122,7 @@ def publish(bundle,contract,rollback=None):
                     raise RuntimeError('Release archive already exists; refuse automatic replay after rollback')
                 path.write_bytes(raw)
                 fields={'drm':'https://raw.githubusercontent.com/'+DEST+'/'+BRANCH+'/'+name,'drm_name':name,'drm_verion':release_version(target['drm_verion'],contract['version_policy'],git(repo,'log','--max-count=100000','--format=%s').stdout)}
-            updated=edit_manifest(before,fields);(repo/'kenny.json').write_text(json.dumps(updated,ensure_ascii=False,indent=4)+'\n')
+            updated=edit_manifest(before,fields);(repo/'kenny.json').write_text(json.dumps(updated,ensure_ascii=False,indent=4,allow_nan=False)+'\n')
             git(repo,'add','--','kenny.json',*([] if rollback else [name]))
             changed=git(repo,'diff','--cached','--name-only').stdout.splitlines();assert set(changed)==({'kenny.json'} if rollback else {'kenny.json',name})
             git(repo,'commit','-m',('Rollback loader to '+rollback) if rollback else 'Publish '+commit+' from source run '+report['source_run']+' manifest_version '+fields['drm_verion'])
@@ -122,7 +131,7 @@ def publish(bundle,contract,rollback=None):
             if git(repo,'push','origin','HEAD:'+BRANCH,env=env,check=False).returncode:continue
             git(repo,'fetch','origin',BRANCH,env=env)
             assert git(repo,'merge-base','--is-ancestor',dest_commit,'origin/'+BRANCH,check=False).returncode==0
-            published=json.loads(git(repo,'show',dest_commit+':kenny.json').stdout);assert all(game(published)[k]==fields[k] for k in KEYS)
+            published=parse_json(git(repo,'show',dest_commit+':kenny.json').stdout);assert all(game(published)[k]==fields[k] for k in KEYS)
             # Fetch exact committed bytes, not a possibly stale mutable raw URL.
             with urllib.request.urlopen('https://raw.githubusercontent.com/'+DEST+'/'+dest_commit+'/'+name,timeout=30) as r:remote=r.read()
             assert archive(remote,contract)==archive((repo/name).read_bytes(),contract)
