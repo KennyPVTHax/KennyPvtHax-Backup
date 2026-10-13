@@ -19,6 +19,7 @@ int main(){
     pack.events[unsigned(VoiceEvent::SettingsNavigation)].clips[0]=pack.events[1].clips[0];pack.events[unsigned(VoiceEvent::SettingsNavigation)].count=1;
     std::array<int16_t,2048> buffer{};
     assert(audio.Emit(KennyAudio::Event::ThemeChanged,p,1));mixer.Render(buffer.data(),buffer.size());assert(mixer.character==&pack.events[unsigned(VoiceEvent::ThemeSwitch)].clips[0]);
+    for(int i=0;i<100;++i)mixer.Render(buffer.data(),buffer.size()); // Advance the PCM clock as well as event time.
     assert(audio.Emit(KennyAudio::Event::PrimaryNavigation,p,5,"Settings"));mixer.Render(buffer.data(),buffer.size());assert(mixer.character==&pack.events[unsigned(VoiceEvent::SettingsNavigation)].clips[0]);
     assert(audio.Emit(KennyAudio::Event::PrimaryNavigation,p,5.1,"Settings"));mixer.Render(buffer.data(),buffer.size());assert(mixer.character==&pack.events[unsigned(VoiceEvent::SettingsNavigation)].clips[0]);
     p.controlVoiceFeedback=false;assert(!Registry::Route(registry.get(),KennyAudio::Event::CheckboxOn,p,10,"ESP line"));assert(!Registry::Route(registry.get(),KennyAudio::Event::ButtonPressed,p,10,nullptr));

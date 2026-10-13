@@ -58,3 +58,6 @@ previews/phase_c3/
 !assets/anime/highschool_dxd_rias/voice/cici_okay_normal.wav
 !assets/anime/highschool_dxd_rias/voice/cici_no_problem.wav
 # The owner-supplied original jni/SDK/ is tracked in this repository.
+
+# Generated full UI continuation captures
+previews/full-continuation/

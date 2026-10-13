@@ -1,0 +1,80 @@
+{
+  "source": "db93cc85f522f8595a9331194bfb81ffe3de6681",
+  "so_bytes": 6703472,
+  "so_sha256": "4cd93f9c099f2881f6087fb8ef367e18f51195f3cc4549b27c0c61713c73fb04",
+  "zip_sha256": "c707d54b3b84c32a77ecbce626d39150c0a22ad6fc9d8d878150a775f2e10929",
+  "artifact": 11823146526,
+  "run": 38411971919,
+  "baseline": "793458200ab8906179af0c63d0b0cb1648b7dafa",
+  "branch": "ui/full-theme-continuation",
+  "build_id": "fc3f77558c7a52228ccf0d309bfec9f227bbe8de",
+  "ndk": "25.2.9519653",
+  "isolation": "full",
+  "host_tests": [
+    {
+      "test": "menu",
+      "result": "PASS",
+      "elapsed_seconds": 187.693
+    },
+    {
+      "test": "launcher",
+      "result": "PASS",
+      "elapsed_seconds": 194.235
+    },
+    {
+      "test": "audio",
+      "result": "PASS",
+      "elapsed_seconds": 10.648
+    },
+    {
+      "test": "theme",
+      "result": "PASS",
+      "elapsed_seconds": 153.232
+    },
+    {
+      "test": "aurora",
+      "result": "PASS",
+      "elapsed_seconds": 151.333
+    },
+    {
+      "test": "effects",
+      "result": "PASS",
+      "elapsed_seconds": 86.202
+    },
+    {
+      "test": "characters",
+      "result": "PASS",
+      "elapsed_seconds": 102.344
+    },
+    {
+      "test": "media",
+      "result": "PASS",
+      "elapsed_seconds": 16.973
+    },
+    {
+      "test": "diagnostics",
+      "result": "PASS",
+      "elapsed_seconds": 2.196
+    },
+    {
+      "test": "fonts",
+      "result": "PASS",
+      "elapsed_seconds": 106.554
+    }
+  ],
+  "additional_tests": [
+    "kenny_full_continuation_check: ASan/UBSan PASS",
+    "kenny_c3_capture: native interaction/capture PASS"
+  ],
+  "device_test": "Pending owner test of new artifact",
+  "production_publication": false,
+  "protected_paths": {
+    "jni/main.cpp": "0538b240574a0b1ad87bb5d738e02fdf690f1bbd3b4f47c6663c81103aade1f4",
+    "jni/Helper/bypass.h": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "jni/KennyAurora.h": "0fa261607334579bc487ee8766314389c910b6ec0e188df8554d12f3b1d74c9e",
+    "jni/KennyAndroidAudio.h": "2b1bc8aa755e187c7f20cc7f3aca10ff23fcc21e29521bb2d25b15aa47fcc2c6",
+    "jni/KennyCharacterGL.h": "3fd5d008be9c13096ed4af2f895423cbfcd042ed378b09b46231c9010f46c805",
+    "jni/KennyAudio.h": "3b1d0b68769eb903f632580abad0eef3b333e5a8aec40cea8f55d75c1aea9527",
+    "jni/KennyStartup.h": "e8001d0d622ca6cea0e990a8a9cfa6c69132ab1d78c84183815fc12cfc79448d"
+  }
+}

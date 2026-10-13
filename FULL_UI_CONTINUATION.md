@@ -65,3 +65,31 @@ or update Anilxkenny/kenny.json before the owner confirms this device test.
 
 Host CPU-rasterized ImGui captures and portable PCM tests are not Android GPU or
 OpenSL playback verification. No new Android performance or runtime claim is made.
+
+## Verified continuation artifact
+
+Code/build commit: db93cc85f522f8595a9331194bfb81ffe3de6681.
+Actions: https://github.com/KennyPVTHax/KennyPvtHax-Backup/actions/runs/38411971919
+Result SUCCESS, full presentation, unchanged NDK 25.2.9519653.
+Artifact 11823146526: KennyPvtHax-ARM64-SO. Actual ZIP CRC/two-entry contents,
+ELF64 AArch64 and matching embedded build metadata verified after download.
+Library SHA256: 4cd93f9c099f2881f6087fb8ef367e18f51195f3cc4549b27c0c61713c73fb04
+ZIP SHA256: c707d54b3b84c32a77ecbce626d39150c0a22ad6fc9d8d878150a775f2e10929
+BuildID: fc3f77558c7a52228ccf0d309bfec9f227bbe8de.
+
+All ten existing host suites passed with AddressSanitizer/UndefinedBehaviorSanitizer:
+menu, launcher, audio, theme, Aurora, effects, characters, media, diagnostics, fonts.
+New continuation sanitizer test and actual C3 ImGui capture interactions passed.
+Exact 37 binding/range/callback checks and protected runtime/media comparisons pass.
+Existing menu tests cover native interactions, navigation, drag/close/reopen,
+small viewport scrolling, warm allocation stability and repeated theme switches.
+Existing character tests cover 10,000 allocation-free cached dispatch/mix cycles.
+A new test initially advanced event time without draining the simulated audio
+clock; corrected the test, without changing the working single-voice mixer.
+
+Actual CPU-rasterized native ImGui PNGs and offline viewer are generated under
+previews/full-continuation/. Anime Settings and Aurora captures visually inspected.
+No synthetic artwork, Android GPU screenshot or authentic Rias voice claim.
+The subsequent verification checkpoint changes only documentation, test timing
+and generated-preview ignore rules; application sources match the built commit.
+Next: owner tests this artifact on Android before any production promotion.

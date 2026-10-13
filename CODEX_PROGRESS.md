@@ -17,10 +17,11 @@ jni/KennyAppearance.h; jni/KennyMenu.h; tests/kenny_full_continuation_check.cpp;
 tests/kenny_c3_capture.cpp; FULL_UI_CONTINUATION.md; UI_DESIGN_NOTES.md;
 CODEX_PROGRESS.md.
 
-VERIFICATION: In progress; final host/native build results recorded below.
+VERIFICATION: All 10 existing ASan/UBSan host suites + new continuation/capture
+checks PASS. Full ARM64 Actions build SUCCESS; details in FULL_UI_BUILD_VERIFICATION.json.
 KNOWN LIMITATIONS: Rias artwork/launcher/original voice missing. Installed clips
 are the CC0 Cici Fyre alternative. Android GPU/audio/new runtime needs device test.
-NEXT ACTION: Finish regressions, build full branch artifact, owner device test.
+NEXT ACTION: Owner device-test the db93cc8 artifact before any promotion.
 Never update production loader before that test.
 
 --- Previous checkpoints ---
@@ -700,3 +701,32 @@ Date: 10 October 2026 (Asia/Calcutta).
 - Files: player-1920.png, world-1920.png, aim-1920.png, bullet-1920.png, extra-1920.png, style-1920.png, settings-1920.png, all-panels-contact-sheet.png, before-after-player.png.
 - Local audited result: .verification/github_preview_upload_result.json; manifest authorization/destination/upload status updated in .verification/github_preview_export_manifest.json. Upload helper remains ignored/local, never uploaded.
 - NEXT ACTION: user opens individual GitHub image links while signed into an account with private-repository access on Android. Wait for user inspection/instruction; do not begin Stage 6.
+
+
+## Verified continuation artifact
+
+Code/build commit: db93cc85f522f8595a9331194bfb81ffe3de6681.
+Actions: https://github.com/KennyPVTHax/KennyPvtHax-Backup/actions/runs/38411971919
+Result SUCCESS, full presentation, unchanged NDK 25.2.9519653.
+Artifact 11823146526: KennyPvtHax-ARM64-SO. Actual ZIP CRC/two-entry contents,
+ELF64 AArch64 and matching embedded build metadata verified after download.
+Library SHA256: 4cd93f9c099f2881f6087fb8ef367e18f51195f3cc4549b27c0c61713c73fb04
+ZIP SHA256: c707d54b3b84c32a77ecbce626d39150c0a22ad6fc9d8d878150a775f2e10929
+BuildID: fc3f77558c7a52228ccf0d309bfec9f227bbe8de.
+
+All ten existing host suites passed with AddressSanitizer/UndefinedBehaviorSanitizer:
+menu, launcher, audio, theme, Aurora, effects, characters, media, diagnostics, fonts.
+New continuation sanitizer test and actual C3 ImGui capture interactions passed.
+Exact 37 binding/range/callback checks and protected runtime/media comparisons pass.
+Existing menu tests cover native interactions, navigation, drag/close/reopen,
+small viewport scrolling, warm allocation stability and repeated theme switches.
+Existing character tests cover 10,000 allocation-free cached dispatch/mix cycles.
+A new test initially advanced event time without draining the simulated audio
+clock; corrected the test, without changing the working single-voice mixer.
+
+Actual CPU-rasterized native ImGui PNGs and offline viewer are generated under
+previews/full-continuation/. Anime Settings and Aurora captures visually inspected.
+No synthetic artwork, Android GPU screenshot or authentic Rias voice claim.
+The subsequent verification checkpoint changes only documentation, test timing
+and generated-preview ignore rules; application sources match the built commit.
+Next: owner tests this artifact on Android before any production promotion.
