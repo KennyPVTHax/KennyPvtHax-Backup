@@ -1,3 +1,12 @@
+## Supplied media integration — full UI continuation
+
+No theme/layout redesign. User-supplied Rias JPEG converted to a transparent,
+RGB-preserving alpha cutout with explicit user approval. Existing Anime renderer,
+opacity/visibility/contain/clipping and launcher remain. No separate logo provided:
+K emblem fallback remains. Four private named OGGs convert offline to existing PCM
+format and map only to Aim ON/OFF, Bullet ON and Extra navigation (confirmed).
+No user media is published; see SUPPLIED_MEDIA_INTEGRATION.md for installation.
+
 ## Full UI continuation — working baseline 7934582
 
 Preserve the owner-confirmed full build and empty Helper/bypass.h. Existing

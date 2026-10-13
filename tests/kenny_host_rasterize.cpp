@@ -9,6 +9,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <map>
 struct Vertex { float x,y,u,v; std::uint32_t color; };
 template<typename T> T Read(std::ifstream& f) {T value{};f.read(reinterpret_cast<char*>(&value),sizeof(T));assert(f.good());return value;}
 int main(int argc,char** argv) {
@@ -17,7 +18,9 @@ int main(int argc,char** argv) {
     std::vector<unsigned char> texture(tw*th*4);atlas.read(reinterpret_cast<char*>(texture.data()),texture.size());assert(atlas.good());
     for(int file=2;file<argc;++file) {
         std::ifstream input(argv[file],std::ios::binary);
-        const int w=Read<int>(input),h=Read<int>(input),lists=Read<int>(input);assert(w>0 && h>0 && lists>=0);
+        const int encodedWidth=Read<int>(input),h=Read<int>(input),lists=Read<int>(input);const bool multi=encodedWidth<0;const int w=std::abs(encodedWidth);assert(w>0 && h>0 && lists>=0);
+        struct Texture {int width=0,height=0;std::vector<unsigned char> rgba;};std::map<uint64_t,Texture> textures;
+        if(multi){unsigned count=Read<unsigned>(input);assert(count<=8);while(count--){auto id=Read<uint64_t>(input);Texture t;t.width=Read<int>(input);t.height=Read<int>(input);assert(t.width>0&&t.height>0&&size_t(t.width)*t.height<=2097152);t.rgba.resize(size_t(t.width)*t.height*4);input.read((char*)t.rgba.data(),t.rgba.size());assert(input.good());textures.emplace(id,std::move(t));}}
         std::vector<std::array<float,4>> pixels(w*h,{.10f,.115f,.15f,1});
         unsigned triangles=0;
         for(int list=0;list<lists;++list) {
@@ -30,6 +33,10 @@ int main(int argc,char** argv) {
                 std::array<float,4> clip{};for(auto& c:clip)c=Read<float>(input);
                 const unsigned ec=Read<unsigned>(input),offset=Read<unsigned>(input),base=Read<unsigned>(input);
                 assert(offset+ec<=indices.size() && ec%3==0);
+                const uint64_t textureId=multi?Read<uint64_t>(input):0;
+                const auto found=textures.find(textureId);
+                const int aw=found==textures.end()?tw:found->second.width,ah=found==textures.end()?th:found->second.height;
+                const auto& sourceTexture=found==textures.end()?texture:found->second.rgba;
                 for(unsigned i=0;i<ec;i+=3) {
                     const Vertex a=vertices.at(indices[offset+i]+base),b=vertices.at(indices[offset+i+1]+base),c=vertices.at(indices[offset+i+2]+base);
                     const int x0=static_cast<int>(std::max(std::floor(std::min({a.x,b.x,c.x})),std::max(0.0f,clip[0])));
@@ -45,14 +52,14 @@ int main(int argc,char** argv) {
                         const float wa=((b.y-c.y)*(px-c.x)+(c.x-b.x)*(py-c.y))/den;
                         const float wb=((c.y-a.y)*(px-c.x)+(a.x-c.x)*(py-c.y))/den,wc=1-wa-wb;
                         if(wa < -1e-5f || wb < -1e-5f || wc < -1e-5f) continue;
-                        const float tx=std::clamp((wa*a.u+wb*b.u+wc*c.u)*tw-.5f,0.0f,float(tw-1));
-                        const float ty=std::clamp((wa*a.v+wb*b.v+wc*c.v)*th-.5f,0.0f,float(th-1));
-                        const int lx=static_cast<int>(tx),ly=static_cast<int>(ty),hx=std::min(lx+1,tw-1),hy=std::min(ly+1,th-1);
+                        const float tx=std::clamp((wa*a.u+wb*b.u+wc*c.u)*aw-.5f,0.0f,float(aw-1));
+                        const float ty=std::clamp((wa*a.v+wb*b.v+wc*c.v)*ah-.5f,0.0f,float(ah-1));
+                        const int lx=static_cast<int>(tx),ly=static_cast<int>(ty),hx=std::min(lx+1,aw-1),hy=std::min(ly+1,ah-1);
                         const float fx=tx-lx,fy=ty-ly;
                         std::array<float,4> source{};
                         for(int k=0;k<4;++k) {
-                            const float sample=((texture[(ly*tw+lx)*4+k]*(1-fx)+texture[(ly*tw+hx)*4+k]*fx)*(1-fy)+
-                                                (texture[(hy*tw+lx)*4+k]*(1-fx)+texture[(hy*tw+hx)*4+k]*fx)*fy)/255.0f;
+                            const float sample=((sourceTexture[(ly*aw+lx)*4+k]*(1-fx)+sourceTexture[(ly*aw+hx)*4+k]*fx)*(1-fy)+
+                                                (sourceTexture[(hy*aw+lx)*4+k]*(1-fx)+sourceTexture[(hy*aw+hx)*4+k]*fx)*fy)/255.0f;
                             source[k]=sample*(wa*ca[k]+wb*cb[k]+wc*ccol[k]);
                         }
                         auto& dest=pixels[y*w+x];const float alpha=source[3];

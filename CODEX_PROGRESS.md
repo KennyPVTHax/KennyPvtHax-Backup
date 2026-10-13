@@ -1,5 +1,28 @@
 PROJECT: KennyPvtHax
 
+CURRENT TASK: Supplied artwork/event voices on ui/supplied-rias-media.
+BASELINE: Owner-confirmed full build 7934582; continuation parent c0dec26.
+Removed Helper/bypass.h contents remain removed. Recovery branch unused.
+
+COMPLETED: Five supplied attachments inspected/inventoried; four OGG originals
+preserved, converted to existing mono 48kHz PCM16 WAV with measured attenuation.
+User confirmed Extra navigation and pixel-preserving Python white-background mask.
+Actual alpha cutout installed in private test/runtime bundle. Separate logo and
+Bullet OFF clip absent; K/no-dialogue fallbacks retained. Central selected-character
+routing, genuine widget edit guard and bounded per-event cooldown added. Existing
+startup/input/EGL/SDK/Aurora/audio/launcher engines and 37 bindings unchanged.
+
+VERIFICATION: In progress. Final build/test details recorded after checks finish.
+PRIVATE MEDIA: .verification/user-media/; never stage original/derived media in Git.
+KNOWN LIMITATIONS: Android GPU/OpenSL playback/host asset installation require
+owner device test. Native .so alone does not package APK media. No supplied logo.
+NEXT ACTION: Complete regressions/captures, full ARM64 artifact and private bundle.
+No production loader publication.
+
+--- Previous checkpoints ---
+
+PROJECT: KennyPvtHax
+
 CURRENT TASK: Full UI continuation on ui/full-theme-continuation.
 WORKING BASELINE: 793458200ab8906179af0c63d0b0cb1648b7dafa; owner confirms
 full Android build works; Actions 38407512326 succeeded. Removed component:

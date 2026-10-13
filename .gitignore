@@ -61,3 +61,8 @@ previews/phase_c3/
 
 # Generated full UI continuation captures
 previews/full-continuation/
+
+# Private supplied-media evidence and Python caches
+previews/supplied-media/
+__pycache__/
+*.pyc

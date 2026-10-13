@@ -7,9 +7,9 @@
 #include <dirent.h>
 
 namespace KennyCharacters {
-enum class VoiceEvent:unsigned {Open,Close,Navigation,LoginSuccess,LoginFailure,Enabled,Disabled,Skins,Bullet,Confirmation,Error,ThemeSwitch,SettingsNavigation,Count};
+enum class VoiceEvent:unsigned {Open,Close,Navigation,LoginSuccess,LoginFailure,Enabled,Disabled,Skins,Bullet,Confirmation,Error,ThemeSwitch,SettingsNavigation,AimEnabled,AimDisabled,BulletDisabled,ExtraNavigation,Count};
 constexpr unsigned EventCount=unsigned(VoiceEvent::Count);
-inline constexpr const char* EventNames[]={"launcher_open","launcher_close","menu_navigation","login_success","login_failure","feature_enabled","feature_disabled","skins_enabled","bullet_track_enabled","confirmation","error","theme_switch","settings_navigation"};
+inline constexpr const char* EventNames[]={"launcher_open","launcher_close","menu_navigation","login_success","login_failure","feature_enabled","feature_disabled","skins_enabled","bullet_track_enabled","confirmation","error","theme_switch","settings_navigation","aim_enabled","aim_disabled","bullet_track_disabled","extra_features_navigation"};
 struct EventClips {std::array<KennyAudio::Recording,3> clips;unsigned count=0,last=3;};
 struct VoicePack {std::string id,name;std::array<EventClips,EventCount> events;bool Available()const{for(const auto& e:events)if(e.count)return true;return false;}};
 struct Character {
@@ -25,7 +25,8 @@ using Release=void (*)(void*,KennyThemeBackground::ArtworkFrame);
 struct Registry {
     std::array<Character,8> characters;unsigned count=1;bool configured=false;
     Upload upload=nullptr;Release release=nullptr;void* textureUser=nullptr;
-    double nextVoice=0,lastTime=0;uint32_t random=0x7139c5;
+    double nextVoice=0,lastTime=0;std::array<double,EventCount> nextEvent{};uint32_t random=0x7139c5;
+    void ResetCooldowns(){nextVoice=0;nextEvent.fill(0);}
     size_t decodedBytes=0;
     Registry(){for(unsigned i=1;i<characters.size();++i){characters[i].id.clear();characters[i].name.clear();characters[i].series.clear();}}
     // Registry recordings are immutable once configured and must outlive the
@@ -99,7 +100,7 @@ public:
         if(p.theme!=KennyAppearance::Theme::Anime)return;
         auto& c=Selected(p);if(c.packCount&&!Pack(c,p.voicePack))p.voicePack=c.packs[0].id;
         if(c.artwork.size()<=63&&KennyAssets::Path(c.artwork))p.characterArtwork=c.artwork;
-        if(activeCharacter!=p.characterId || activePack!=p.voicePack){if(dispatchMixer)dispatchMixer->voiceEpoch.fetch_add(1);nextVoice=0;activeCharacter=p.characterId;activePack=p.voicePack;}
+        if(activeCharacter!=p.characterId || activePack!=p.voicePack){if(dispatchMixer)dispatchMixer->voiceEpoch.fetch_add(1);ResetCooldowns();activeCharacter=p.characterId;activePack=p.voicePack;}
         if(upload){if(!c.artTried&&!c.image.rgba.empty()){c.artTried=true;c.artworkTexture=upload(textureUser,c.image);}
             if(!c.logoTried&&!c.logo.rgba.empty()){c.logoTried=true;c.launcherTexture=upload(textureUser,c.logo);}}
     }
@@ -109,13 +110,13 @@ public:
         auto* pack=Pack(*c,p.voicePack);if(!pack)return false;
         // A successful selector can emit before the next Prepare. Cancel the
         // old pack first so that next-frame synchronization keeps this clip.
-        if(activeCharacter!=p.characterId || activePack!=p.voicePack){mixer->voiceEpoch.fetch_add(1);nextVoice=0;activeCharacter=p.characterId;activePack=p.voicePack;}
+        if(activeCharacter!=p.characterId || activePack!=p.voicePack){mixer->voiceEpoch.fetch_add(1);ResetCooldowns();activeCharacter=p.characterId;activePack=p.voicePack;}
         auto& e=pack->events[unsigned(event)];if(!e.count)return false;
-        if(time<lastTime)nextVoice=0;
-        lastTime=time;if(time<nextVoice)return true; // mapped cooldown suppresses extra feedback
+        if(time<lastTime)ResetCooldowns();
+        lastTime=time;if(time<nextVoice || time<nextEvent[unsigned(event)])return true; // mapped cooldown suppresses extra feedback
         random^=random<<13;random^=random>>17;random^=random<<5;unsigned index=random%e.count;if(e.count>1&&index==e.last)index=(index+1)%e.count;
         const auto* clip=&e.clips[index];if(!mixer->SubmitRecording(clip))return true;
-        e.last=index;nextVoice=time+std::max(.7,double(clip->samples.size())/KennyAudio::SampleRate+.12);return true;
+        e.last=index;nextEvent[unsigned(event)]=time+.7;nextVoice=time+std::max(.7,double(clip->samples.size())/KennyAudio::SampleRate+.12);return true;
     }
     static bool Route(void* user,KennyAudio::Event event,const KennyAppearance::Preferences& p,double time,const char* label){
         auto& self=*static_cast<Registry*>(user);VoiceEvent voice;
@@ -124,18 +125,30 @@ public:
         case KennyAudio::Event::MenuClose:voice=VoiceEvent::Close;break;
         case KennyAudio::Event::ThemeChanged:voice=VoiceEvent::ThemeSwitch;break;
         case KennyAudio::Event::PrimaryNavigation:
+            if(label&&std::strcmp(label,"Extra features")==0){voice=VoiceEvent::ExtraNavigation;break;}
             if(label&&std::strcmp(label,"Settings")==0){
                 auto* c=self.Find(p.characterId);auto* pack=c?self.Pack(*c,p.voicePack):nullptr;
                 if(pack&&pack->events[unsigned(VoiceEvent::SettingsNavigation)].count){voice=VoiceEvent::SettingsNavigation;break;}
             }
             voice=VoiceEvent::Navigation;break;
-        case KennyAudio::Event::SecondaryNavigation:voice=VoiceEvent::Navigation;break;
-        case KennyAudio::Event::CheckboxOn:voice=label&&std::strcmp(label,"Enable bullet track")==0?VoiceEvent::Bullet:VoiceEvent::Enabled;break;
-        case KennyAudio::Event::CheckboxOff:voice=VoiceEvent::Disabled;break;
+        case KennyAudio::Event::SecondaryNavigation:voice=label&&std::strcmp(label,"Extra features")==0?VoiceEvent::ExtraNavigation:VoiceEvent::Navigation;break;
+        case KennyAudio::Event::CheckboxOn:
+            voice=label&&std::strcmp(label,"Enable bullet track")==0?VoiceEvent::Bullet:
+                  label&&std::strcmp(label,"Enable aimbot")==0?VoiceEvent::AimEnabled:VoiceEvent::Enabled;break;
+        case KennyAudio::Event::CheckboxOff:
+            voice=label&&std::strcmp(label,"Enable bullet track")==0?VoiceEvent::BulletDisabled:
+                  label&&std::strcmp(label,"Enable aimbot")==0?VoiceEvent::AimDisabled:VoiceEvent::Disabled;break;
         case KennyAudio::Event::ButtonPressed:voice=VoiceEvent::Confirmation;break;
         case KennyAudio::Event::KeyAccepted:voice=VoiceEvent::LoginSuccess;break;
         case KennyAudio::Event::KeyRejected:voice=VoiceEvent::LoginFailure;break;
         default:return false;}
+        if(voice==VoiceEvent::AimEnabled || voice==VoiceEvent::AimDisabled || voice==VoiceEvent::BulletDisabled || voice==VoiceEvent::ExtraNavigation){
+            auto* c=self.Find(p.characterId);auto* pack=c?self.Pack(*c,p.voicePack):nullptr;
+            if(pack&&!pack->events[unsigned(voice)].count){
+                voice=voice==VoiceEvent::AimEnabled?VoiceEvent::Enabled:
+                      voice==VoiceEvent::ExtraNavigation?VoiceEvent::Navigation:VoiceEvent::Disabled;
+            }
+        }
         return self.Emit(voice,p,KennyAudio::current.dispatcher?KennyAudio::current.dispatcher->mixer:self.dispatchMixer,time);
     }
     // Lifecycle events are dispatched outside menu scopes too.

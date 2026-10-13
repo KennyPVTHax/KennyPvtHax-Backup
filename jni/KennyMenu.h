@@ -154,7 +154,7 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
                                ImVec2(tabWidth, l.navHeight - 12.0f * l.scale))) {
                 const bool changed=static_cast<int>(state.category)!=i;
                 state.Select(static_cast<Category>(i), tab);
-                if(changed)KennyAudio::Emit(KennyAudio::Event::PrimaryNavigation,i==4?"Settings":nullptr);
+                if(changed)KennyAudio::Emit(KennyAudio::Event::PrimaryNavigation,i==4?"Settings":i==2&&tab==5?"Extra features":nullptr);
             }
         }
         // One bounded, time-based underline; no per-tab animation allocations.
@@ -194,7 +194,7 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
             if (Claude::PillTab(secondary[i], presentation || tab == values[i], ImVec2(widths[i], pillHeight)) && !presentation) {
                 const bool changed=tab!=values[i];
                 tab = values[i];
-                if(changed)KennyAudio::Emit(KennyAudio::Event::SecondaryNavigation);
+                if(changed)KennyAudio::Emit(KennyAudio::Event::SecondaryNavigation,secondary[i]);
                 if (state.category == Category::Visual) state.visualTab = tab;
                 if (state.category == Category::Misc) state.miscTab = tab;
             }
