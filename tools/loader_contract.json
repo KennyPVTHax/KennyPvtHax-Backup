@@ -1,0 +1,10 @@
+{
+  "destination": "KennyPVTHax/Anilxkenny",
+  "branch": "main",
+  "package": "com.pubg.imobile",
+  "reference_archive": "test2.zip",
+  "reference_zip_sha256": "298238ef0deade50970f3b14be2ecbe9df5ffb5cfa725d07fb0b794f4b19c2d1",
+  "entries": ["libloader.so"],
+  "version_policy": {"verified": false, "scheme": null, "step": null, "evidence": "Loader comparison source not supplied"},
+  "initial_device_milestone_approved": false
+}

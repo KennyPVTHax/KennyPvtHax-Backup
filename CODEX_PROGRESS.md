@@ -1,4 +1,16 @@
 PROJECT: KennyPvtHax
+CURRENT TASK: Isolated cross-repository loader release pipeline preparation.
+BRANCH: ci/loader-publish; original Stage 1 native code unchanged.
+COMPLETED: reference ZIP root libloader.so confirmed; immutable packaging, four
+CI jobs, guarded token-only destination Git publication, atomic two-file commit,
+source-head checks/concurrency/retries/idempotency, rollback and offline tests.
+PENDING: genuine CI dry-run; loader version-comparison source; initial device
+milestone approval; source secret access/configuration and release protection.
+LIVE DESTINATION: kenny.json/test2.zip unchanged; no release branch promotion.
+NEXT: finish dry-run and report prerequisites; never publish unverified policy.
+---
+
+PROJECT: KennyPvtHax
 
 CURRENT STAGE:
 Original-based recovery Stage 1 — built and verified; awaiting user Android test.

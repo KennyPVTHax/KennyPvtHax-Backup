@@ -1,0 +1,120 @@
+name: Build and publish loader
+on:
+  push:
+    branches: [release/android, ci/loader-publish] # ci branch is packaging dry-run only.
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Build/package only; never update the live manifest
+        type: boolean
+        default: true
+      rollback_destination_commit:
+        description: Optional full destination commit to restore (release branch only)
+        type: string
+        default: ''
+permissions:
+  contents: read
+jobs:
+  test:
+    if: github.repository == 'KennyPVTHax/KennyPvtHax-Backup'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - run: python3 tests/recovery_source_check.py
+      - run: python3 tests/loader_release_check.py
+      - name: UI ASan/UBSan regressions
+        run: |
+          timeout 180s g++ -std=c++17 -O1 -g -fsanitize=address,undefined \
+            -fno-omit-frame-pointer -fno-pie -no-pie -I jni -I .verification \
+            tests/recovery_host_check.cpp jni/imgui/imgui.cpp jni/imgui/imgui_draw.cpp \
+            jni/imgui/imgui_widgets.cpp jni/imgui/imgui_tables.cpp -o .verification/recovery-host
+          timeout 90s .verification/recovery-host
+  build:
+    needs: test
+    runs-on: ubuntu-22.04
+    timeout-minutes: 45
+    env:
+      NDK_VERSION: '25.2.9519653'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd
+      - run: sdkmanager --install 'ndk;25.2.9519653'
+      - name: Original ARM64 native configuration
+        run: |
+          "$ANDROID_SDK_ROOT/ndk/25.2.9519653/ndk-build" NDK_PROJECT_PATH=. \
+            APP_BUILD_SCRIPT=jni/Android.mk NDK_APPLICATION_MK=jni/Application.mk -j2
+          test -s libs/arm64-v8a/libAnoy.so
+          "$ANDROID_SDK_ROOT/ndk/25.2.9519653/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf" \
+            -h libs/arm64-v8a/libAnoy.so > elf-header.txt
+          grep -q AArch64 elf-header.txt
+          sha256sum libs/arm64-v8a/libAnoy.so
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: loader-build-${{ github.sha }}
+          path: libs/arm64-v8a/libAnoy.so
+          if-no-files-found: error
+          retention-days: 7
+  package:
+    needs: build
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: loader-build-${{ github.sha }}
+          path: compiled
+      - run: python3 tools/loader_release.py package --binary compiled/libAnoy.so
+      - name: Dry-run/package summary
+        run: |
+          echo '### Verified loader package; production only from release/android' >> "$GITHUB_STEP_SUMMARY"
+          cat deployment/release.json >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: loader-package-${{ github.sha }}
+          path: deployment/
+          if-no-files-found: error
+          retention-days: 30
+  publish:
+    needs: [test, build, package]
+    if: >-
+      github.repository == 'KennyPVTHax/KennyPvtHax-Backup' &&
+      github.ref == 'refs/heads/release/android' &&
+      (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.dry_run == false))
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    concurrency:
+      group: anilxkenny-production-publication
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Refuse unconfirmed loader version policy or untested initial milestone
+        run: python3 tools/loader_release.py preflight
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: loader-package-${{ github.sha }}
+          path: deployment
+      - name: Atomic destination commit or rollback
+        env:
+          ANILXKENNY_PUBLISH_TOKEN: ${{ secrets.ANILXKENNY_PUBLISH_TOKEN }}
+          ROLLBACK_COMMIT: ${{ inputs.rollback_destination_commit }}
+        run: |
+          if [ -n "$ROLLBACK_COMMIT" ]; then
+            python3 tools/loader_release.py rollback --previous-commit "$ROLLBACK_COMMIT"
+          else
+            python3 tools/loader_release.py publish
+          fi
