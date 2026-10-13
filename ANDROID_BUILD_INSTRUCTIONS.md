@@ -1,3 +1,15 @@
+## Audio recovery checkpoint A
+
+Continue the working full UI, not recovery stage 1. The library still builds as
+libs/arm64-v8a/libAnoy.so with unchanged NDK 25.2.9519653. The diagnostic deployment
+ZIP aliases it to libloader.so at archive root, without changing the NDK module.
+User-supplied media remain separate/private and need an authorized import into the
+actual NativeActivity's owning private directory; the .so alone does not install
+them. Restart after import and select the supplied pack. See
+AUDIO_RECOVERY_CHECKPOINT_A.md for verified build/checksums, host contract,
+Test Voice, diagnostic retrieval and remaining device verification. Video/logo
+checkpoints are deferred. No production loader manifest update.
+
 # KennyPvtHax — first Android build
 
 Export date: 11 October 2026 (Asia/Calcutta). Application checkpoint: `3436f47`.

@@ -1,0 +1,97 @@
+{
+  "compiled_source": "9a3de44c8134a70ecee33465dd46d80c6e8d1c36",
+  "reference_source": "2a54a41b6ee7de42bf91a34437e66a499e599323",
+  "parent": "5261a1ec6471d8ddcbcbcc365a16f8a77a1d3fcf",
+  "branch": "diagnostic/audio-recovery-a",
+  "run": 38449668161,
+  "artifact": 11839698728,
+  "build_result": "success",
+  "ndk": "25.2.9519653",
+  "isolation": "full",
+  "so_bytes": 6717696,
+  "so_sha256": "1541f3479db659627da124c448ed7d43e5d3316de817f619a849a3ee5f380f4d",
+  "artifact_sha256": "223ebee915eb9d2016aee95951514e8f295e2adc05403a7f42deb24528e79373",
+  "loader_filename": "kph-audio-a-9a3de44-arm64.zip",
+  "internal_filename": "libloader.so",
+  "loader_sha256": "9f9b63996ac60186b0c0ace198d98bb4462ebf200e3738399c33194d6bfbb586",
+  "private_media_sha256": "a244ecddf76c3ed9fc4f61142bbf653385697961d99bfe7445d6a4c0ff07146c",
+  "host_tests": [
+    {
+      "test": "menu",
+      "result": "PASS",
+      "seconds": 49.974
+    },
+    {
+      "test": "launcher",
+      "result": "PASS",
+      "seconds": 48.308
+    },
+    {
+      "test": "audio",
+      "result": "PASS",
+      "seconds": 13.796
+    },
+    {
+      "test": "theme",
+      "result": "PASS",
+      "seconds": 2.144
+    },
+    {
+      "test": "aurora",
+      "result": "PASS",
+      "seconds": 12.919
+    },
+    {
+      "test": "effects",
+      "result": "PASS",
+      "seconds": 2.893
+    },
+    {
+      "test": "characters",
+      "result": "PASS",
+      "seconds": 10.296
+    },
+    {
+      "test": "media",
+      "result": "PASS",
+      "seconds": 7.618
+    },
+    {
+      "test": "diagnostics",
+      "result": "PASS",
+      "seconds": 1.46
+    },
+    {
+      "test": "fonts",
+      "result": "PASS",
+      "seconds": 4.515
+    },
+    {
+      "test": "continuation",
+      "result": "PASS",
+      "seconds": 6.83
+    },
+    {
+      "test": "supplied",
+      "result": "PASS",
+      "seconds": 20.033
+    },
+    {
+      "test": "audio-recovery",
+      "result": "PASS",
+      "seconds": 14.15
+    }
+  ],
+  "sanitizers": [
+    "AddressSanitizer",
+    "UndefinedBehaviorSanitizer"
+  ],
+  "device_audio": "Unverified: owner installed only prior .so; media pack import still required",
+  "user_confirmation": "Only the .so was installed",
+  "production_published": false,
+  "video_logo_implemented": false,
+  "build_id": "b7c5876f535ac5845f7d3d85348cc55a020b9fbd",
+  "full_regression_source": "24443aeb6be04b50c1d6402e660c35034b7a7084",
+  "focused_post_selection_log_correction": "ASan/UBSan PASS at 9a3de44",
+  "private_package_validation": "PASS 12 indexed runtime files and negative corruption/missing/traversal/alias checks"
+}

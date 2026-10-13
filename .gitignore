@@ -66,3 +66,6 @@ previews/full-continuation/
 previews/supplied-media/
 __pycache__/
 *.pyc
+
+# Generated Checkpoint A voice-diagnostic captures
+previews/audio-recovery-a/

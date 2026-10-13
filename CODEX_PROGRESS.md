@@ -17,8 +17,9 @@ converted WAVs/cutout/originals, with explicit authorized host import/restart co
 New attachments inspected: logo and Rias are JPEG, no alpha; Rias bytes match prior
 source; video ZIP invalid (entry declares ~21MiB in 1.2MiB archive). B/C deferred.
 
-VERIFICATION: Existing 12 sanitizer suites + focused recovery check pass; final
-13-suite run/build/package verification will be recorded below.
+VERIFICATION: All 13 ASan/UBSan suites PASS; focused post-fix test PASS; full
+ARM64 build SUCCESS. Verified root loader ZIP, native ELF/hash, private payload
+and corruption/path rejection checks. See AUDIO_RECOVERY_BUILD_VERIFICATION.json.
 NEXT: Owner installs approved private pack through actual owning host, tests voice
 and shares diagnostics. Do not claim audible Android output before device evidence.
 No video/logo implementation, internal panel redesign or production publication.
@@ -820,3 +821,32 @@ The final checkpoint updates documentation only. Runtime sources/assets metadata
 remain identical to the compiled commit above. Next: owner installs the exact .so
 AND private media pack, selects Rias / supplied event clips, and device-tests before
 any production promotion. No Anilxkenny/kenny.json update occurred.
+
+## Verified Checkpoint A delivery
+
+Compiled source `9a3de44c8134a70ecee33465dd46d80c6e8d1c36`; Actions
+https://github.com/KennyPVTHax/KennyPvtHax-Backup/actions/runs/38449668161 SUCCESS,
+NDK 25.2.9519653, ARM64/full. Artifact 11839698728. Downloaded ZIP CRC, exact
+entries, ELF64/AArch64 and matching source/NDK/isolation/binary metadata verified.
+Native SHA-256: `1541f3479db659627da124c448ed7d43e5d3316de817f619a849a3ee5f380f4d`.
+Loader ZIP `kph-audio-a-9a3de44-arm64.zip` contains only libloader.so at root; extracted
+bytes match libAnoy.so exactly. ZIP SHA-256: `9f9b63996ac60186b0c0ace198d98bb4462ebf200e3738399c33194d6bfbb586`.
+Build ID: `b7c5876f535ac5845f7d3d85348cc55a020b9fbd`. NDK module/load code unchanged.
+
+Thirteen ASan/UBSan host suites PASS on 24443ae; focused recovery check PASS again
+after the missing-pack selection diagnostic correction at 9a3de44. Exact 37
+binding/range and protected startup/input/EGL/SDK/blank-header checks pass.
+Private package validates all 12 runtime hashes/formats, rejects corrupt/missing/
+traversing/noncanonical entries, and stages offline without installing on Android.
+All runtime media bytes remain identical to the previous verified conversion.
+Private package SHA-256: `a244ecddf76c3ed9fc4f61142bbf653385697961d99bfe7445d6a4c0ff07146c`.
+Actual ImGui Test Voice/640 captures inspected; they are host CPU output, not Android
+speaker or GPU verification. Callback transport tests exercise the bounded atomic
+mailbox; they do not simulate successful OpenSL playback.
+
+Root cause confirmed by user: only the old .so was installed, not supplied media.
+No actual host source/ADB connection is available. On-device private import and
+audible direct Test Voice remain required before moving beyond A. No source
+media, private symbols, video/logo implementation, main merge, Anilxkenny upload
+or kenny.json update. Final checkpoint after this build changes documentation/
+generated-capture ignore rules only; compiled application bytes remain identical.
