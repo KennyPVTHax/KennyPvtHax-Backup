@@ -1,0 +1,33 @@
+{
+  "images": [
+    {
+      "role": "supplied logo",
+      "actual_format": "JPEG RGB",
+      "alpha": false,
+      "width": 1280,
+      "height": 1280,
+      "filename": "1-IMG_20261013_203700_546.jpg",
+      "bytes": 152346,
+      "sha256": "72039b61e9d93d9fcdad420f57b9a9f53c42fb67c939e130490e8adfb0156e71"
+    },
+    {
+      "role": "Rias source",
+      "actual_format": "JPEG RGB",
+      "alpha": false,
+      "width": 1035,
+      "height": 1280,
+      "filename": "2-1000304237.jpg",
+      "bytes": 91764,
+      "sha256": "df6a3f573312dcda8b611505c2320bd5bf73de8fdc29496e344f64c276791524"
+    }
+  ],
+  "video_archive": {
+    "filename": "3-animebg.zip",
+    "bytes": 1216572,
+    "status": "invalid CRC/archive content: do not extract/play as verified video",
+    "failed_entry": "videoplayback.webm",
+    "declared_uncompressed_bytes": 21136156,
+    "declared_compressed_bytes": 21139378,
+    "sha256": "d40bb2cc69d6041bb3ec83d939292130cccf5f702cb685c61fe721368d2a7c5b"
+  }
+}

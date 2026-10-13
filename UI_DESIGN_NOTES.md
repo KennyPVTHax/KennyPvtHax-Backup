@@ -1,3 +1,12 @@
+## Audio recovery checkpoint A
+
+Preserve working full themes, launcher/layout and native startup. Only the existing
+Anime Settings voice section gains a configured event selector, silent Test Voice
+action and truthful diagnostic results. Queued/cooldown/speakers are distinct.
+User installed only the .so; media installation remains an authorized host task.
+The new logo is JPEG, not alpha PNG; video ZIP integrity fails. Checkpoints B/C
+remain separate. See AUDIO_RECOVERY_CHECKPOINT_A.md.
+
 ## Supplied media integration — full UI continuation
 
 No theme/layout redesign. User-supplied Rias JPEG converted to a transparent,

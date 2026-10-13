@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <vector>
 #include "KennyThemePreferences.h"
+#include "KennyAudioDiagnostics.h"
 
 // Shared event vocabulary, including future key integration. No key validation,
 // voice recordings, file decoder or voice-pack loader is implemented in C1.
@@ -55,6 +56,7 @@ struct Command { Event event=Event::MenuOpen;Profile profile=Profile::Aurora;uns
 // One producer (render thread), one consumer (audio callback). The callback
 // never allocates, locks, performs I/O or initializes a sound resource.
 struct Mixer {
+    KennyAudioDiagnostics::Transport transport;
     const Bank* bank=nullptr;
     std::array<Command,QueueSize> queue{};
     std::atomic<unsigned> read{0},write{0},epoch{0},volume{3500};
@@ -98,7 +100,7 @@ struct Mixer {
             const auto command=queue[r];r=(r+1)%QueueSize;
             if(command.epoch!=currentEpoch || !volume.load(std::memory_order_relaxed))continue;
             if(command.recording){
-                if(command.voiceEpoch==currentVoiceEpoch && voiceVolume.load() && !character){character=command.recording;characterPosition=0;}
+                if(command.voiceEpoch==currentVoiceEpoch && voiceVolume.load() && !character){character=command.recording;characterPosition=0;transport.recordingsStarted.fetch_add(1,std::memory_order_relaxed);}
                 continue;
             }
             for(auto& voice:voices)if(!voice.clip) {voice={&bank->Get(command.profile,command.event),0};break;}
@@ -135,10 +137,12 @@ struct Dispatcher {
         mixer->VoiceVolume(p.theme==KennyAppearance::Theme::Anime&&p.characterVoice,p.characterVolume);}}
     bool Emit(Event e,const KennyAppearance::Preferences& p,double now,const char* label=nullptr) {
         Refresh(p);const unsigned i=static_cast<unsigned>(e);
-        if(!mixer || !p.uiSounds || p.uiVolume<=0 || i>=EventCount || !std::isfinite(now))return false;
+        if(!mixer || !p.uiSounds || p.uiVolume<=0 || i>=EventCount || !std::isfinite(now)){
+            KennyAudioDiagnostics::Log(KennyAudioDiagnostics::Code::Suppressed,!mixer?"audio_engine_unavailable":!p.uiSounds?"disabled_sounds":p.uiVolume<=0?"zero_ui_volume":"invalid_event",0,i<EventCount?Names[i]:"invalid");return false;
+        }
         const bool lifecycle=e==Event::MenuOpen || e==Event::MenuClose;
         if(now<lastAny){last.fill(-100);lastAny=-100;}
-        if(now-last[i]<.055 || (!lifecycle && now-lastAny<.022)) {++throttled;return false;}
+        if(now-last[i]<.055 || (!lifecycle && now-lastAny<.022)) {++throttled;KennyAudioDiagnostics::Log(KennyAudioDiagnostics::Code::Suppressed,"duplicate_event_cooldown",0,Names[i]);return false;}
         const bool voice=voiceRouter&&voiceRouter(voiceUser,e,p,now,label);
         if(!voice && !mixer->Submit(e,Resolve(p)))return false;
         last[i]=lastAny=now;lastEvent=e;++accepted;return true;

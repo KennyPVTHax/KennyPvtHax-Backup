@@ -113,6 +113,27 @@ inline void DrawAnime(Preferences& p,KennyCharacters::Registry& registry,bool au
     KennyControls::SliderFloat("Voice volume",&p.characterVolume,0,100,"%.0f%%");ImGui::EndDisabled();
     KennyPanels::Note(!available?"Voice recordings unavailable. UI tones remain the fallback.":!audioReady?"Voice pack decoded; Android playback unavailable on this host.":"Local voice pack ready. Global UI mute takes precedence.");
     if(available){unsigned events=0;for(const auto& e:pack->events)events+=e.count>0;ImGui::Text("Mapped events: %u / %u",events,KennyCharacters::EventCount);}
+    KennyPanels::Note(registry.mediaStatus);
+    // Diagnostic action stays available with missing assets/engine so failure is
+    // explained, and deliberately emits no generic button tone or feature edit.
+    if(pack){
+        if(!pack->events[unsigned(registry.testEvent)].count&&!pack->mappingDefined[unsigned(registry.testEvent)]){
+            for(unsigned e=0;e<KennyCharacters::EventCount;++e)if(pack->events[e].count){registry.testEvent=static_cast<KennyCharacters::VoiceEvent>(e);break;}
+        }
+        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+        if(ImGui::BeginCombo("##voice-test-event",KennyCharacters::EventNames[unsigned(registry.testEvent)])){
+            for(unsigned e=0;e<KennyCharacters::EventCount;++e)if(pack->events[e].count||pack->mappingDefined[e]){
+                if(ImGui::Selectable(KennyCharacters::EventNames[e],unsigned(registry.testEvent)==e))registry.testEvent=static_cast<KennyCharacters::VoiceEvent>(e);
+            }ImGui::EndCombo();}}
+    if(KennyControls::Button("Test Voice",false))registry.TestVoice(p,audioReady?KennyAudio::current.dispatcher:nullptr,ImGui::GetTime());
+    KennyPanels::Note(KennyAudioDiagnostics::Status(registry.testResult));
+    if(registry.testAttempted&&registry.testResult==KennyAudioDiagnostics::Result::Queued){
+        auto* dispatcher=KennyAudio::current.dispatcher;auto* mix=dispatcher?dispatcher->mixer:nullptr;
+        if(!mix)KennyPanels::Note("Audio engine became unavailable; see playback diagnostics.");
+        else if(!mix->transport.native.load())KennyPanels::Note("Host PCM test sink only; Android speakers unverified.");
+        else if(mix->transport.recordingsStarted.load()>registry.testStartedBefore&&mix->transport.callbacks.load()>registry.testCallbacksBefore)KennyPanels::Note("Recording mixed and OpenSL consumed a subsequent buffer. Verify speakers.");
+        else KennyPanels::Note("Waiting for an OpenSL callback; check playback diagnostics.");
+    }
     KennyPanels::EndSection();KennyPanels::End();ImGui::PopStyleVar(2);
 }
 inline void DrawSettings(Preferences& preferences, bool& centerRequested, bool audioReady=false,

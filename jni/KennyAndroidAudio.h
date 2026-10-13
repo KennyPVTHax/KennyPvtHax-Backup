@@ -34,10 +34,12 @@ class AndroidBackend {
             (*self.play)->SetPlayState(self.play,SL_PLAYSTATE_STOPPED);
             self.playing.store(false,std::memory_order_release);return;
         }
-        if((*queue)->Enqueue(queue,block.data(),block.size()*sizeof(int16_t))!=SL_RESULT_SUCCESS) {
+        const SLresult result=(*queue)->Enqueue(queue,block.data(),block.size()*sizeof(int16_t));
+        if(result!=SL_RESULT_SUCCESS) {
+            self.mixer.transport.Callback(result);
             (*self.play)->SetPlayState(self.play,SL_PLAYSTATE_STOPPED);
             self.playing.store(false,std::memory_order_release);
-        }
+        }else{self.mixer.transport.buffersSubmitted.fetch_add(1,std::memory_order_relaxed);self.mixer.transport.Callback();}
     }
 #endif
 public:
@@ -68,7 +70,10 @@ public:
         if(!Check((*playerObject)->GetInterface(playerObject,SL_IID_ANDROIDSIMPLEBUFFERQUEUE,&buffers),"OpenSL buffer queue unavailable."))return false;
         if(!Check((*buffers)->RegisterCallback(buffers,Callback,this),"OpenSL callback registration failed."))return false;
         running.store(true,std::memory_order_release);ready=true;
-        dispatcher.mixer=&mixer;status="UI sound profiles are ready.";
+        dispatcher.mixer=&mixer;status="UI sound profiles are ready.";mixer.transport.native.store(true);
+        KennyAudioDiagnostics::Log(KennyAudioDiagnostics::Code::EngineReady,"opensl_ready");
+#else
+        KennyAudioDiagnostics::Log(KennyAudioDiagnostics::Code::EngineFailed,"android_runtime_unavailable");
 #endif
         return ready;
     }
@@ -78,17 +83,22 @@ public:
     void Pump(const KennyAppearance::Preferences& p) {
         dispatcher.Refresh(p);
 #ifdef __ANDROID__
+        const unsigned signals=mixer.transport.Drain();
+        if(signals&2){unsigned error=mixer.transport.callbackError.exchange(0);KennyAudioDiagnostics::Log(KennyAudioDiagnostics::Code::PlaybackFailed,"callback_enqueue_failed",int(error));Check(error,"OpenSL callback enqueue failed.");return;}
+        if(signals&1)KennyAudioDiagnostics::Log(KennyAudioDiagnostics::Code::CallbackObserved,"opensl_consumed_buffer_speakers_unverified");
         // Audio stops its player after a short silent tail. A tap reuses the
         // existing objects/buffers; it never creates/loads a resource.
         if(!ready || playing.load(std::memory_order_acquire) ||
            mixer.read.load(std::memory_order_acquire)==mixer.write.load(std::memory_order_acquire))return;
-        (*buffers)->Clear(buffers);idleSamples=0;slot=0;
+        if(!Check((*buffers)->Clear(buffers),"OpenSL queue clear failed."))return;idleSamples=0;slot=0;
+        mixer.transport.firstCallback.store(false,std::memory_order_release);
         for(auto& block:pcm) {
             mixer.Render(block.data(),block.size());
             if(!Check((*buffers)->Enqueue(buffers,block.data(),block.size()*sizeof(int16_t)),"OpenSL buffer enqueue failed."))return;
+            mixer.transport.buffersSubmitted.fetch_add(1,std::memory_order_relaxed);
         }
         playing.store(true,std::memory_order_release);
-        Check((*play)->SetPlayState(play,SL_PLAYSTATE_PLAYING),"OpenSL play start failed.");
+        if(Check((*play)->SetPlayState(play,SL_PLAYSTATE_PLAYING),"OpenSL play start failed."))KennyAudioDiagnostics::Log(KennyAudioDiagnostics::Code::PlaybackStarted,"opensl_play_requested_speakers_unverified");
 #endif
     }
     void Shutdown() {
@@ -108,7 +118,7 @@ public:
     }
 private:
 #ifdef __ANDROID__
-    bool Check(SLresult result,const char* reason){if(result==SL_RESULT_SUCCESS)return true;lastError=result;Shutdown();status=reason;return false;}
+    bool Check(SLresult result,const char* reason){if(result==SL_RESULT_SUCCESS)return true;lastError=result;KennyAudioDiagnostics::Log(ready?KennyAudioDiagnostics::Code::PlaybackFailed:KennyAudioDiagnostics::Code::EngineFailed,reason,int(result));Shutdown();status=reason;return false;}
 #endif
 };
 } // namespace KennyAudio

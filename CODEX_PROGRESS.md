@@ -1,5 +1,32 @@
 PROJECT: KennyPvtHax
 
+CURRENT CHECKPOINT: A — Audio recovery, diagnostic/audio-recovery-a.
+BASELINE: User-working compiled 2a54a41, source parent 5261a1e runtime-identical.
+Downloaded reference SHA e2fc6995a2741cd51f385c5b54a420eb168c0b6c51ffa1c0bbb9ab6787ca2b3f.
+Original main/startup/input/EGL/SDK/blank Helper/bypass.h unchanged.
+
+CONFIRMED CAUSE: Owner installed only the .so; supplied recordings/private manifest
+were not installed. Android speaker/OpenSL execution is not independently tested.
+Actual Android host/installer source is absent; ImGui examples are not that host.
+
+COMPLETED: Bounded load/voice/OpenSL transport diagnostics; callback-safe atomic
+mailbox (no callback I/O). Existing Anime Settings Test Voice with distinct failure,
+cooldown and queued results, selected configured event, no feature edits or masking
+button tone. Indexed, checksum-validated private installation payload reuses existing
+converted WAVs/cutout/originals, with explicit authorized host import/restart contract.
+New attachments inspected: logo and Rias are JPEG, no alpha; Rias bytes match prior
+source; video ZIP invalid (entry declares ~21MiB in 1.2MiB archive). B/C deferred.
+
+VERIFICATION: Existing 12 sanitizer suites + focused recovery check pass; final
+13-suite run/build/package verification will be recorded below.
+NEXT: Owner installs approved private pack through actual owning host, tests voice
+and shares diagnostics. Do not claim audible Android output before device evidence.
+No video/logo implementation, internal panel redesign or production publication.
+
+--- Previous checkpoints ---
+
+PROJECT: KennyPvtHax
+
 CURRENT TASK: Supplied artwork/event voices on ui/supplied-rias-media.
 BASELINE: Owner-confirmed full build 7934582; continuation parent c0dec26.
 Removed Helper/bypass.h contents remain removed. Recovery branch unused.
