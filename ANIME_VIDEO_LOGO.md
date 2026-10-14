@@ -158,3 +158,27 @@ Collect `adb logcat -s KennyPvtHax` and note KPH-041 statuses if playback falls 
 Unsupported codec/extension/texture/JNI/stall conditions are nonfatal. Actual
 Android output, driver synchronization, loop smoothness and performance require
 these device checks; no FPS or sound-playback claim is inferred from host tests.
+
+
+## Final build checkpoint
+
+Source `1a944d42b281322e7c796311fe1416c666198270` built successfully in
+[Actions run 38555323354](https://github.com/KennyPVTHax/KennyPvtHax-Backup/actions/runs/38555323354),
+NDK 25.2.9519653, full/arm64-v8a. Artifact 11888797483 contains only libAnoy.so and
+build-info. Its downloaded digest, ZIP integrity, source/NDK metadata, ELF64
+AArch64 and libmediandk dependency were verified. No private media is in the artifact.
+
+Library SHA-256: `42c556cafbfc067bf8e847d5159674c35cfd48ce7968cf643697c3431f257852`.
+Build ID: `8a9387d80f036f4b1bb12c5f60fd4f887dd8fd2d`; runtime size: 6,761,520 bytes.
+Loader ZIP SHA-256: `4b25824ee6b49567012885a442ec7dd12fb113475fbcac1ff398ede85edfd74e`.
+Its sole root `libloader.so` entry is byte-identical to the compiled library.
+The final menu/launcher/presentation ASan/UBSan checks pass after rounding/Style
+readiness polish. All 37 original bindings, original startup tail and protected
+SDK/Aurora/Classic/audio/character/workflow paths remain intact. Host previews use
+real supplied media and actual renderer geometry. Android decode/render/loop/
+resume/driver synchronization and performance still require the owner's device.
+
+Download copies live in `/workspace/shared/downloads/`: the experimental loader
+ZIP, `KennyPvtHax-Private-Video-Logo-Media.zip`, and `anime-video-logo-private/`
+containing actual PNGs, host MP4, offline viewer and private preview ZIP. Neither
+media nor previews were uploaded to a public repository. No Anilxkenny update.

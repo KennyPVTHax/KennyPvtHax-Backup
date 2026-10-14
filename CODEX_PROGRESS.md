@@ -22,8 +22,11 @@ VERIFICATION:
 14 existing ASan/UBSan suites PASS plus real-media loader/persistence/pacing checks
 and genuine ImGui media/launcher/toggle/input captures. Native movie preview
 uses actual supplied frames decoded offline via FFmpeg, not Android MediaCodec.
-37 binding/range/callback fixture and startup source audit PASS. ARM64 result
-and hashes recorded after build in ANIME_VIDEO_LOGO_BUILD_VERIFICATION.json.
+37 binding/range/callback fixture and startup source audit PASS. Full ARM64
+Actions 38555323354 SUCCESS, source 1a944d4; artifact 11888797483 digest/ELF/
+source/NDK/dependencies verified. Library SHA-256:
+42c556cafbfc067bf8e847d5159674c35cfd48ce7968cf643697c3431f257852.
+Final focused menu/launcher/presentation sanitizer tests PASS after polish.
 
 KNOWN LIMITATIONS:
 No device decoder/GPU/audio/loop/FPS claim; physical device testing and approved
@@ -31,8 +34,9 @@ host private-pack installation remain necessary. Runtime movie is 30fps; host
 review is 12fps offline. Photo was JPEG, not a transparent PNG. No live publication.
 
 NEXT:
-Finish unchanged-NDK ARM64 build validation, retrieve exact artifact and private
-bundle, then owner installs both through existing host and tests video/launcher.
+Owner installs verified matching 1a944d4 artifact and private media pack through
+the actual owning host, then tests video, launcher, pause/resume/loop/Reduced
+and unchanged feature/audio controls. No further development or publication.
 Do not alter live Anilxkenny/kenny.json or redesign internal panels.
 
 --- Previous checkpoints ---

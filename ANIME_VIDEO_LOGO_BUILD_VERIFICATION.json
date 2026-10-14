@@ -90,7 +90,8 @@
   "capture_test": "PASS actual native menu/photo input, supplied decoded video frames behind Rias and controls, toggle/off/reduced/missing/small states, unchanged feature snapshot. Android hardware decoding/GPU playback remains unverified.",
   "private_media_zip": {
     "file": "KennyPvtHax-Private-Video-Logo-Media.zip",
-    "sha256": "c069bae1c71281347dc3600816c8304a0e2f9a111c93ae89abd5dd09544516e6"
+    "sha256": "1ee9216403aa13f2d99266cb22b3491e4c115945293a2054b516a568bc1248fe",
+    "bytes": 14598066
   },
   "movie": {
     "bytes": 10113470,
@@ -112,7 +113,37 @@
     "transparent": false,
     "runtime_format": "RGBA PNG; original decoded RGB preserved, alpha 255"
   },
-  "android_build": "Pending unchanged NDK workflow",
+  "android_build": {
+    "result": "SUCCESS",
+    "run": 38555323354,
+    "artifact": 11888797483,
+    "ndk": "25.2.9519653",
+    "abi": "arm64-v8a",
+    "isolation": "full",
+    "url": "https://github.com/KennyPVTHax/KennyPvtHax-Backup/actions/runs/38555323354",
+    "artifact_sha256": "8b47b12ab8ae6713894c14cb735b73f119bef5d1ba440503cafbd6665d15ad7f",
+    "library_sha256": "42c556cafbfc067bf8e847d5159674c35cfd48ce7968cf643697c3431f257852",
+    "library_bytes": 6761520,
+    "build_info": "commit=1a944d42b281322e7c796311fe1416c666198270\nndk=25.2.9519653\nisolation=full\n42c556cafbfc067bf8e847d5159674c35cfd48ce7968cf643697c3431f257852  libs/arm64-v8a/libAnoy.so\n87435b64c6a3a07612c351b914017f8faa45080ea1b46a3964fdf0ccc56997c8  obj/local/arm64-v8a/libAnoy.so\nDisplaying notes found in: .note.android.ident\n  Owner                Data size \tDescription\n  Android              0x00000084\tNT_VERSION (version)\n   description data: 15 00 00 00 72 32 35 63 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 39 35 31 39 36 35 33 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n\nDisplaying notes found in: .note.gnu.build-id\n  Owner                Data size \tDescription\n  GNU                  0x00000014\tNT_GNU_BUILD_ID (unique build ID bitstring)\n    Build ID: 8a9387d80f036f4b1bb12c5f60fd4f887dd8fd2d\nDisplaying notes found in: .note.android.ident\n  Owner                Data size \tDescription\n  Android              0x00000084\tNT_VERSION (version)\n   description data: 15 00 00 00 72 32 35 63 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 39 35 31 39 36 35 33 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n\nDisplaying notes found in: .note.gnu.build-id\n  Owner                Data size \tDescription\n  GNU                  0x00000014\tNT_GNU_BUILD_ID (unique build ID bitstring)\n    Build ID: 8a9387d80f036f4b1bb12c5f60fd4f887dd8fd2d\n",
+    "build_id": "8a9387d80f036f4b1bb12c5f60fd4f887dd8fd2d",
+    "linked_platform_media_library": "libmediandk.so",
+    "device_test": "Not performed"
+  },
   "device": "MediaCodec, JNI/SurfaceTexture, GLES output, physical playback/loop/performance require Android testing",
-  "publication": "No live Anilxkenny update; all media and previews private"
+  "publication": "No live Anilxkenny update; all media and previews private",
+  "implementation_commit": "1a944d42b281322e7c796311fe1416c666198270",
+  "loader_zip": {
+    "file": "kph-anime-video-logo-1a944d4-arm64.zip",
+    "sha256": "4b25824ee6b49567012885a442ec7dd12fb113475fbcac1ff398ede85edfd74e",
+    "entries": [
+      "libloader.so"
+    ],
+    "compiled_bytes_verified": true,
+    "published": false
+  },
+  "final_host_checks": {
+    "menu": "PASS Phase A actual native input: first-press attraction, held/dragged/released inertia and dispersion, no background window move, header drag intact, first-press checkbox ownership, outside-origin/exit cancellation, Aurora across panels and reduced-motion freeze; original features unchanged.\nPASS Phase B: 90 native card switches, immediate routing, Aurora on all seven panels, functional intensity/activity/star/touch controls, all 30 original checkbox sites under all three themes at 640, all theme routes/control access, inactive physics/provider pause, Reduced artwork frame hold, unchanged feature snapshots.\nPASS actual seven-panel menu: stable warmed ImGui active allocations and draw buffer capacities across 1000 route-switching frames.\nPASS Stage 5.5: Full/Reduced native choice at 1920/640, scoped transitions, clock freeze/resume, immediate indicators, reset/close/reopen and unchanged original feature snapshots.\nPASS Stage 5: rapid category targets at 30/60/120 Hz, inactive slider artwork with immediate real values, hidden menu submits no geometry/callbacks or clock updates, resume indicator snap, and real seven-panel/time-sample captures.\nPASS Stage 5: original panel counts/bindings, native checkbox navigation, float drag limits, Ctrl-click numeric entry, integer slider limits, category/subtab memory, reserved isolation, drag/close/reopen, viewport fit, no horizontal control clipping, scrolling, and balanced stacks.",
+    "launcher": "native allocation count before 106 after 99\nPASS C1 actual native launcher: bounded/outside hitbox, drag without opening, 5 viewports, open/close fades, Reduced snap, route/position retention, texture reference lifecycle, passive/slider silence, actual control/nav/theme/action sound events, mute/volume, honest host-disabled settings, balanced stacks and 100 warmed cycles with stable active allocations. Original features restored unchanged.",
+    "presentation": "PASS real supplied opaque PNG decode/alpha policy, corruption, optional media/fallback, lazy uploads and owner cleanup, symlink/FIFO/path rejection, descriptor bounds, video pacing/pause/loop timestamps, schema 5 migration/6 persistence/corruption. Host checks do not validate Android MediaCodec/GPU playback."
+  }
 }
