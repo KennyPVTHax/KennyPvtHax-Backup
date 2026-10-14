@@ -14,7 +14,19 @@ permissions:
   contents: read
 
 jobs:
+  test:
+    name: Host UI regressions
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install host test dependencies
+        run: sudo apt-get update -qq && sudo apt-get install -y g++ zlib1g-dev libssl-dev python3-pil
+      - name: Run public-source ASan and UBSan suites
+        run: python3 tests/run_ui_regressions.py --sanitizers --label ci-ui-regressions
+
   build:
+    needs: test
     name: Build ARM64 Library
     runs-on: ubuntu-22.04
     timeout-minutes: 45
@@ -74,6 +86,9 @@ jobs:
       - name: Build KennyPvtHax SO
         shell: bash
         run: |
+          # Public CI does not contain the privately supplied media. The complete
+          # embedded build uses KPH_MEDIA_DIR locally; see MAIN_INTEGRATION.md.
+          echo "Public source build: external-media fallbacks; private assets are not linked."
           "$ANDROID_NDK_HOME/ndk-build" \
             NDK_PROJECT_PATH=. \
             APP_BUILD_SCRIPT=jni/Android.mk \

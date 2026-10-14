@@ -1,3 +1,11 @@
+# Current main integration
+
+See [MAIN_INTEGRATION.md](MAIN_INTEGRATION.md) for the current source, recovery
+tag, owner-file preservation, presentation ABI correction, NDK 25.2.9519653
+commands, and public-source versus complete private embedded-media builds.
+The genuine SDK and 40 original static libraries are tracked. No APK packaging
+is introduced. Older build reports below apply only to their stated commits.
+
 # Latest private embedded-media build
 
 Clean local Android NDK **25.2.9519653** ARM64 build verified for source

@@ -12,6 +12,10 @@
 #include <fstream>
 #include <unistd.h>
 #include <string>
+// Keep presentation types ABI-compatible with separately compiled ImGui even
+// when an earlier owner header leaves a narrower packing mode in effect.
+// Restore that incoming mode before including the original native Lua source.
+#pragma pack(push, 8)
 #include "ClaudeTheme.h"
 #include "KennyMenu.h"
 #include "KennyLauncher.h"
@@ -19,6 +23,7 @@
 #include "KennyCharacterGL.h"
 #include "KennyAndroidVideo.h"
 #include "KennyPanels.h"
+#pragma pack(pop)
 #include "Lua_Buffer.cpp"
 
 

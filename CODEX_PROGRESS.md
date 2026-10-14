@@ -1,4 +1,27 @@
 PROJECT: KennyPvtHax
+CURRENT TASK: Autonomous full UI integration on main.
+INITIAL MAIN: 812315b89d88ecb59e253554793fb3a73bd34e08 (owner already merged b46adba).
+WORKING EMBEDDED BASELINE: 49e56a7ea335bbf235284131f9c8bfb6cba2c98f.
+RECOVERY: backup/main-before-full-ui-verification-20261014.
+
+COMPLETED:
+- Full UI/header-photo source already present on main; no redesign.
+- Owner bypass.h and Lua_Buffer.cpp retained byte-for-byte.
+- Verified inherited packing changes presentation ABI; isolated UI include block.
+- Actual packing regression PASS; incoming native packing restored.
+- Public CI gains mandatory host sanitizer tests before native build.
+- Private media remain outside public Git; reproducible private inputs documented.
+
+VERIFICATION IN PROGRESS:
+Full 16-suite genuine-media host regression and clean NDK ARM64 build pending.
+See MAIN_INTEGRATION.md. No Android-runtime or live-loader publication claim.
+
+NEXT ACTION:
+Finish tests/build, record exact source/checksums, push normally and verify main.
+
+--- Historical checkpoints (statuses refer to those source commits) ---
+
+PROJECT: KennyPvtHax
 CURRENT TASK: Replace the remaining menu-header K with supplied circular photo.
 BASE: d37eb87 (compiled source 49e56a7); owner reports UI/audio working.
 BRANCH: release/embedded-media-integration

@@ -8,7 +8,7 @@ def command(args,log,limit=240):
  with log.open('w') as f:
   try:subprocess.run(args,stdout=f,stderr=subprocess.STDOUT,check=True,timeout=limit)
   except (subprocess.CalledProcessError,subprocess.TimeoutExpired):f.flush();print(log.read_text()[-4000:],flush=True);raise
-for script in ('kenny_host_fixture.py','kenny_startup_audit.py','kenny_c2_fixtures.py'):command(['python3','tests/'+script],out/(script+'.log'),60)
+for script in ('kenny_host_fixture.py','kenny_startup_audit.py','kenny_c2_fixtures.py','kenny_ui_packing_check.py'):command(['python3','tests/'+script],out/(script+'.log'),180)
 flags=['g++','-std=c++17','-O0','-g','-pthread','-I','jni','-I','.verification']
 if a.sanitizers:flags+=['-fsanitize=address,undefined','-fno-omit-frame-pointer','-fno-pie','-no-pie']
 objects={False:[],True:[]}

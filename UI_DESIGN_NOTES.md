@@ -1,3 +1,12 @@
+# Main integration — 14 October 2026
+
+No redesign. Retain Electric Classic, Aurora, Anime video/still composition with
+no default foreground Rias layer, circular photo launcher/header, existing audio
+routing/settings/layout and all 37 bindings. Presentation includes are isolated
+from inherited native packing; incoming packing is restored before Lua. Owner
+manual files are unchanged. Private genuine media remain outside public Git.
+See MAIN_INTEGRATION.md for reproducibility and verification limits.
+
 ## Header identity correction
 
 The supplied full-circle photo now replaces the separate K mark inside the menu,
