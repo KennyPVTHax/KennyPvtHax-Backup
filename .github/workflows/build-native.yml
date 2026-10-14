@@ -20,6 +20,9 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Regression fixtures compare genuine historical renderer/binding code.
+          fetch-depth: 0
       - name: Install host test dependencies
         run: sudo apt-get update -qq && sudo apt-get install -y g++ zlib1g-dev libssl-dev python3-pil
       - name: Run public-source ASan and UBSan suites

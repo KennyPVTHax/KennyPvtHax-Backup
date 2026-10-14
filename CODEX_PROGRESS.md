@@ -23,9 +23,15 @@ VERIFICATION:
 See MAIN_INTEGRATION.md and MAIN_INTEGRATION_BUILD_VERIFICATION.json.
 No Android-runtime or live-loader publication claim.
 
+MAIN PUBLICATION:
+Source integration and build report pushed normally; remote main verified at
+6830644073dc6d0d66c3abb19a5e115cc015d056. Owner file hashes and full tree match.
+Initial Actions regression run used a shallow checkout; historical fixture
+references were unavailable. CI checkout now fetches preserved history.
+
 NEXT ACTION:
-Push verified source/docs normally and verify remote main. Test matching private
-binary on Android; public CI contains no privately supplied embedded media.
+Run corrected public CI, then test the matching private binary on Android.
+Public CI contains no privately supplied embedded media; live loader unchanged.
 
 --- Historical checkpoints (statuses refer to those source commits) ---
 

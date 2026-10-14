@@ -5,8 +5,9 @@ Initial remote main: `812315b89d88ecb59e253554793fb3a73bd34e08`.
 Confirmed embedded baseline: `49e56a7ea335bbf235284131f9c8bfb6cba2c98f`.
 Rollback tag: `backup/main-before-full-ui-verification-20261014`.
 
-The final documentation commit records these results; it changes no application,
-UI, build script or test source relative to the compiled source commit.
+Subsequent commits record these results and correct CI history checkout for
+historical regression fixtures; application/native source and private build
+configuration remain identical to the compiled source commit.
 
 Clean native compilation/linking: **PASS**, NDK 25.2.9519653, arm64-v8a, API 21+,
 module Anoy. Output `libs/arm64-v8a/libAnoy.so` (21,081,312 bytes).
