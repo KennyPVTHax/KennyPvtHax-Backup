@@ -4,10 +4,28 @@
 #include <fstream>
 #include <memory>
 #include <cstdio>
+#include <filesystem>
 
 // Real locally installed CC0 clips and production C1 mixer, not Android playback.
 int main(){
-    auto registry=std::make_unique<KennyCharacters::Registry>();registry->Configure(".");
+    // Preserve the historical CC0-only/missing-character regression independently
+    // of the now fully installed production pack. Copy real approved WAV bytes;
+    // never depend on which production pack is first in the manifest.
+    char mediaPattern[]="/tmp/kenny-c3-media-XXXXXX";
+    const char* mediaDirectory=mkdtemp(mediaPattern);assert(mediaDirectory);
+    const auto mediaRoot=std::filesystem::path(mediaDirectory);
+    const auto packRoot=mediaRoot/"assets/anime/highschool_dxd_rias";
+    std::filesystem::create_directories(packRoot/"voice");
+    nlohmann::json manifest;{std::ifstream input("assets/anime/highschool_dxd_rias/manifest.json");input>>manifest;}
+    nlohmann::json cici;for(const auto& item:manifest["voice_packs"])if(item["id"]=="cici_fyre_mature_female")cici=item;
+    assert(!cici.is_null());manifest["voice_packs"]=nlohmann::json::array({cici});
+    {std::ofstream output(packRoot/"manifest.json");output<<manifest;}
+    std::filesystem::copy_file("assets/anime/index.json",mediaRoot/"assets/anime/index.json");
+    for(const auto& event:cici["events"].items())for(const auto& value:event.value()){
+        const std::string name=value;assert(name.find("voice/cici_")==0&&name.find("..") == std::string::npos);
+        if(!std::filesystem::exists(packRoot/name))std::filesystem::copy_file(std::filesystem::path("assets/anime/highschool_dxd_rias")/name,packRoot/name);
+    }
+    auto registry=std::make_unique<KennyCharacters::Registry>();registry->Configure(mediaDirectory);
     assert(registry->count==1);
     auto& character=registry->characters[0];
     assert(character.id=="highschool_dxd_rias"&&character.packCount==1&&!character.Installed());
@@ -57,4 +75,5 @@ int main(){
     auto write=[&](auto value){out.write(reinterpret_cast<const char*>(&value),sizeof(value));};
     out.write("RIFF",4);write(riff);out.write("WAVEfmt ",8);write(fmt);write(format);write(channels);write(rate);write(byteRate);write(align);write(bits);out.write("data",4);write(bytes);out.write(reinterpret_cast<const char*>(pcm.data()),bytes);assert(out.good());
     std::puts("PASS C3 real installed CC0 alternative: 7 mapped events/5 source clips, truthful partial Rias status, C1 actual PCM mixing, cooldown/volume/global mute, saved pack/preferences restored in a fresh store, 100 theme cancellations, missing original-recording fallback and portable event demo. Android playback not verified.");
+    std::filesystem::remove_all(mediaRoot);
 }
