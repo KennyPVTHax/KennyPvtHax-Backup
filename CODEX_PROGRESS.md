@@ -10,11 +10,18 @@ COMPLETED:
 - CI updated to run complete-media tests and verify actual linked ELF resources.
 - Existing UI and both owner native files unchanged.
 
-VERIFICATION IN PROGRESS:
-All 16 sanitizer suites and clean ARM64 compilation. No device-runtime claim.
+VERIFICATION COMPLETE:
+All 16 sanitizer suites, 37 original bindings/ranges, startup/packing and
+repository relocation/integrity tests PASS. Clean local NDK 25.2.9519653 ARM64
+build PASS for 3e2467b. Public CI 38589369556 SUCCESS for 6a25362; full-media
+artifact downloaded, GitHub digest/ZIP/source metadata and all 16 actual ELF
+payloads verified. CI library SHA-256 74bbe3aac7f9452c358e5211fbf46c1117d29d68246577586f1879829bc04c9b.
+All required authorized runtime assets are present on main; no mandatory private
+inputs remain. Owner files and runtime UI code are unchanged. Directory creation
+failure in first CI verifier run corrected; no Android runtime claim.
 
 NEXT ACTION:
-Finish checks/build, publish assets/source to main, verify remote CI/payloads.
+Test the matching complete-media CI library on Android. No live loader update.
 
 --- Historical checkpoints ---
 

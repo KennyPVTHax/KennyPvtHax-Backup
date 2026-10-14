@@ -1,0 +1,238 @@
+{
+  "architecture": "ELF64 AArch64",
+  "library_bytes": 21085184,
+  "library_sha256": "7eee9c108d44ed59621f8e95fff33de78af06a3114ee35535b41dc794685ec9f",
+  "resources_verified": [
+    {
+      "id": "assets/anime/highschool_dxd_rias/character.png",
+      "size": 962077,
+      "sha256": "8eeb6a3d13df41496823ec73773b59ecd13c6be58842cfe69f29b4db1222afc5",
+      "elf_offset": 4209936
+    },
+    {
+      "id": "assets/anime/highschool_dxd_rias/manifest.json",
+      "size": 3276,
+      "sha256": "e9fe9b1a0addae7801c98571a35504c8ad146ca623928b0040355497ff2da0b6",
+      "elf_offset": 5172016
+    },
+    {
+      "id": "assets/anime/highschool_dxd_rias/voice/cici_hello.wav",
+      "size": 88718,
+      "sha256": "de79185672eb973c67329bb42a24d7837d7a200ddc9030b22bc6748090530a5b",
+      "elf_offset": 5175296
+    },
+    {
+      "id": "assets/anime/highschool_dxd_rias/voice/cici_no_problem.wav",
+      "size": 99802,
+      "sha256": "9a596c74ba05cc5844f1dbd430f5eb2885f2c3c4fb2c9ab453fac6610a94dee8",
+      "elf_offset": 5264016
+    },
+    {
+      "id": "assets/anime/highschool_dxd_rias/voice/cici_okay_happy.wav",
+      "size": 105960,
+      "sha256": "fa05db02a1a82164f7c19a3e91f123e24fb9f52776a55b247aadcbe82adc0763",
+      "elf_offset": 5363824
+    },
+    {
+      "id": "assets/anime/highschool_dxd_rias/voice/cici_okay_normal.wav",
+      "size": 89950,
+      "sha256": "8d90600aa3b8738616ff85669b2dd15cf9c35a37d0ef2624c53fe46287c88def",
+      "elf_offset": 5469792
+    },
+    {
+      "id": "assets/anime/highschool_dxd_rias/voice/cici_see_you_later.wav",
+      "size": 126896,
+      "sha256": "16024ba571bb78b86230594aca317f52c4f819f59397ca82eb42970cf26aaabf",
+      "elf_offset": 5559744
+    },
+    {
+      "id": "assets/anime/highschool_dxd_rias/voice/user_aim.wav",
+      "size": 127226,
+      "sha256": "c9965463ca327d4bbaf17ee9d83d2aff8e9bae04a76fa0b341780cda3043be32",
+      "elf_offset": 5686640
+    },
+    {
+      "id": "assets/anime/highschool_dxd_rias/voice/user_aimoff.wav",
+      "size": 329932,
+      "sha256": "4df9d00684e7404180728c02b39a3159e0ed9c2ce0e8f75c04d5524024d2e177",
+      "elf_offset": 5813872
+    },
+    {
+      "id": "assets/anime/highschool_dxd_rias/voice/user_bullet.wav",
+      "size": 59208,
+      "sha256": "3b53db65cecfca85c0a2ae528fffa346cc631496b25f569054a6dbcbca75dc7c",
+      "elf_offset": 6143808
+    },
+    {
+      "id": "assets/anime/highschool_dxd_rias/voice/user_extrafeatures.wav",
+      "size": 195160,
+      "sha256": "90b3b366a5a79a95437a1e092677b27baa1989b68266a38ce07c4a9e62694205",
+      "elf_offset": 6203024
+    },
+    {
+      "id": "assets/anime/index.json",
+      "size": 50,
+      "sha256": "ade2f265477efd8096bb0ad7f27d96da46bb1af4e02dd2f40df1eaa0989a6f5e",
+      "elf_offset": 6398192
+    },
+    {
+      "id": "assets/presentation/anime-background.mp4",
+      "size": 10113470,
+      "sha256": "9522dacd41adaf6ba5e33c1abc5347735d1ee969b6e3e1711b6b508b9eeacc60",
+      "elf_offset": 6398256
+    },
+    {
+      "id": "assets/presentation/anime-fallback.png",
+      "size": 389742,
+      "sha256": "1e408f055d0e6408d18ba99b870743dc5fb3a7b62fe263971e7da7fa836f465e",
+      "elf_offset": 16511728
+    },
+    {
+      "id": "assets/presentation/launcher.png",
+      "size": 1188051,
+      "sha256": "619524aab390dd3fa47a23817700888697b565d13f94ceee94bec03c6cdede6b",
+      "elf_offset": 16901472
+    },
+    {
+      "id": "assets/presentation/manifest.json",
+      "size": 115,
+      "sha256": "f91f074e5f2b9772790fded86a7e614438d4c77db8cc9e60f13743e87781f45b",
+      "elf_offset": 18089536
+    }
+  ],
+  "android_runtime_verified": false,
+  "public_distribution_authority": "Project owner explicitly asserts ownership and grants public redistribution of all supplied logo/video/still/character/voice assets; CiciFyre clips separately CC0-1.0.",
+  "source_commit": "3e2467ba925eeb17c8438b65379a981215be6529",
+  "starting_main": "1202b838acbbf71f586f69cb33c0a058c09f1d8d",
+  "ndk": "25.2.9519653",
+  "android_api": 21,
+  "abi": "arm64-v8a",
+  "clean_native_build": "PASS",
+  "build_completed_utc": "2026-10-14T15:23:03.556044+00:00",
+  "default_build_assets": "committed repository assets; no KPH_MEDIA_DIR argument",
+  "host_regressions": {
+    "sanitizers": true,
+    "tests": [
+      {
+        "test": "menu",
+        "result": "PASS",
+        "seconds": 153.901
+      },
+      {
+        "test": "launcher",
+        "result": "PASS",
+        "seconds": 172.901
+      },
+      {
+        "test": "theme",
+        "result": "PASS",
+        "seconds": 11.79
+      },
+      {
+        "test": "audio",
+        "result": "PASS",
+        "seconds": 40.448
+      },
+      {
+        "test": "effects",
+        "result": "PASS",
+        "seconds": 10.758
+      },
+      {
+        "test": "aurora",
+        "result": "PASS",
+        "seconds": 33.356
+      },
+      {
+        "test": "characters",
+        "result": "PASS",
+        "seconds": 23.383
+      },
+      {
+        "test": "diagnostics",
+        "result": "PASS",
+        "seconds": 2.803
+      },
+      {
+        "test": "media",
+        "result": "PASS",
+        "seconds": 19.894
+      },
+      {
+        "test": "fonts",
+        "result": "PASS",
+        "seconds": 7.755
+      },
+      {
+        "test": "electric",
+        "result": "PASS",
+        "seconds": 18.756
+      },
+      {
+        "test": "embedded",
+        "result": "PASS",
+        "seconds": 14.499
+      },
+      {
+        "test": "continuation",
+        "result": "PASS",
+        "seconds": 9.347
+      },
+      {
+        "test": "presentation",
+        "result": "PASS",
+        "seconds": 9.071
+      },
+      {
+        "test": "supplied",
+        "result": "PASS",
+        "seconds": 25.572
+      },
+      {
+        "test": "audio-recovery",
+        "result": "PASS",
+        "seconds": 15.953
+      }
+    ],
+    "execution": "12 passing unchanged cases plus corrected continuation and remaining 3 cases; application runtime source unchanged throughout",
+    "extra_checks": [
+      "37 original bindings/ranges",
+      "startup source audit",
+      "packing ABI",
+      "generator relocation/idempotence/failure cases",
+      "NDK explicitly-empty-override plan"
+    ]
+  },
+  "owner_native_files_unchanged": true,
+  "runtime_ui_files_unchanged": true,
+  "distribution_basis": "explicit per-asset owner ownership assertion/authorization; five CiciFyre clips CC0-1.0",
+  "android_device_tested": false,
+  "elf_build_id": "6093514ea318d0e373a6dbd1b2d449b0fe50b054",
+  "loader_zip": {
+    "filename": "KennyPvtHax-3e2467ba925eeb17c8438b65379a981215be6529-ARM64.zip",
+    "bytes": 16555858,
+    "sha256": "a56d8f99027497ce04a0dede39c7750e95e7fd98bdb765acf7c9b244bc73ea31",
+    "sole_root_entry": "libloader.so",
+    "crc_extracted_byte_check": "PASS"
+  },
+  "owner_native_sha256": {
+    "jni/Helper/bypass.h": "3878915f22b76253336e641e2be91429a268aae380fa6788162127407b7a8ce1",
+    "jni/Lua_Buffer.cpp": "35914bd5008f841876167dc75ebf10fa925c25f9e33a46f51a0831ec09f09bf9"
+  },
+  "public_ci": {
+    "status": "PASS",
+    "run": 38589369556,
+    "run_url": "https://github.com/KennyPVTHax/KennyPvtHax-Backup/actions/runs/38589369556",
+    "source_commit": "6a253620f4e0441570543f166ae2eebba63ebefa",
+    "artifact_id": 11908000598,
+    "artifact_bytes": 16642588,
+    "artifact_sha256": "7ed2751a58fad8667f7a857c5b42f0c9ec9e1b2599729e8919539292e98be9a7",
+    "library_bytes": 21087152,
+    "library_sha256": "74bbe3aac7f9452c358e5211fbf46c1117d29d68246577586f1879829bc04c9b",
+    "all_16_actual_payloads_verified": true,
+    "inventory_equal_to_repository": true,
+    "zip_crc_and_source_metadata": "PASS",
+    "complete_embedded_build": true,
+    "host_sanitizer_suites": 16
+  }
+}
