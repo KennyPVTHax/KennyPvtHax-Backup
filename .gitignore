@@ -69,3 +69,9 @@ __pycache__/
 
 # Generated Checkpoint A voice-diagnostic captures
 previews/audio-recovery-a/
+
+# User-supplied video/logo files and private renderer captures
+assets/presentation/*.png
+assets/presentation/*.jpg
+assets/presentation/*.mp4
+previews/anime-video-logo/

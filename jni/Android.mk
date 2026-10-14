@@ -162,7 +162,7 @@ ifeq ($(KPH_ISOLATION),no_menu)
 LOCAL_CPPFLAGS += -DKPH_DIAGNOSTIC_NO_MENU=1
 endif
 
-LOCAL_LDLIBS := -llog -landroid -lOpenSLES -lEGL -lGLESv2 -lGLESv3 -lGLESv1_CM -lz
+LOCAL_LDLIBS := -llog -landroid -lOpenSLES -lEGL -lGLESv2 -lGLESv3 -lGLESv1_CM -lz -lmediandk
 
 LOCAL_STATIC_LIBRARIES := libdobby libcurl libssl libcrypto And64InlineHook ElfImg fake_dlfcn android_native_app_glue plthook_elf tools base64 SubstrateDebug SubstrateHook hde64 SubstratePosixMemory KittyMemory MemoryPatch MemoryBackup KittyUtils shadowhook
 

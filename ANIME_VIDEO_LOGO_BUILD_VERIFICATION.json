@@ -1,0 +1,118 @@
+{
+  "parent": "1438e94195dc0f649777ee8ebaf0fdc45d483619",
+  "branch": "ui/anime-video-logo",
+  "preserved_paths": [
+    "jni/Helper/bypass.h",
+    "jni/KennyAurora.h",
+    "jni/KennyElectricStarfield.h",
+    "jni/KennyAudio.h",
+    "jni/KennyAndroidAudio.h",
+    "jni/KennyCharacters.h",
+    "jni/KennyCharacterGL.h",
+    "jni/Application.mk",
+    ".github/workflows/build-native.yml",
+    "jni/SDK/"
+  ],
+  "original_37_bindings": "PASS unchanged fixture and full callback",
+  "host_suites": [
+    {
+      "test": "menu",
+      "result": "PASS",
+      "seconds": 56.478
+    },
+    {
+      "test": "launcher",
+      "result": "PASS",
+      "seconds": 52.039
+    },
+    {
+      "test": "audio",
+      "result": "PASS",
+      "seconds": 14.139
+    },
+    {
+      "test": "theme",
+      "result": "PASS",
+      "seconds": 2.089
+    },
+    {
+      "test": "aurora",
+      "result": "PASS",
+      "seconds": 13.909
+    },
+    {
+      "test": "effects",
+      "result": "PASS",
+      "seconds": 3.516
+    },
+    {
+      "test": "characters",
+      "result": "PASS",
+      "seconds": 9.978
+    },
+    {
+      "test": "media",
+      "result": "PASS",
+      "seconds": 7.464
+    },
+    {
+      "test": "diagnostics",
+      "result": "PASS",
+      "seconds": 1.352
+    },
+    {
+      "test": "fonts",
+      "result": "PASS",
+      "seconds": 4.591
+    },
+    {
+      "test": "continuation",
+      "result": "PASS",
+      "seconds": 6.621
+    },
+    {
+      "test": "electric",
+      "result": "PASS",
+      "seconds": 9.41
+    },
+    {
+      "test": "supplied",
+      "result": "PASS",
+      "seconds": 23.005
+    },
+    {
+      "test": "audio-recovery",
+      "result": "PASS",
+      "seconds": 15.958
+    }
+  ],
+  "new_media_check": "PASS real supplied opaque PNG decode/alpha policy, corruption, optional media/fallback, lazy uploads and owner cleanup, symlink/FIFO/path rejection, descriptor bounds, video pacing/pause/loop timestamps, schema 5 migration/6 persistence/corruption. Host checks do not validate Android MediaCodec/GPU playback.",
+  "capture_test": "PASS actual native menu/photo input, supplied decoded video frames behind Rias and controls, toggle/off/reduced/missing/small states, unchanged feature snapshot. Android hardware decoding/GPU playback remains unverified.",
+  "private_media_zip": {
+    "file": "KennyPvtHax-Private-Video-Logo-Media.zip",
+    "sha256": "c069bae1c71281347dc3600816c8304a0e2f9a111c93ae89abd5dd09544516e6"
+  },
+  "movie": {
+    "bytes": 10113470,
+    "resolution": [
+      1024,
+      576
+    ],
+    "fps": 30,
+    "seconds": 40.63483,
+    "preserved_original_bytes": true,
+    "runtime_audio": "muted"
+  },
+  "photo": {
+    "resolution": [
+      1280,
+      1280
+    ],
+    "original_format": "JPEG RGB",
+    "transparent": false,
+    "runtime_format": "RGBA PNG; original decoded RGB preserved, alpha 255"
+  },
+  "android_build": "Pending unchanged NDK workflow",
+  "device": "MediaCodec, JNI/SurfaceTexture, GLES output, physical playback/loop/performance require Android testing",
+  "publication": "No live Anilxkenny update; all media and previews private"
+}

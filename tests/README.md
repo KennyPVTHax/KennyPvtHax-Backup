@@ -177,3 +177,11 @@ Classic preferences/inputs and emits real draw data. `kenny_electric_baseline.py
 reads a374ad0 UI headers without changing the checkout; packaging compares matched
 Aurora/Anime output and exports authentic continuous render frames. No Android
 GPU/FPS or audio-output claim is inferred from host checks.
+
+# Supplied Anime video and photo launcher
+
+`run_ui_regressions.py --sanitizers --user-media .verification/user-media --presentation-media .verification/anime-video-logo/private`
+adds the real supplied-media PNG/ownership/persistence/pacing test. The native
+capture uses actual movie frames decoded offline with FFmpeg and real ImGui;
+`kenny_video_logo_package.py` exports private screenshots/video/viewer. No Android
+GPU/MediaCodec proof is implied. See [ANIME_VIDEO_LOGO.md](../ANIME_VIDEO_LOGO.md).

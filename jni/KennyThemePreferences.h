@@ -28,6 +28,7 @@ struct Preferences {
     bool electricStarfield=true, electricPulses=true, electricReducedMotion=false;
     int electricDensity=1; // Low / Medium / High: 32 / 64 / 96 seeded stars.
     float electricLightning=45, electricSparkle=55, electricSpeed=50;
+    bool animeVideo=true;
 };
 inline float Bounded(float value, float low, float high, float fallback) {
     return std::isfinite(value) ? std::clamp(value,low,high) : fallback;
@@ -63,6 +64,6 @@ inline bool Equal(const Preferences& a, const Preferences& b) {
         a.artworkVisible==b.artworkVisible && a.controlVoiceFeedback==b.controlVoiceFeedback &&
         a.electricStarfield==b.electricStarfield && a.electricPulses==b.electricPulses &&
         a.electricReducedMotion==b.electricReducedMotion && a.electricDensity==b.electricDensity &&
-        a.electricLightning==b.electricLightning && a.electricSparkle==b.electricSparkle && a.electricSpeed==b.electricSpeed;
+        a.electricLightning==b.electricLightning && a.electricSparkle==b.electricSparkle && a.electricSpeed==b.electricSpeed && a.animeVideo==b.animeVideo;
 }
 } // namespace KennyAppearance

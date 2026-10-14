@@ -38,6 +38,8 @@ struct State {
     KennyEffects::State effects;
     KennyAurora::State aurora;
     KennyElectric::State electric;
+    KennyThemeBackground::ArtworkFrame animeVideoFrame;
+    const char* videoStatus="Native video playback unavailable in this host preview.";
 
     void Select(Category next, int& tab) {
         category = next;
@@ -225,10 +227,10 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
                                 ImVec2(8.0f * l.scale, (state.appearance.compactRows ? 6.0f : 10.0f) * l.scale));
             ImGui::PushItemWidth(std::min(420.0f * l.scale, ImGui::GetContentRegionAvail().x * 0.58f));
             if (state.category == Category::Style) {
-                KennyAppearance::DrawStyle(state.appearance,state.artwork.current.Valid(),state.storage.status,state.characters.Selected(state.appearance).artworkTexture.Valid());
+                KennyAppearance::DrawStyle(state.appearance,state.artwork.current.Valid()||(state.appearance.animeVideo&&state.animeVideoFrame.Valid()),state.storage.status,state.characters.Selected(state.appearance).artworkTexture.Valid());
             } else if (state.category == Category::Settings) {
                 KennyAppearance::DrawSettings(state.appearance, state.centerRequested,
-                                              state.audio && state.audio->mixer,state.audioStatus,&state.characters);
+                                              state.audio && state.audio->mixer,state.audioStatus,&state.characters,state.videoStatus);
             } else {
                 renderPanel();
             }
@@ -271,8 +273,10 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
                 state.characters.Prepare(state.appearance,state.audio);
                 state.artwork.Advance(ImGui::GetFrameCount(),ImGui::GetIO().DeltaTime,state.appearance.reducedMotion);
                 auto& character=state.characters.Selected(state.appearance);
+                if(state.appearance.animeVideo && state.animeVideoFrame.Valid())
+                    KennyThemeBackground::DrawArtwork(draw,origin,l.size,Claude::RadiusWindow*l.scale,state.animeVideoFrame,state.appearance);
+                else if(!character.artworkTexture.Valid())KennyThemeBackground::DrawArtwork(draw,origin,l.size,Claude::RadiusWindow*l.scale,state.artwork.current,state.appearance);
                 if(character.artworkTexture.Valid())KennyCharacters::DrawCharacter(draw,origin,l.size,Claude::RadiusWindow*l.scale,contentY,character.artworkTexture,state.appearance);
-                else KennyThemeBackground::DrawArtwork(draw,origin,l.size,Claude::RadiusWindow*l.scale,state.artwork.current,state.appearance);
             }
         }
         draw->ChannelsMerge();

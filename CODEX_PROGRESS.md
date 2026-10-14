@@ -1,5 +1,44 @@
 PROJECT: KennyPvtHax
 
+CURRENT TASK: Supplied Anime video and photo launcher on ui/anime-video-logo.
+BASELINE: 1438e94, preserving full UI/audio recovery/electric Classic and the
+owner-working startup correction; blank Helper/bypass.h remains byte-identical.
+
+COMPLETED:
+- Validated actual 1024x576/30fps/40.634830s AVC movie (original bytes unchanged,
+  runtime audio ignored) and 1280x1280 opaque JPEG photo. Lossless decoded-RGB
+  RGBA PNG for existing logo texture interface; no invented alpha or artwork.
+- Native MediaCodec/SurfaceTexture -> cached 2D GPU texture on existing GL owner,
+  one paced worker/one pending frame, mute/loop/pause/Reduced/context cleanup and
+  real still fallback. Existing Anime composition overlays Rias and controls.
+- Photo replaces default floating K via existing launcher, fit/rounded rendering
+  and cached minification, with safe K/selected character override fallbacks.
+- Existing Settings video toggle/status, safe schema 6 extension, app-private
+  fixed-path asset loader and optional owning-APK staging. No runtime download.
+- Private combined package preserves earlier original/derived voices/artwork and
+  all new media. Accurate installation contract: .so alone cannot install media.
+
+VERIFICATION:
+14 existing ASan/UBSan suites PASS plus real-media loader/persistence/pacing checks
+and genuine ImGui media/launcher/toggle/input captures. Native movie preview
+uses actual supplied frames decoded offline via FFmpeg, not Android MediaCodec.
+37 binding/range/callback fixture and startup source audit PASS. ARM64 result
+and hashes recorded after build in ANIME_VIDEO_LOGO_BUILD_VERIFICATION.json.
+
+KNOWN LIMITATIONS:
+No device decoder/GPU/audio/loop/FPS claim; physical device testing and approved
+host private-pack installation remain necessary. Runtime movie is 30fps; host
+review is 12fps offline. Photo was JPEG, not a transparent PNG. No live publication.
+
+NEXT:
+Finish unchanged-NDK ARM64 build validation, retrieve exact artifact and private
+bundle, then owner installs both through existing host and tests video/launcher.
+Do not alter live Anilxkenny/kenny.json or redesign internal panels.
+
+--- Previous checkpoints ---
+
+PROJECT: KennyPvtHax
+
 CURRENT TASK: Classic / Crimson Eclipse — Electric Starfield experiment.
 BRANCH: ui/classic-electric-starfield.
 OWNER-WORKING BASELINE: 2a54a41 full UI; development parent a374ad0, runtime

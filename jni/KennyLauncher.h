@@ -12,8 +12,9 @@ struct Logo {
         if(!image.Valid()) {KennyIdentity::Emblem(draw,center,side/48.0f);return;}
         const float fit=std::min(side*.76f/image.width,side*.76f/image.height);
         const ImVec2 half(image.width*fit*.5f,image.height*fit*.5f);
-        draw->AddImage(image.texture,ImVec2(center.x-half.x,center.y-half.y),
-                       ImVec2(center.x+half.x,center.y+half.y),ImVec2(0,0),ImVec2(1,1));
+        draw->AddImageRounded(image.texture,ImVec2(center.x-half.x,center.y-half.y),
+                       ImVec2(center.x+half.x,center.y+half.y),ImVec2(0,0),ImVec2(1,1),IM_COL32_WHITE,
+                       std::min(half.x,half.y)*.18f);
     }
 };
 struct State {

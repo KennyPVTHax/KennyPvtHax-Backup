@@ -564,3 +564,20 @@ Matched baseline/new Aurora and Anime pixels are checked by the preview package.
 See CLASSIC_ELECTRIC_STARFIELD.md and final build verification for actual tests,
 measurements, assets and runtime limitations. The working binary/startup/blank
 bypass correction and private audio recovery remain intact. No production publish.
+
+
+## Supplied Anime movie and photo launcher
+
+Use the actual user movie (1024x576 AVC/30fps/40.6 seconds) behind Rias and existing
+controls, muted and clipped with original Cover/Contain/dimming. The source is an
+edited monochrome anime montage; preserve its content/quality and explicit still
+fallback. It is not a seamless source-content loop. Launcher uses the provided
+1280-square JPEG photo with fit/rounded corners, no artificial white background
+or invented transparency. Existing hitbox/drag/tap stays unchanged.
+
+Host captures show actual original pixels through production ImGui; the movie
+frames are decoded by FFmpeg only for host review. Android's native MediaCodec /
+SurfaceTexture/GPU conversion remains separately device-verifiable. New private
+runtime media is installed under the owning activity's assets/presentation; it
+is not bundled by installing only the native library. All audio, Classic/Aurora,
+startup, SDK/offset/hook/input behavior remains preserved. No production publish.

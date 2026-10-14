@@ -137,7 +137,8 @@ inline void DrawAnime(Preferences& p,KennyCharacters::Registry& registry,bool au
     KennyPanels::EndSection();KennyPanels::End();ImGui::PopStyleVar(2);
 }
 inline void DrawSettings(Preferences& preferences, bool& centerRequested, bool audioReady=false,
-                         const char* audioStatus="UI audio unavailable in this host preview.", KennyCharacters::Registry* characters=nullptr) {
+                         const char* audioStatus="UI audio unavailable in this host preview.", KennyCharacters::Registry* characters=nullptr,
+                         const char* videoStatus="Native video playback unavailable in this host preview.") {
     if (!KennyPanels::Begin("##general", 2, 12.0f)) return;
     KennyPanels::Section("Menu");
     if (KennyControls::Button("Center window")) centerRequested = true;
@@ -188,6 +189,13 @@ inline void DrawSettings(Preferences& preferences, bool& centerRequested, bool a
         KennyControls::SliderFloat("Sparkle intensity",&preferences.electricSparkle,0,100,"%.0f%%");
         KennyControls::SliderFloat("Animation speed",&preferences.electricSpeed,0,100,"%.0f%%");
         KennyPanels::Note("Classic only. Global Reduced motion also holds this background.");KennyPanels::EndSection();KennyPanels::End();
+    }
+    if(preferences.theme==Theme::Anime && KennyPanels::Begin("##anime-video",1,12.0f,"Anime Video Background")) {
+        KennyPanels::Section("Anime background");
+        KennyControls::Checkbox("Anime Video Background",&preferences.animeVideo);
+        KennyPanels::Note(videoStatus);
+        KennyPanels::Note("Video audio stays muted. Reduced motion holds a still frame.");
+        KennyPanels::EndSection();KennyPanels::End();
     }
     if(characters)DrawAnime(preferences,*characters,audioReady);
     Normalize(preferences);
