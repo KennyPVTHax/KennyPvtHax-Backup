@@ -39,6 +39,7 @@ struct State {
     KennyAurora::State aurora;
     KennyElectric::State electric;
     KennyThemeBackground::ArtworkFrame animeVideoFrame;
+    KennyThemeBackground::ArtworkFrame brandLogo; // borrowed presentation texture
     const char* videoStatus="Native video playback unavailable in this host preview.";
 
     void Select(Category next, int& tab) {
@@ -141,7 +142,8 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
         // after widgets, yet paint its background behind them in this frame.
         draw->ChannelsSplit(2);
         draw->ChannelsSetCurrent(1);
-        KennyIdentity::Draw(draw,origin,l.padding,l.brand,brandHeight,l.scale);
+        KennyIdentity::Draw(draw,origin,l.padding,l.brand,brandHeight,l.scale,
+                            state.brandLogo.texture,state.brandLogo.width,state.brandLogo.height);
 
         ImGui::SetCursorPos(ImVec2(l.size.x - l.padding - closeSize,
                                   (brandHeight - closeSize) * 0.5f));

@@ -24,7 +24,7 @@ int main(int argc,char** argv){
  assert(argc==3);InitializeC3Capture();const auto features=SnapshotFeatures();
  media.Configure(argv[1]);media.upload=UploadMedia;media.Prepare();assert(media.logoTexture.Valid()&&media.posterTexture.Valid());
  menu.characters.Configure(argv[2]);menu.characters.upload=UploadCharacter;menu.appearance.theme=KennyAppearance::Theme::Anime;
- menu.appearance.voicePack="user_supplied_events";menu.animeVideoFrame=media.posterTexture;
+ menu.appearance.voicePack="user_supplied_events";menu.animeVideoFrame=media.posterTexture;menu.brandLogo=media.logoTexture;
  menu.videoStatus="Actual supplied video frame / offline FFmpeg decode. Android decoder unverified.";
  for(int i=0;i<40;++i)Frame();ResetScroll();SaveMedia("anime-still-fallback");
  Primary(4);ResetScroll();Frame();Frame();

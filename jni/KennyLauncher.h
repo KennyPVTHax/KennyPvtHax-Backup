@@ -10,21 +10,7 @@ struct Logo {
     void Clear(){image={};}
     void Draw(ImDrawList* draw,ImVec2 center,float side) const {
         if(!image.Valid()) {KennyIdentity::Emblem(draw,center,side/48.0f);return;}
-        // Fixed fan geometry fills the existing bounded circular launcher.
-        // Cover UVs preserve aspect ratio; no square frame or inset black disc.
-        const float radius=side*.5f;
-        const float u=image.width>image.height?float(image.height)/image.width:1.0f;
-        const float v=image.height>image.width?float(image.width)/image.height:1.0f;
-        const ImTextureID previous=draw->_CmdHeader.TextureId;
-        if(previous!=image.texture)draw->PushTextureID(image.texture);
-        constexpr int segments=64;draw->PrimReserve(segments*3,segments+1);
-        const unsigned base=draw->_VtxCurrentIdx;
-        draw->PrimWriteVtx(center,ImVec2(.5f,.5f),IM_COL32_WHITE);
-        for(int i=0;i<segments;++i){const float a=6.28318530718f*i/segments;
-            const float x=std::cos(a),y=std::sin(a);
-            draw->PrimWriteVtx(ImVec2(center.x+x*radius,center.y+y*radius),ImVec2(.5f+x*u*.5f,.5f+y*v*.5f),IM_COL32_WHITE);}
-        for(int i=0;i<segments;++i){draw->PrimWriteIdx(ImDrawIdx(base));draw->PrimWriteIdx(ImDrawIdx(base+1+i));draw->PrimWriteIdx(ImDrawIdx(base+1+(i+1)%segments));}
-        if(previous!=image.texture)draw->PopTextureID();
+        KennyIdentity::Photo(draw,center,side,image.texture,image.width,image.height);
     }
 };
 struct State {

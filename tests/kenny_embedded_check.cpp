@@ -44,6 +44,14 @@ int main(){
  assert(draw->VtxBuffer.Size==65&&draw->IdxBuffer.Size==192);
  for(const auto& v:draw->VtxBuffer){assert(v.pos.x>=32&&v.pos.x<=96&&v.pos.y>=32&&v.pos.y<=96);assert(v.uv.x>=0&&v.uv.x<=1&&v.uv.y>=0&&v.uv.y<=1);}
  assert(draw->VtxBuffer[1].pos.x==96); // Artwork reaches the actual outer circle.
+ draw->_ResetForNewFrame();const ImTextureID prior=draw->_CmdHeader.TextureId;
+ assert(KennyIdentity::Photo(draw,ImVec2(30,30),38,reinterpret_cast<ImTextureID>(3),1032,1032));
+ assert(draw->VtxBuffer.Size==65&&draw->IdxBuffer.Size==192&&draw->_CmdHeader.TextureId==prior);
+ assert(!KennyIdentity::Photo(draw,ImVec2(30,30),38,nullptr,1032,1032));
+ // Actual header binds the photo texture and still draws the existing wordmark.
+ draw->_ResetForNewFrame();KennyIdentity::Draw(draw,ImVec2(0,0),26,220,100,1,reinterpret_cast<ImTextureID>(3),1032,1032);
+ bool headerPhoto=false;for(const auto& cmd:draw->CmdBuffer)if(cmd.GetTexID()==reinterpret_cast<ImTextureID>(3)&&cmd.ElemCount==192)headerPhoto=true;
+ assert(headerPhoto);assert(draw->_CmdHeader.TextureId==prior);
  ImGui::EndFrame();ImGui::DestroyContext();
  std::filesystem::remove_all(temp);
  std::cout<<"PASS embedded registry/4 named voices/default+saved selection/mute/cooldown/theme gating; memory PNG alpha/logo+poster; lazy verified movie-only cache/reuse/corruption recovery/unwritable fallback. Android playback unverified.\n";

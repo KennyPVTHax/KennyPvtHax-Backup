@@ -988,7 +988,7 @@ EGLBoolean _eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
         if(previous==uiContext)previous=nullptr;
         ImGui::SetCurrentContext(uiContext);
         launcher.logo.Clear();menuState.characters.ClearTextures(true);
-        menuState.animeVideoFrame={};presentation.Clear(true);
+        menuState.animeVideoFrame={};menuState.brandLogo={};presentation.Clear(true);
         ImGui_ImplOpenGL3_ForgetDeviceObjects();ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplAndroid_Shutdown();ImGui::DestroyContext(uiContext);
         uiContext=nullptr;initImGui=false;KennyMenu::Font=nullptr;font2=nullptr;
@@ -1140,6 +1140,7 @@ EGLBoolean _eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
         launcher.logo.Set(selectedCharacter.launcherTexture);
     else if(!KPH_DIAGNOSTIC_NO_ARTWORK && presentation.assets.logoTexture.Valid())launcher.logo.Set(presentation.assets.logoTexture);
     else launcher.logo.Clear();
+    menuState.brandLogo=KPH_DIAGNOSTIC_NO_ARTWORK?KennyThemeBackground::ArtworkFrame{}:presentation.assets.logoTexture;
     if(!KPH_DIAGNOSTIC_NO_MENU)KennyLauncher::Draw(launcher,menuState.appearance,menuState.audio,
                         ImVec2(static_cast<float>(glWidth),static_cast<float>(glHeight)));
     launcher.Advance(io.DeltaTime,menuState.appearance.reducedMotion);

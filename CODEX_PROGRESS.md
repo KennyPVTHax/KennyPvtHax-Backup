@@ -1,4 +1,29 @@
 PROJECT: KennyPvtHax
+CURRENT TASK: Replace the remaining menu-header K with supplied circular photo.
+BASE: d37eb87 (compiled source 49e56a7); owner reports UI/audio working.
+BRANCH: release/embedded-media-integration
+
+COMPLETED:
+- Header and launcher share the same cached circular photo renderer/texture.
+- No added asset loads, uploads, startup, audio, theme, feature or input changes.
+- Header reference reset through existing texture/context lifetime handling.
+- All 16 ASan/UBSan suites, original 37 bindings/ranges/callbacks and startup
+  source audit PASS. Actual embedded photo command/fallback and UI capture PASS.
+
+MODIFIED FILES:
+jni/KennyIdentity.h, jni/KennyLauncher.h, jni/KennyMenu.h, jni/main.cpp;
+tests/kenny_embedded_check.cpp, tests/kenny_video_logo_capture.cpp;
+MENU_HEADER_LOGO_FIX.md, CODEX_PROGRESS.md, UI_DESIGN_NOTES.md.
+
+KNOWN ISSUES / NEXT:
+Clean matching ARM64 build and private root libloader.so ZIP verification next.
+Main contains owner native revisions absent from tested source; earlier explicit
+instruction prohibits overwriting them. Public-media rights/comparator/secret
+release gates remain unverified. No main/Anilxkenny promotion until resolved.
+
+--- Previous checkpoints ---
+
+PROJECT: KennyPvtHax
 CURRENT TASK: Private embedded-media presentation integration.
 BRANCH: release/embedded-media-integration
 BASE: 739a2de (runtime 1a944d4); owner-confirmed full UI 2a54a41.

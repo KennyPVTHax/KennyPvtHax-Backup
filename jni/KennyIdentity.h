@@ -1,7 +1,29 @@
 #pragma once
 #include "ClaudeTheme.h"
+#include <cmath>
 
 namespace KennyIdentity {
+// Both header and launcher borrow the same cached texture; neither owns it.
+inline bool Photo(ImDrawList* draw,ImVec2 center,float side,ImTextureID texture,int width,int height) {
+    if(!texture||width<=0||height<=0||side<=0)return false;
+    // Fixed fan geometry fills the existing circular identity mark.
+    // Cover UVs preserve aspect ratio; no square frame or inset black disc.
+    const float radius=side*.5f;
+    const float u=width>height?float(height)/width:1.0f;
+    const float v=height>width?float(width)/height:1.0f;
+    const ImTextureID previous=draw->_CmdHeader.TextureId;
+    if(previous!=texture)draw->PushTextureID(texture);
+    constexpr int segments=64;draw->PrimReserve(segments*3,segments+1);
+    const unsigned base=draw->_VtxCurrentIdx;
+    draw->PrimWriteVtx(center,ImVec2(.5f,.5f),IM_COL32_WHITE);
+    for(int i=0;i<segments;++i){const float a=6.28318530718f*i/segments;
+        const float x=std::cos(a),y=std::sin(a);
+        draw->PrimWriteVtx(ImVec2(center.x+x*radius,center.y+y*radius),ImVec2(.5f+x*u*.5f,.5f+y*v*.5f),IM_COL32_WHITE);}
+    for(int i=0;i<segments;++i){draw->PrimWriteIdx(ImDrawIdx(base));draw->PrimWriteIdx(ImDrawIdx(base+1+i));draw->PrimWriteIdx(ImDrawIdx(base+1+(i+1)%segments));}
+    if(previous!=texture)draw->PopTextureID();
+    return true;
+}
+
 inline void Emblem(ImDrawList* draw,ImVec2 center,float scale) {
     const float mark=38*scale;
     KennyPaint::Disc(draw,center,mark*0.48f,Claude::Hex(0x321C27),Claude::Hex(0x0B090D));
@@ -17,10 +39,10 @@ inline void Emblem(ImDrawList* draw,ImVec2 center,float scale) {
                   ImGui::GetColorU32(Claude::Dark::selectedInk),stroke);
 }
 inline void Draw(ImDrawList* draw, ImVec2 origin, float padding, float width,
-                 float height, float scale) {
+                 float height, float scale, ImTextureID logo=nullptr, int logoWidth=0, int logoHeight=0) {
     const float mark=38*scale, gap=12*scale;
     const ImVec2 center(origin.x+padding+mark*0.5f,origin.y+height*0.5f);
-    Emblem(draw,center,scale);
+    if(!Photo(draw,center,mark,logo,logoWidth,logoHeight))Emblem(draw,center,scale);
     const ImU32 ink=ImGui::GetColorU32(Claude::Dark::textPrimary);
     const float x=origin.x+padding+mark+gap;
     ImFont* font=ImGui::GetFont();

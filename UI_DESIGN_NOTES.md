@@ -1,3 +1,10 @@
+## Header identity correction
+
+The supplied full-circle photo now replaces the separate K mark inside the menu,
+using exactly the cached launcher texture. Original header proportions, title,
+input and controls remain. One shared geometry helper; K fallback only if no
+valid photo. See MENU_HEADER_LOGO_FIX.md for tests and source-promotion limits.
+
 ## Embedded-media presentation integration
 
 Keep approved full UI, Electric Classic and Aurora unchanged. Default Anime uses
