@@ -135,7 +135,15 @@ LOCAL_SRC_FILES :=  main.cpp \
         imgui/backends/imgui_impl_android.cpp \
         imgui/backends/imgui_impl_opengl3.cpp \
 
-# Private media are explicit build inputs; no default fetch or public CI upload.
+# Generate the default complete pack from checked-out, hash-pinned assets.
+# An explicit prepared KPH_MEDIA_DIR remains supported for existing builds.
+ifeq ($(origin KPH_MEDIA_DIR),undefined)
+KPH_MEDIA_DIR := $(abspath $(LOCAL_PATH)/../.build/embedded-media)
+KPH_MEDIA_GENERATED := $(shell python3 "$(LOCAL_PATH)/../tools/generate_embedded_media.py" --source "$(LOCAL_PATH)/.." --output "$(KPH_MEDIA_DIR)" >/dev/null && echo OK)
+ifneq ($(KPH_MEDIA_GENERATED),OK)
+$(error Complete embedded media generation failed; check assets/embedded-media-inventory.json and required files)
+endif
+endif
 ifneq ($(KPH_MEDIA_DIR),)
 LOCAL_CPPFLAGS += -DKPH_EMBEDDED_MEDIA=1
 LOCAL_SRC_FILES += $(KPH_MEDIA_DIR)/resources.cpp $(KPH_MEDIA_DIR)/payload.S

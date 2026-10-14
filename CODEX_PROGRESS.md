@@ -1,4 +1,24 @@
 PROJECT: KennyPvtHax
+CURRENT TASK: Complete public main media from committed assets.
+STARTING MAIN: 1202b838acbbf71f586f69cb33c0a058c09f1d8d.
+
+COMPLETED:
+- Owner explicitly confirmed ownership/public redistribution for all supplied assets.
+- Exact 16 reference payloads copied to assets/; 13,879,633 bytes, all SHA-256 match.
+- Default Android.mk generates from checked-out assets; no mandatory private paths.
+- Relocated generator/idempotence/missing/corrupt/symlink/path tests PASS.
+- CI updated to run complete-media tests and verify actual linked ELF resources.
+- Existing UI and both owner native files unchanged.
+
+VERIFICATION IN PROGRESS:
+All 16 sanitizer suites and clean ARM64 compilation. No device-runtime claim.
+
+NEXT ACTION:
+Finish checks/build, publish assets/source to main, verify remote CI/payloads.
+
+--- Historical checkpoints ---
+
+PROJECT: KennyPvtHax
 CURRENT TASK: Autonomous full UI integration on main.
 INITIAL MAIN: 812315b89d88ecb59e253554793fb3a73bd34e08 (owner already merged b46adba).
 WORKING EMBEDDED BASELINE: 49e56a7ea335bbf235284131f9c8bfb6cba2c98f.

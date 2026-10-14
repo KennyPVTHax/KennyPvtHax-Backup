@@ -75,3 +75,13 @@ assets/presentation/*.png
 assets/presentation/*.jpg
 assets/presentation/*.mp4
 previews/anime-video-logo/
+
+# Owner-authorized public runtime assets; only exact inventory entries are kept.
+!assets/anime/highschool_dxd_rias/character.png
+!assets/anime/highschool_dxd_rias/voice/user_aim.wav
+!assets/anime/highschool_dxd_rias/voice/user_aimoff.wav
+!assets/anime/highschool_dxd_rias/voice/user_bullet.wav
+!assets/anime/highschool_dxd_rias/voice/user_extrafeatures.wav
+!assets/presentation/anime-background.mp4
+!assets/presentation/anime-fallback.png
+!assets/presentation/launcher.png

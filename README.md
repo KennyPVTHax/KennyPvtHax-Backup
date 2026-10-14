@@ -34,28 +34,24 @@ Gradle/Java packaging system is introduced. The module remains `Anoy` for
 compatibility. System dependencies include log, android, OpenSL ES, EGL/GLES,
 zlib and mediandk, as specified in `jni/Android.mk`.
 
-## Embedded media and redistribution
+## Complete committed embedded media
 
-The default complete **private** build links the genuine supplied circular
-logo, Anime movie/still, character metadata and prepared voice recordings via
-`KPH_MEDIA_DIR`. It needs no separate default runtime media installation; only
-the existing private movie cache is created lazily. No foreground Rias cutout
-is restored over the default video. See the exact input hashes, preparation
-commands and resource contract in [EMBEDDED_MEDIA_INTEGRATION.md](EMBEDDED_MEDIA_INTEGRATION.md).
+Main contains the exact 16 validated runtime payloads: supplied circular logo,
+Anime MP4 and still, transparent character artwork, four prepared event WAVs,
+five CC0 alternative WAVs and three JSON metadata files. The owner explicitly
+asserted ownership and authorized public redistribution of all supplied assets.
+Per-file provenance and checksum inventory are in
+[assets/PUBLIC_MEDIA_AUTHORIZATION.md](assets/PUBLIC_MEDIA_AUTHORIZATION.md) and
+[assets/embedded-media-inventory.json](assets/embedded-media-inventory.json).
+This is an owner assertion, not independent actor/creator/license authentication.
 
-Public Git includes the complete integration source and tools, manifests, and
-five previously reviewed **CC0 CiciFyre alternative** WAVs. These are not Rias
-actor recordings; their provenance is in [RUNTIME_ASSET_LICENSES.md](RUNTIME_ASSET_LICENSES.md).
-The supplied third-party video, photo/artwork and original recordings remain
-private because public redistribution rights have not been verified. A public
-clone or default public Actions artifact therefore uses optional external/media
-fallbacks; it is **not a self-contained embedded media binary**. Private inputs
-are necessary to reproduce that complete experience. No fake media are supplied.
-
-Do not publish a binary linking private inputs merely because the repository is
-public: its assets can be extracted. Original private media and rollback binaries
-are retained outside Git. No Anilxkenny manifest or production archive is changed
-by this source integration.
+A normal clone now builds the complete embedded-media library automatically.
+No private bundle, original JPEG, manually installed default pack, or private
+workspace path is required. `Android.mk` validates committed resource hashes and
+fails if required media are missing. Generated code stays under ignored `.build/`.
+See [MEDIA_COMPLETION.md](MEDIA_COMPLETION.md) for exact commands and checks.
+Default Anime video still has no unwanted foreground cutout, and all approved
+UI/audio/video behavior remains unchanged. No live loader release is modified.
 
 ## Tests and CI
 
@@ -66,9 +62,9 @@ python3 tests/run_ui_regressions.py --sanitizers
 Host tests require Python 3, Pillow, g++, zlib and OpenSSL development libraries.
 Genuine-media tests additionally take `--user-media`, `--presentation-media` and
 `--embedded-media` paths; see [MAIN_INTEGRATION.md](MAIN_INTEGRATION.md).
-The manual GitHub Actions native workflow requires public-source sanitizer tests
-before building with the same NDK. It never uploads plaintext private symbols or
-the private embedded-media binary. The original SDK is unchanged.
+The manual GitHub Actions native workflow requires all 16 sanitizer suites and
+actual embedded-payload verification before uploading the full media library.
+It never uploads plaintext private symbols. The original SDK is unchanged.
 
 Current source retains the owner's main versions of `Helper/bypass.h` and
 `Lua_Buffer.cpp` byte-for-byte. These differ from the reported device-working

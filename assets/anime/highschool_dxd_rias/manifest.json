@@ -7,6 +7,26 @@
   "launcher": "launcher.png",
   "voice_packs": [
     {
+      "id": "user_supplied_events",
+      "name": "Rias / supplied event clips",
+      "provenance": "User-supplied named recordings; speaker identity not independently verified",
+      "distribution": "Private local installation only; recordings excluded from repository",
+      "events": {
+        "bullet_track_enabled": [
+          "voice/user_bullet.wav"
+        ],
+        "aim_enabled": [
+          "voice/user_aim.wav"
+        ],
+        "aim_disabled": [
+          "voice/user_aimoff.wav"
+        ],
+        "extra_features_navigation": [
+          "voice/user_extrafeatures.wav"
+        ]
+      }
+    },
+    {
       "id": "default",
       "name": "Rias / user recordings",
       "events": {
@@ -74,29 +94,9 @@
           "voice/cici_no_problem.wav"
         ]
       }
-    },
-    {
-      "id": "user_supplied_events",
-      "name": "Rias / supplied event clips",
-      "provenance": "User-supplied named recordings; speaker identity not independently verified",
-      "distribution": "Private local installation only; recordings excluded from repository",
-      "events": {
-        "bullet_track_enabled": [
-          "voice/user_bullet.wav"
-        ],
-        "aim_enabled": [
-          "voice/user_aim.wav"
-        ],
-        "aim_disabled": [
-          "voice/user_aimoff.wav"
-        ],
-        "extra_features_navigation": [
-          "voice/user_extrafeatures.wav"
-        ]
-      }
     }
   ],
-  "asset_status": "Partial: licensed English alternative voice installed; Rias artwork, launcher and original voice unverified/missing",
+  "asset_status": "Embedded artwork and supplied event voices; character launcher optional/missing.",
   "sources": [
     {
       "asset": "Cici Fyre - English alternative voice",

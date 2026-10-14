@@ -1,3 +1,7 @@
+> Current media/build status: [MEDIA_COMPLETION.md](MEDIA_COMPLETION.md).
+> Owner-authorized assets are now committed; the default build embeds them.
+> Private-only build statements below describe the earlier checkpoint.
+
 # Private embedded-media integration
 
 Status: **NOT PUBLISHED**. This is a presentation-only integration on

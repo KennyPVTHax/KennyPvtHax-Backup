@@ -1,0 +1,6 @@
+{
+  "schema": 1,
+  "logo": "launcher.png",
+  "video": "anime-background.mp4",
+  "fallback": "anime-fallback.png"
+}

@@ -10,7 +10,8 @@ static KennyThemeBackground::ArtworkFrame Upload(void*,const KennyAssets::Image&
 static void Release(void*,KennyThemeBackground::ArtworkFrame){++releases;}
 int main(int argc,char** argv){
  assert(argc==2);Assets assets;assets.Configure(argv[1]);assert(assets.configured&&assets.video>=0);
- assert(assets.logo.width==1280&&assets.logo.height==1280&&!assets.logo.transparent&&!assets.logo.rgba.empty());
+ const bool circular=assets.logo.width==1032;
+ assert((circular ? assets.logo.height==1032&&assets.logo.transparent : assets.logo.width==1280&&assets.logo.height==1280&&!assets.logo.transparent)&&!assets.logo.rgba.empty());
  assert(assets.poster.rgba.empty());assets.upload=Upload;assets.release=Release;assets.Prepare(false);assert(uploads==1&&assets.logoTexture.Valid()&&!assets.posterTexture.Valid());
  assets.Prepare(true);assert(uploads==2&&assets.posterTexture.Valid()&&assets.poster.width==1024&&assets.poster.height==576);
  for(int i=0;i<1000;++i)assets.Prepare();
@@ -18,7 +19,8 @@ int main(int argc,char** argv){
  assets.ClearTextures(false);assert(releases==2&&!assets.logoTexture.Valid());assets.Prepare();assert(uploads==4);
  assets.ClearTextures(true);assert(releases==2);assets.Prepare();assert(uploads==6);
  std::vector<uint8_t> bytes;assert(KennyAssets::Read(assets.root,"launcher.png",8*1024*1024,bytes));KennyAssets::Image original;
- assert(!KennyAssets::PNG(bytes,original));assert(KennyAssets::PNG(bytes,original,false)&&original.rgba==assets.logo.rgba);
+ if(circular)assert(KennyAssets::PNG(bytes,original)&&original.rgba==assets.logo.rgba);
+ else {assert(!KennyAssets::PNG(bytes,original));assert(KennyAssets::PNG(bytes,original,false)&&original.rgba==assets.logo.rgba);}
  bytes[bytes.size()/2]^=1;assert(!KennyAssets::PNG(bytes,original,false));
  const auto now=std::chrono::steady_clock::now();Clock clock;assert(clock.Due(1000,now)==now);
  assert(clock.Due(34000,now)==now+std::chrono::microseconds(33000));clock.Pause();auto resumed=now+std::chrono::seconds(100);

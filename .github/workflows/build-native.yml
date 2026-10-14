@@ -26,7 +26,14 @@ jobs:
       - name: Install host test dependencies
         run: sudo apt-get update -qq && sudo apt-get install -y g++ zlib1g-dev libssl-dev python3-pil
       - name: Run public-source ASan and UBSan suites
-        run: python3 tests/run_ui_regressions.py --sanitizers --label ci-ui-regressions
+        run: |
+          python3 tools/generate_embedded_media.py --output .build/embedded-media
+          python3 tests/kenny_repository_media_check.py
+          python3 tests/run_ui_regressions.py --sanitizers \
+            --user-media "$GITHUB_WORKSPACE" \
+            --presentation-media "$GITHUB_WORKSPACE" \
+            --embedded-media "$GITHUB_WORKSPACE/.build/embedded-media" \
+            --label ci-ui-regressions
 
   build:
     needs: test
@@ -89,9 +96,8 @@ jobs:
       - name: Build KennyPvtHax SO
         shell: bash
         run: |
-          # Public CI does not contain the privately supplied media. The complete
-          # embedded build uses KPH_MEDIA_DIR locally; see MAIN_INTEGRATION.md.
-          echo "Public source build: external-media fallbacks; private assets are not linked."
+          set -euo pipefail
+          # Android.mk generates the complete pack from committed inventory/assets.
           "$ANDROID_NDK_HOME/ndk-build" \
             NDK_PROJECT_PATH=. \
             APP_BUILD_SCRIPT=jni/Android.mk \
@@ -110,6 +116,9 @@ jobs:
 
           file "$SO"
           sha256sum "$SO"
+          python3 tools/verify_embedded_library.py \
+            --library "$SO" --media .build/embedded-media \
+            --output .verification/embedded-media-verification.json
 
           READELF="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf"
           mkdir -p .verification
@@ -142,6 +151,8 @@ jobs:
           path: |
             libs/arm64-v8a/libAnoy.so
             .verification/build-info.txt
+            .verification/embedded-media-verification.json
+            assets/embedded-media-inventory.json
           if-no-files-found: error
           include-hidden-files: true
           retention-days: 30
