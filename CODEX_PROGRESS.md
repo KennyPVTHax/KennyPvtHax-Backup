@@ -29,8 +29,14 @@ Source integration and build report pushed normally; remote main verified at
 Initial Actions regression run used a shallow checkout; historical fixture
 references were unavailable. CI checkout now fetches preserved history.
 
+PUBLIC CI: SUCCESS, run 38583806540, source 4959326190a270d9b75f6968abfacd31a3a0f9e5.
+12 public-source ASan/UBSan suites PASS and NDK ARM64 build PASS. Artifact ZIP
+SHA-256/digest/CRC, actual ELF/source ID and absence of private media verified.
+Remote rollback tag backup/embedded-working-49e56a7 added for tested source.
+
 NEXT ACTION:
-Run corrected public CI, then test the matching private binary on Android.
+Test the matching private embedded binary on Android. Main source integration
+is complete; documentation commits do not alter compiled application source.
 Public CI contains no privately supplied embedded media; live loader unchanged.
 
 --- Historical checkpoints (statuses refer to those source commits) ---

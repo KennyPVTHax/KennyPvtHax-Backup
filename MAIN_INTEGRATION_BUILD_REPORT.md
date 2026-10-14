@@ -39,3 +39,15 @@ Public source includes integration tools/manifests and five existing CC0 clips;
 private supplied media are not added to Git or public artifacts. Public Actions
 builds the source with safe external-media fallbacks, not this embedded binary.
 No live loader JSON/release changes. See MAIN_INTEGRATION.md for reproduction.
+
+## Public CI verification
+
+[Run 38583806540](https://github.com/KennyPVTHax/KennyPvtHax-Backup/actions/runs/38583806540) **SUCCESS** for source
+`4959326190a270d9b75f6968abfacd31a3a0f9e5`: 12 public-source ASan/UBSan suites and native ARM64 build.
+The initial shallow-checkout failure was corrected by fetching preserved history.
+Downloaded artifact 11904209193 matches its GitHub SHA-256 digest; ZIP CRC
+and actual ELF/source ID verified. Public library SHA-256: `07c09f43146c790bf4d23b4b21f54b57baddf6db0555e43e07c2b053be437c2d`.
+This 7,195,376-byte public binary does not contain the supplied private media,
+verified against the actual movie/logo/artwork/user WAV payloads. Use the private
+embedded artifact above to test the full media experience. Android device testing
+is still required. No live Anilxkenny changes.

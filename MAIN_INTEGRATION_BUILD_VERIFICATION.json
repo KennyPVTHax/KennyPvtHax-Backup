@@ -225,5 +225,21 @@
     "crc_and_extracted_byte_comparison": "PASS",
     "publicly_uploaded": false
   },
-  "unstripped_symbols_private": true
+  "unstripped_symbols_private": true,
+  "public_ci": {
+    "result": "PASS",
+    "run_id": 38583806540,
+    "run_url": "https://github.com/KennyPVTHax/KennyPvtHax-Backup/actions/runs/38583806540",
+    "source_commit": "4959326190a270d9b75f6968abfacd31a3a0f9e5",
+    "public_sanitizer_suite_count": 12,
+    "artifact_id": 11904209193,
+    "artifact_sha256": "47e0399ce51dedfde7b3b3e003002f5fd7befc9a818037d5be27c5b61247835b",
+    "artifact_zip_crc": "PASS",
+    "library_sha256": "07c09f43146c790bf4d23b4b21f54b57baddf6db0555e43e07c2b053be437c2d",
+    "library_bytes": 7195376,
+    "elf_build_id": "6b38a8d6f719a2e03b3a787c198770700f2c6919",
+    "supplied_private_media_absent": true,
+    "embedded_media": false,
+    "ndk": "25.2.9519653"
+  }
 }
