@@ -1,4 +1,46 @@
 PROJECT: KennyPvtHax
+CURRENT TASK: Private embedded-media presentation integration.
+BRANCH: release/embedded-media-integration
+BASE: 739a2de (runtime 1a944d4); owner-confirmed full UI 2a54a41.
+
+COMPLETED:
+- Prepared 16 validated read-only binary resources from the genuine private pack.
+- Memory PNG/WAV registry loading; automatic bounded hash-checked private movie
+  cache, existing decoder/mixer/input infrastructure retained.
+- Supplied circular JPEG cropped/masked without changing artwork RGB pixels;
+  full-circle launcher presentation, no inset square, unchanged hitbox.
+- Removed default foreground Rias overlay; video OFF retains static fallback.
+- Existing 15 sanitizer suites and focused actual embedded-media checks PASS.
+  Actual private ImGui captures generated and inspected.
+
+EXPLICIT EXCLUSIONS / RELEASE GATES:
+- Requested owner bypass/Lua revisions inspected, not integrated: new constructor,
+  native patches and anti-cheat/crash-report suppression. Existing blank bypass
+  and retained Lua source remain exact. No owner files overwritten on main.
+- Public distribution rights, loader comparison, publishing secret/device gates
+  not established; NOT PUBLISHED. No live kenny.json changes.
+
+MODIFIED FILES:
+jni/Android.mk, KennyEmbeddedMedia.h, KennyEmbeddedVideoCache.h,
+KennyPresentationMedia.h, KennyCharacters.h, KennyLauncher.h, KennyMenu.h,
+KennyAppearance.h; tools/prepare_embedded_media.py,
+tools/verify_embedded_library.py; tests/kenny_embedded_check.cpp,
+tests/kenny_video_logo_capture.cpp, tests/run_ui_regressions.py;
+EMBEDDED_MEDIA_INTEGRATION.md, CODEX_PROGRESS.md, UI_DESIGN_NOTES.md.
+
+KNOWN LIMITATIONS:
+Clean ARM64 build and final hashes pending at this source checkpoint; final report
+will record actual results. No device video/audio/cache/GPU/performance claim.
+No public Actions embedded-media upload. Original private recordings preserved.
+
+NEXT ACTION:
+Clean local NDK r25c ARM64 build of this exact source; verify 16 payload bytes in
+ELF, package root libloader.so privately, record hashes/results. Publication must
+remain blocked until all mandatory prerequisites genuinely pass.
+
+--- Previous checkpoints ---
+
+PROJECT: KennyPvtHax
 
 CURRENT TASK: Supplied Anime video and photo launcher on ui/anime-video-logo.
 BASELINE: 1438e94, preserving full UI/audio recovery/electric Classic and the

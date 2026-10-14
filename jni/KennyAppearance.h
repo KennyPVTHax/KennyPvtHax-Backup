@@ -100,6 +100,7 @@ inline void DrawAnime(Preferences& p,KennyCharacters::Registry& registry,bool au
     KennyPanels::Note(character.series.c_str());KennyPanels::Note(character.status.c_str());
     KennyPanels::Note(character.artworkTexture.Valid()?"Transparent artwork ready.":character.image.rgba.empty()?"Character artwork missing or invalid.":"Artwork decoded; texture rendering unavailable.");
     KennyControls::Checkbox("Show character artwork",&p.artworkVisible);
+    KennyPanels::Note("Character artwork is the static fallback when video is OFF; no foreground overlay.");
     ImGui::BeginDisabled(!character.launcherTexture.Valid());KennyControls::Checkbox("Character launcher",&p.characterLauncher);ImGui::EndDisabled();
     KennyPanels::Note(character.launcherTexture.Valid()?"Character launcher ready.":"Launcher artwork unavailable; using the K emblem.");KennyPanels::EndSection();
     KennyPanels::Section("Character voice");

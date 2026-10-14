@@ -1,5 +1,6 @@
 #pragma once
 #include "KennyAssetIO.h"
+#include "KennyEmbeddedMedia.h"
 #include "KennyAudio.h"
 #include "KennyThemeBackground.h"
 #include "Includes/json.hpp"
@@ -59,19 +60,22 @@ struct Registry {
         for(char c:s)if(static_cast<unsigned char>(c)<32)return fallback;
         return s;
     }
+    static bool AssetRead(int fd,const std::string& file,size_t limit,std::vector<uint8_t>& bytes){
+        return fd==-2?KennyEmbedded::Read(("assets/anime/highschool_dxd_rias/"+file).c_str(),limit,bytes):KennyAssets::Read(fd,file,limit,bytes);
+    }
     bool Image(int fd,const std::string& file,KennyAssets::Image& image){
-        std::vector<uint8_t> bytes;if(file.size()<4||file.substr(file.size()-4)!=".png"||!KennyAssets::Read(fd,file,8*1024*1024,bytes)||!KennyAssets::PNG(bytes,image))return false;
+        std::vector<uint8_t> bytes;if(file.size()<4||file.substr(file.size()-4)!=".png"||!AssetRead(fd,file,8*1024*1024,bytes)||!KennyAssets::PNG(bytes,image))return false;
         if(decodedBytes+image.rgba.size()>32*1024*1024){image={};return false;}decodedBytes+=image.rgba.size();return true;
     }
 private:
     bool Load(int root,const std::string& folder){
         if(!KennyAssets::Token(folder))return false;
-        int fd=openat(root,folder.c_str(),O_RDONLY|O_DIRECTORY|O_CLOEXEC|O_NOFOLLOW);if(fd<0){KennyAudioDiagnostics::Log(KennyAudioDiagnostics::Code::ManifestFailed,"character_directory_missing",errno);return false;}
+        int fd=root==-2?-2:openat(root,folder.c_str(),O_RDONLY|O_DIRECTORY|O_CLOEXEC|O_NOFOLLOW);if(fd<0&&fd!=-2){KennyAudioDiagnostics::Log(KennyAudioDiagnostics::Code::ManifestFailed,"character_directory_missing",errno);return false;}
         std::vector<uint8_t> bytes;nlohmann::json j;
-        bool valid=KennyAssets::Read(fd,"manifest.json",32768,bytes)&&JSON(bytes,j);
+        bool valid=AssetRead(fd,"manifest.json",32768,bytes)&&JSON(bytes,j);
         auto schema=valid?j.find("schema"):j.end();valid=valid&&schema!=j.end()&&schema->is_number_integer()&&*schema==1&&Text(j,"id")==folder;
-        if(!valid){KennyAudioDiagnostics::Log(KennyAudioDiagnostics::Code::ManifestFailed,"missing_or_invalid_manifest");close(fd);return false;}KennyAudioDiagnostics::Log(KennyAudioDiagnostics::Code::ManifestLoaded,"validated_local_manifest");Character* c=Find(folder);
-        if(!c){if(count>=characters.size()){close(fd);return false;}c=&characters[count++];}
+        if(!valid){KennyAudioDiagnostics::Log(KennyAudioDiagnostics::Code::ManifestFailed,"missing_or_invalid_manifest");if(fd>=0)close(fd);return false;}KennyAudioDiagnostics::Log(KennyAudioDiagnostics::Code::ManifestLoaded,"validated_local_manifest");Character* c=Find(folder);
+        if(!c){if(count>=characters.size()){if(fd>=0)close(fd);return false;}c=&characters[count++];}
         c->id=folder;c->name=Text(j,"name",folder);c->series=Text(j,"series","Unknown series");
         c->artwork=Text(j,"artwork","character.png");c->launcher=Text(j,"launcher","launcher.png");
         const bool artwork=Image(fd,c->artwork,c->image),logo=Image(fd,c->launcher,c->logo);
@@ -82,7 +86,7 @@ private:
                     auto clips=mapping->find(EventNames[e]);if(clips==mapping->end()||!clips->is_array()||clips->size()>3)continue;
                     pack.mappingDefined[e]=!clips->empty();auto& event=pack.events[e];
                     for(const auto& value:*clips){if(!value.is_string())continue;auto path=value.get<std::string>();
-                        if(path.size()<4||path.substr(path.size()-4)!=".wav"||!KennyAssets::Read(fd,path,1048576,bytes)){KennyAudioDiagnostics::Log(KennyAudioDiagnostics::Code::FileMissing,"missing_or_invalid_local_file",errno,EventNames[e]);continue;}
+                        if(path.size()<4||path.substr(path.size()-4)!=".wav"||!AssetRead(fd,path,1048576,bytes)){KennyAudioDiagnostics::Log(KennyAudioDiagnostics::Code::FileMissing,"missing_or_invalid_local_file",errno,EventNames[e]);continue;}
                         auto& clip=event.clips[event.count];if(!KennyAssets::WAV(bytes,clip.samples)){pack.decodeFailed[e]=true;KennyAudioDiagnostics::Log(KennyAudioDiagnostics::Code::DecodeFailed,"invalid_pcm_wav",0,EventNames[e]);continue;}
                         if(decodedBytes+clip.samples.size()*2>32*1024*1024){clip=KennyAudio::Recording{};continue;}
                         decodedBytes+=clip.samples.size()*2;++event.count;KennyAudioDiagnostics::Log(KennyAudioDiagnostics::Code::FileLoaded,"decoded_pcm_cached",0,EventNames[e]);
@@ -92,17 +96,21 @@ private:
             }
         }
         c->status=c->Installed()?"Artwork, launcher and optional voices loaded.":artwork||logo||c->packCount?"Partially installed; missing assets use safe fallbacks.":"Assets missing or invalid; K launcher and UI tones remain available.";
-        close(fd);return true;
+        if(fd>=0)close(fd);return true;
     }
 public:
     void Configure(const char* activityDirectory){
         if(configured)return;
-        configured=true;if(!activityDirectory||!*activityDirectory){mediaStatus="Activity private directory unavailable.";KennyAudioDiagnostics::Log(KennyAudioDiagnostics::Code::DirectoryMissing,"activity_directory_unavailable");return;}
-        int activity=open(activityDirectory,O_RDONLY|O_DIRECTORY|O_CLOEXEC|O_NOFOLLOW);if(activity<0){mediaStatus="Activity private directory cannot be opened.";KennyAudioDiagnostics::Log(KennyAudioDiagnostics::Code::DirectoryMissing,"activity_directory_unreadable",errno);return;}
-        int assets=openat(activity,"assets",O_RDONLY|O_DIRECTORY|O_CLOEXEC|O_NOFOLLOW);close(activity);if(assets<0){mediaStatus="Private assets directory missing; install the media package.";KennyAudioDiagnostics::Log(KennyAudioDiagnostics::Code::DirectoryMissing,"private_assets_missing",errno);return;}
-        int root=openat(assets,"anime",O_RDONLY|O_DIRECTORY|O_CLOEXEC|O_NOFOLLOW);close(assets);if(root<0){mediaStatus="Private Anime directory missing; install the media package.";KennyAudioDiagnostics::Log(KennyAudioDiagnostics::Code::DirectoryMissing,"anime_directory_missing",errno);return;}
+        configured=true;
+        const bool embedded=KennyEmbedded::Lookup("assets/anime/highschool_dxd_rias/manifest.json")&&Load(-2,"highschool_dxd_rias");
+        if(embedded)mediaStatus="Embedded character artwork and supplied event voices loaded; no private pack required.";
+        if(embedded&&(!activityDirectory||!*activityDirectory))return;
+        if(!activityDirectory||!*activityDirectory){mediaStatus="Activity private directory unavailable.";KennyAudioDiagnostics::Log(KennyAudioDiagnostics::Code::DirectoryMissing,"activity_directory_unavailable");return;}
+        int activity=open(activityDirectory,O_RDONLY|O_DIRECTORY|O_CLOEXEC|O_NOFOLLOW);if(activity<0){if(embedded)return;mediaStatus="Activity private directory cannot be opened.";KennyAudioDiagnostics::Log(KennyAudioDiagnostics::Code::DirectoryMissing,"activity_directory_unreadable",errno);return;}
+        int assets=openat(activity,"assets",O_RDONLY|O_DIRECTORY|O_CLOEXEC|O_NOFOLLOW);close(activity);if(assets<0){if(embedded)return;mediaStatus="Private assets directory missing; install the media package.";KennyAudioDiagnostics::Log(KennyAudioDiagnostics::Code::DirectoryMissing,"private_assets_missing",errno);return;}
+        int root=openat(assets,"anime",O_RDONLY|O_DIRECTORY|O_CLOEXEC|O_NOFOLLOW);close(assets);if(root<0){if(embedded)return;mediaStatus="Private Anime directory missing; install the media package.";KennyAudioDiagnostics::Log(KennyAudioDiagnostics::Code::DirectoryMissing,"anime_directory_missing",errno);return;}
         mediaStatus="Private Anime directory found; verify character/pack status below.";KennyAudioDiagnostics::Log(KennyAudioDiagnostics::Code::DirectoryFound,"private_anime_directory_opened");
-        Load(root,"highschool_dxd_rias");DIR* directory=fdopendir(dup(root));
+        if(!embedded)Load(root,"highschool_dxd_rias");DIR* directory=fdopendir(dup(root));
         if(directory){unsigned inspected=0;while(auto* entry=readdir(directory)){if(++inspected>256)break;
         std::string id=entry->d_name;if(id!="highschool_dxd_rias"&&KennyAssets::Token(id))Load(root,id);}closedir(directory);}close(root);
     }

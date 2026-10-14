@@ -135,6 +135,12 @@ LOCAL_SRC_FILES :=  main.cpp \
         imgui/backends/imgui_impl_android.cpp \
         imgui/backends/imgui_impl_opengl3.cpp \
 
+# Private media are explicit build inputs; no default fetch or public CI upload.
+ifneq ($(KPH_MEDIA_DIR),)
+LOCAL_CPPFLAGS += -DKPH_EMBEDDED_MEDIA=1
+LOCAL_SRC_FILES += $(KPH_MEDIA_DIR)/resources.cpp $(KPH_MEDIA_DIR)/payload.S
+endif
+
 LOCAL_CPP_FEATURES := exceptions
 
 # Diagnostic builds keep matching unstripped obj/ symbols locally. ndk-build

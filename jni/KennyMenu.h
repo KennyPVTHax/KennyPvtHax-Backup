@@ -275,8 +275,11 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
                 auto& character=state.characters.Selected(state.appearance);
                 if(state.appearance.animeVideo && state.animeVideoFrame.Valid())
                     KennyThemeBackground::DrawArtwork(draw,origin,l.size,Claude::RadiusWindow*l.scale,state.animeVideoFrame,state.appearance);
-                else if(!character.artworkTexture.Valid())KennyThemeBackground::DrawArtwork(draw,origin,l.size,Claude::RadiusWindow*l.scale,state.artwork.current,state.appearance);
-                if(character.artworkTexture.Valid())KennyCharacters::DrawCharacter(draw,origin,l.size,Claude::RadiusWindow*l.scale,contentY,character.artworkTexture,state.appearance);
+                else if(!state.appearance.animeVideo && state.appearance.artworkVisible && character.artworkTexture.Valid())
+                    KennyThemeBackground::DrawArtwork(draw,origin,l.size,Claude::RadiusWindow*l.scale,character.artworkTexture,state.appearance);
+                else KennyThemeBackground::DrawArtwork(draw,origin,l.size,Claude::RadiusWindow*l.scale,state.artwork.current,state.appearance);
+                // Character cutout stays registered for future customization;
+                // default Anime composition has no foreground ghost over controls.
             }
         }
         draw->ChannelsMerge();

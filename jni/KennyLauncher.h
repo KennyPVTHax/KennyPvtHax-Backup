@@ -10,11 +10,21 @@ struct Logo {
     void Clear(){image={};}
     void Draw(ImDrawList* draw,ImVec2 center,float side) const {
         if(!image.Valid()) {KennyIdentity::Emblem(draw,center,side/48.0f);return;}
-        const float fit=std::min(side*.76f/image.width,side*.76f/image.height);
-        const ImVec2 half(image.width*fit*.5f,image.height*fit*.5f);
-        draw->AddImageRounded(image.texture,ImVec2(center.x-half.x,center.y-half.y),
-                       ImVec2(center.x+half.x,center.y+half.y),ImVec2(0,0),ImVec2(1,1),IM_COL32_WHITE,
-                       std::min(half.x,half.y)*.18f);
+        // Fixed fan geometry fills the existing bounded circular launcher.
+        // Cover UVs preserve aspect ratio; no square frame or inset black disc.
+        const float radius=side*.5f;
+        const float u=image.width>image.height?float(image.height)/image.width:1.0f;
+        const float v=image.height>image.width?float(image.width)/image.height:1.0f;
+        const ImTextureID previous=draw->_CmdHeader.TextureId;
+        if(previous!=image.texture)draw->PushTextureID(image.texture);
+        constexpr int segments=64;draw->PrimReserve(segments*3,segments+1);
+        const unsigned base=draw->_VtxCurrentIdx;
+        draw->PrimWriteVtx(center,ImVec2(.5f,.5f),IM_COL32_WHITE);
+        for(int i=0;i<segments;++i){const float a=6.28318530718f*i/segments;
+            const float x=std::cos(a),y=std::sin(a);
+            draw->PrimWriteVtx(ImVec2(center.x+x*radius,center.y+y*radius),ImVec2(.5f+x*u*.5f,.5f+y*v*.5f),IM_COL32_WHITE);}
+        for(int i=0;i<segments;++i){draw->PrimWriteIdx(ImDrawIdx(base));draw->PrimWriteIdx(ImDrawIdx(base+1+i));draw->PrimWriteIdx(ImDrawIdx(base+1+(i+1)%segments));}
+        if(previous!=image.texture)draw->PopTextureID();
     }
 };
 struct State {
@@ -62,8 +72,8 @@ inline void Draw(State& state,const KennyAppearance::Preferences& p,KennyAudio::
         const ImVec2 center(origin.x+side*.5f,origin.y+side*.5f);
         const float emphasis=KennyMotion::Sample(ImGui::GetItemID(),5,ImGui::IsItemHovered()?1.0f:0.0f);
         const bool classic=p.theme==KennyAppearance::Theme::Classic;
-        KennyPaint::Disc(draw,center,side*.48f,Claude::Hex(classic?0x191217:0x32131E),Claude::Hex(0x070609));
-        draw->AddCircle(center,side*.48f,ImGui::GetColorU32(Claude::Hex(classic?0x88717B:0xE78695,.30f+emphasis*.22f)),40,1);
+        if(!state.logo.image.Valid())KennyPaint::Disc(draw,center,side*.48f,Claude::Hex(classic?0x191217:0x32131E),Claude::Hex(0x070609));
+        if(!state.logo.image.Valid())draw->AddCircle(center,side*.48f,ImGui::GetColorU32(Claude::Hex(classic?0x88717B:0xE78695,.30f+emphasis*.22f)),40,1);
         state.logo.Draw(draw,center,side);
         ImGui::RenderNavHighlight(ImRect(origin,ImVec2(origin.x+side,origin.y+side)),ImGui::GetItemID());
     }

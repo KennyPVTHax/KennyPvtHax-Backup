@@ -4,11 +4,12 @@
 #include <set>
 static KennyPresentation::Assets media;
 static KennyAssets::Image video;
-static KennyThemeBackground::ArtworkFrame UploadMedia(void*,const KennyAssets::Image& im){return {reinterpret_cast<ImTextureID>(uintptr_t(im.width==1280?3:4)),int(im.width),int(im.height)};}
+static KennyThemeBackground::ArtworkFrame UploadMedia(void*,const KennyAssets::Image& im){return {reinterpret_cast<ImTextureID>(uintptr_t(im.width==im.height?3:4)),int(im.width),int(im.height)};}
 static KennyThemeBackground::ArtworkFrame UploadCharacter(void*,const KennyAssets::Image& im){return {reinterpret_cast<ImTextureID>(2),int(im.width),int(im.height)};}
 static void SaveMedia(const char* name){
  const auto* data=ImGui::GetDrawData();std::set<uint64_t> used;
  for(int i=0;i<data->CmdListsCount;++i)for(const auto& c:data->CmdLists[i]->CmdBuffer)used.insert(reinterpret_cast<uintptr_t>(c.GetTexID()));
+ if(std::strstr(name,"anime-video-")&&std::strcmp(name,"anime-video-off")!=0)assert(!used.count(2));
  std::vector<std::pair<uint64_t,const KennyAssets::Image*>> textures;
  auto add=[&](uint64_t id,const KennyAssets::Image& image){if(used.count(id)&&!image.rgba.empty())textures.emplace_back(id,&image);};
  add(2,menu.characters.characters[0].image);add(3,media.logo);add(4,media.poster);add(5,video);
@@ -45,5 +46,5 @@ int main(int argc,char** argv){
  viewport=ImVec2(640,360);menu.centerRequested=true;Frame();Frame();SaveMedia("anime-small");
  menu.appearance.reducedMotion=true;const auto held=menu.animeVideoFrame;for(int i=0;i<30;++i)Frame();assert(menu.animeVideoFrame.texture==held.texture);SaveMedia("anime-reduced-still");
  menu.animeVideoFrame={};menu.characters.ClearTextures(true);Frame();SaveMedia("missing-media-fallback");
- assert(features==SnapshotFeatures());ImGui::DestroyContext();puts("PASS actual native menu/photo input, supplied decoded video frames behind Rias and controls, toggle/off/reduced/missing/small states, unchanged feature snapshot. Android hardware decoding/GPU playback remains unverified.");
+ assert(features==SnapshotFeatures());ImGui::DestroyContext();puts("PASS actual native menu/photo input, supplied decoded video frames behind controls without foreground Rias, toggle/off/reduced/missing/small states, unchanged feature snapshot. Android hardware decoding/GPU playback remains unverified.");
 }

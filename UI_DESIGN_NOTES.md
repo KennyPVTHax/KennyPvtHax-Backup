@@ -1,3 +1,15 @@
+## Embedded-media presentation integration
+
+Keep approved full UI, Electric Classic and Aurora unchanged. Default Anime uses
+actual supplied video/still without a second foreground Rias overlay. Video OFF
+may use existing character visibility as static background; no new panel layout.
+New supplied circular logo uses original pixels, cropped outer black padding,
+geometric alpha and full-diameter circular textured geometry. Existing launcher
+input is preserved. PNG/WAV resources decode from linked read-only bytes; only
+movie uses a lazy verified private cache for the existing Android backend.
+No public media distribution or owner bypass/Lua evasion integration.
+See EMBEDDED_MEDIA_INTEGRATION.md and final private build verification.
+
 ## Audio recovery checkpoint A
 
 Preserve working full themes, launcher/layout and native startup. Only the existing
