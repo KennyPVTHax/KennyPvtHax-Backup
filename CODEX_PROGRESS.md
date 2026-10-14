@@ -13,10 +13,16 @@ COMPLETED:
 MODIFIED FILES:
 jni/KennyIdentity.h, jni/KennyLauncher.h, jni/KennyMenu.h, jni/main.cpp;
 tests/kenny_embedded_check.cpp, tests/kenny_video_logo_capture.cpp;
-MENU_HEADER_LOGO_FIX.md, CODEX_PROGRESS.md, UI_DESIGN_NOTES.md.
+MENU_HEADER_LOGO_FIX.md, HEADER_LOGO_BUILD_REPORT.md,
+HEADER_LOGO_BUILD_VERIFICATION.json, CODEX_PROGRESS.md, UI_DESIGN_NOTES.md.
 
 KNOWN ISSUES / NEXT:
-Clean matching ARM64 build and private root libloader.so ZIP verification next.
+Clean local NDK 25.2.9519653 ARM64 build PASS for c2ed7e378aa8e84078db13fbdaa809eb7d811440.
+Library SHA-256 cacffe65534e8391b534ea11d8565198bd62ed1130f57f96f2b239480ab5b850.
+All 16 assets exact; private root loader ZIP CRC/hash PASS. Header image inspected.
+Current published media.zip / version 0.8 matches previous 49e56a7 build.
+See HEADER_LOGO_BUILD_REPORT.md / HEADER_LOGO_BUILD_VERIFICATION.json.
+Main restoration choice pending; no production changes in this task.
 Main contains owner native revisions absent from tested source; earlier explicit
 instruction prohibits overwriting them. Public-media rights/comparator/secret
 release gates remain unverified. No main/Anilxkenny promotion until resolved.
