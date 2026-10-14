@@ -115,7 +115,10 @@ read-only baseline rendering; generated evidence records exact pixel differences
 
 Performance is measured separately in optimized host builds, including CPU p50/p95
 and worst-case native vertices/indices. See the final verification JSON for actual
-numbers. There are no growing warmed ImGui allocations or geometry capacities.
+numbers. Final optimized host high-density effect: p50 184.25 µs, p95 322.11 µs;
+maximum effect 7,503 vertices / 27,858 indices. Representative complete Player
+frame: 9,801 vertices / 34,254 indices. There are no growing warmed ImGui
+allocations or geometry capacities.
 These results exclude GPU work and do not predict Android device performance.
 
 ## Build and device requirements
@@ -143,3 +146,30 @@ unverified until the owner tests. No media, logo/video work or startup fix is bu
 `jni/KennyAppearanceStore.h`, `jni/KennyAppearance.h`; electric check/capture/
 baseline/package scripts and existing regression runner; this document,
 `UI_DESIGN_NOTES.md`, `CODEX_PROGRESS.md`, `tests/README.md`, and final build metadata.
+
+
+## Final native build result
+
+Implementation: `571d509c5e5b1dba12711be0fc5a84ec94b6330b`.
+[Actions run 38547335985](https://github.com/KennyPVTHax/KennyPvtHax-Backup/actions/runs/38547335985)
+completed successfully with unchanged full/arm64-v8a/NDK 25.2.9519653 settings.
+Artifact 11884648850 (`KennyPvtHax-ARM64-SO`) was retrieved through the authenticated
+GitHub connector after the CLI download failed. SHA-256 of the actual archive
+matches GitHub's digest; only the compiled library and build-info are present.
+
+Library: 6,733,584 bytes; ELF64 AArch64, Android API 21, NDK r25c, stripped.
+SHA-256: `96fe87692296ee2d4263b46f402012b7e9e60397811dfc194f79fd4e68de2f4b`.
+Build ID: `20934b7e5ffc9cbffa4abb325896d725c731cbf8`.
+
+Experimental local loader ZIP: `kph-classic-electric-571d509-arm64.zip`.
+SHA-256: `84b557ded011d0ce668046d5281b1c9bd11beeb3f9de12e35c9c3d0609cffada`.
+Its sole entry is root `libloader.so`, exactly equal to the compiled libAnoy.so.
+Previous binaries remain intact. Export copies are in
+`/workspace/shared/downloads/kenny-classic-electric-571d509/` and
+`/workspace/shared/downloads/classic-electric/`.
+
+All 21 preview PNGs and 24-entry preview ZIP validate; continuous MP4 fully derives
+from 145 consecutive native captures. Matched Aurora and Anime pixel differences
+are zero. The live loader remains at destination commit 39839f9/version 0.5;
+no experimental publication occurred. Native compile success does not establish
+Android runtime stability, GPU appearance or performance. Stop for owner testing.

@@ -34,12 +34,15 @@ contrast and selector layout. No SDK/native/startup/audio/launcher modifications
 
 KNOWN LIMITATIONS:
 No Android GPU/FPS/power/input/speaker claim; previous private media requirement
-unchanged. GitHub ARM64 result and actual artifact hash are added after build.
+unchanged. ARM64 Actions 38547335985 SUCCESS for source 571d509, NDK 25.2.9519653.
+Verified artifact 11884648850, ELF64 AArch64 API 21, matching metadata and
+byte-equal root libloader.so ZIP. Library SHA-256:
+96fe87692296ee2d4263b46f402012b7e9e60397811dfc194f79fd4e68de2f4b.
 Previews are production ImGui geometry CPU-rasterized, not device screenshots.
 
 NEXT ACTION:
-Build unchanged NDK 25.2.9519653 full arm64-v8a experimental branch; retrieve and
-verify libAnoy.so and optional root libloader.so package; owner device tests
+Owner installs the verified 571d509 experimental artifact through the existing
+loader; owner device tests
 Classic default/Reduced/off, switches, preferences restart, controls and frame
 pacing before any release promotion. Do not update live Anilxkenny.
 

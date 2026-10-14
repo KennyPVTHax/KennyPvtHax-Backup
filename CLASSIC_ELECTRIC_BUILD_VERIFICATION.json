@@ -107,7 +107,49 @@
       }
     }
   },
-  "android_build": "Pending experimental branch Actions run",
+  "android_build": {
+    "run": 38547335985,
+    "url": "https://github.com/KennyPVTHax/KennyPvtHax-Backup/actions/runs/38547335985",
+    "status": "completed",
+    "ndk": "25.2.9519653",
+    "abi": "arm64-v8a",
+    "isolation": "full",
+    "conclusion": "success",
+    "artifact_id": 11884648850,
+    "artifact_sha256": "067ca3c34a646e01eaefd49a21bc4b57197cb8c1336d724e603aec19423e89b2",
+    "library_sha256": "96fe87692296ee2d4263b46f402012b7e9e60397811dfc194f79fd4e68de2f4b",
+    "library_bytes": 6733584,
+    "library_path": "/workspace/shared/downloads/kenny-classic-electric-571d509/libs/arm64-v8a/libAnoy.so",
+    "build_info": "commit=571d509c5e5b1dba12711be0fc5a84ec94b6330b\nndk=25.2.9519653\nisolation=full\n96fe87692296ee2d4263b46f402012b7e9e60397811dfc194f79fd4e68de2f4b  libs/arm64-v8a/libAnoy.so\n9b85020f4d65556db544361f5fd3d50d1d27892a3f51de5f50b358e906148c93  obj/local/arm64-v8a/libAnoy.so\nDisplaying notes found in: .note.android.ident\n  Owner                Data size \tDescription\n  Android              0x00000084\tNT_VERSION (version)\n   description data: 15 00 00 00 72 32 35 63 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 39 35 31 39 36 35 33 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n\nDisplaying notes found in: .note.gnu.build-id\n  Owner                Data size \tDescription\n  GNU                  0x00000014\tNT_GNU_BUILD_ID (unique build ID bitstring)\n    Build ID: 20934b7e5ffc9cbffa4abb325896d725c731cbf8\nDisplaying notes found in: .note.android.ident\n  Owner                Data size \tDescription\n  Android              0x00000084\tNT_VERSION (version)\n   description data: 15 00 00 00 72 32 35 63 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 39 35 31 39 36 35 33 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n\nDisplaying notes found in: .note.gnu.build-id\n  Owner                Data size \tDescription\n  GNU                  0x00000014\tNT_GNU_BUILD_ID (unique build ID bitstring)\n    Build ID: 20934b7e5ffc9cbffa4abb325896d725c731cbf8\n",
+    "elf": "ELF64 little endian AArch64; matching Actions metadata verified",
+    "build_id": "20934b7e5ffc9cbffa4abb325896d725c731cbf8"
+  },
   "device_performance": "Unverified",
-  "publication": "No live Anilxkenny changes"
+  "publication": "No live Anilxkenny changes",
+  "implementation_commit": "571d509c5e5b1dba12711be0fc5a84ec94b6330b",
+  "geometry_counts": {
+    "maximum_effect_vertices": 7503,
+    "maximum_effect_indices": 27858,
+    "default_player_frame_vertices": 9801,
+    "default_player_frame_indices": 34254,
+    "default_settings_frame_vertices": 10554,
+    "default_settings_frame_indices": 34881
+  },
+  "preview_exports": {
+    "directory": "/workspace/shared/downloads/classic-electric",
+    "bundle": "Classic-Electric-Starfield-Previews.zip",
+    "bundle_sha256": "b307df5357c40b1c2fc00d1b84b6b2e1f69e8eff0cfcd3a72a122ea4fbd432fc",
+    "video_sha256": "ce5591f4d908b1674127820ee208c96fde84d7dd40b67d8556644d1b6cb66d8f"
+  },
+  "loader_test_package": {
+    "file": "/workspace/shared/downloads/kph-classic-electric-571d509-arm64.zip",
+    "sha256": "84b557ded011d0ce668046d5281b1c9bd11beeb3f9de12e35c9c3d0609cffada",
+    "bytes": 2899976,
+    "entries": [
+      "libloader.so"
+    ],
+    "byte_equal_to_compiled_library": true,
+    "published_to_live_destination": false
+  },
+  "live_destination_unchanged_commit": "39839f957fc2909e92937ca8747c65c1a2a99bf7"
 }
