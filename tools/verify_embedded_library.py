@@ -12,4 +12,5 @@ for entry in inv['assets']:
  offset=blob.find(payload);assert offset>=0,'missing embedded '+entry['id']
  verified.append(dict(entry,elf_offset=offset))
 report={'architecture':'ELF64 AArch64','library_bytes':len(blob),'library_sha256':hashlib.sha256(blob).hexdigest(),'resources_verified':verified,'android_runtime_verified':False,'public_distribution_authority':inv.get('public_distribution_authority','Private reference pack; no public assertion recorded')}
+Path(a.output).parent.mkdir(parents=True,exist_ok=True)
 Path(a.output).write_text(json.dumps(report,indent=2)+'\n');print('PASS ELF64 AArch64;',len(verified),'exact embedded payloads;',report['library_sha256'])
