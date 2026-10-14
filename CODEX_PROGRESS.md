@@ -12,12 +12,20 @@ COMPLETED:
 - Public CI gains mandatory host sanitizer tests before native build.
 - Private media remain outside public Git; reproducible private inputs documented.
 
-VERIFICATION IN PROGRESS:
-Full 16-suite genuine-media host regression and clean NDK ARM64 build pending.
-See MAIN_INTEGRATION.md. No Android-runtime or live-loader publication claim.
+VERIFICATION:
+- All 16 genuine-media ASan/UBSan suites PASS; 37 bindings/ranges PASS.
+- Actual UI packing check/source audit PASS; 40 static libraries and 2,391 SDK files present.
+- Clean NDK 25.2.9519653 ARM64 build PASS for 70fe24fbf99e117659c06f825d981ac435103892.
+- ELF64 AArch64 API21; all 16 resource bytes/SHA-256 verified in stripped library.
+- Library SHA-256 283d225e36763c6bb5d2a8a4e8661920f2e5d8d9aa1ba6ff1ff05dd5c8deeb7b.
+- Root-only loader ZIP CRC/extracted-byte comparison PASS.
+- Owner files unchanged; secret-pattern scan PASS (limited pattern check).
+See MAIN_INTEGRATION.md and MAIN_INTEGRATION_BUILD_VERIFICATION.json.
+No Android-runtime or live-loader publication claim.
 
 NEXT ACTION:
-Finish tests/build, record exact source/checksums, push normally and verify main.
+Push verified source/docs normally and verify remote main. Test matching private
+binary on Android; public CI contains no privately supplied embedded media.
 
 --- Historical checkpoints (statuses refer to those source commits) ---
 

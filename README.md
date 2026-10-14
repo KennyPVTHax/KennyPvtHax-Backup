@@ -1,157 +1,88 @@
 # KennyPvtHax
 
-Complete native development backup of the actual C++/ImGui application, based on
-checkpoint **`3436f47`**. This repository is **public by the owner's explicit
-authorization**. All 12 original development checkpoints are preserved, followed
-by the complete-source backup commit. No application behavior was changed for
-publication; the original Codex checkout remains untouched.
+Complete C++/ImGui Android native project with the full Classic Electric
+Starfield, Living Crimson Aurora, and Anime presentation systems. Includes
+horizontal navigation, the circular photo launcher/header, appearance settings,
+character/voice registry, optional Android audio and video, diagnostic logging,
+and the original 37 feature bindings/ranges. This task preserves the existing
+interface; it does not redesign it.
 
-Included: KennyPvtHax branding, rounded crimson menu, horizontal navigation,
-Living Crimson Aurora and touch-reactive stars, Aurora/Anime/Classic themes,
-appearance persistence, Style/Settings, draggable K launcher, theme-aware C1
-audio, C2 character/artwork/voice registry, and approved C3 English alternative
-voice mappings. All **37 original controls, bindings and numerical ranges** are
-retained. Rias artwork, launcher artwork and original character recordings are
-not installed; their safe fallbacks remain.
+See [MAIN_INTEGRATION.md](MAIN_INTEGRATION.md) for the current integration,
+owner-file hashes, rollback checkpoint, tests, build commands, and the distinction
+between the public source build and the complete private embedded-media build.
+Earlier build reports describe only their explicitly identified source commits.
 
-## Startup diagnostics
+## Clone and build
 
-The startup diagnostic correction and report retrieval procedure are in
-[KENNY_ANDROID_CRASH_DIAGNOSTICS.md](KENNY_ANDROID_CRASH_DIAGNOSTICS.md).
-Current Actions uses NDK **25.2.9519653 (r25c)**, whose prior ARM64 build passed.
-Device startup stability is not established. Reports stay app-private; authorized
-Documents export needs host integration. Private symbols are encrypted or omitted
-from this public repository's artifacts.
-
-## Clone with the original SDK
-
-```sh
+```bash
 git clone https://github.com/KennyPVTHax/KennyPvtHax-Backup.git KennyPvtHax
 cd KennyPvtHax
+/path/to/android-ndk-r25c/ndk-build \
+  NDK_PROJECT_PATH=. APP_BUILD_SCRIPT=jni/Android.mk \
+  NDK_APPLICATION_MK=jni/Application.mk -j2
 ```
 
-The owner's uploaded original SDK is now included at **`jni/SDK/`**
-(`KennyPvtHax/jni/SDK/` after the clone above). All 2,391 files were imported
-byte-for-byte from `SDK.zip`; no stubs, generated replacements or SDK changes
-were introduced. The archive CRC, file hashes, required build inputs and local
-quoted includes were checked. See [SDK_IMPORT_VALIDATION.json](SDK_IMPORT_VALIDATION.json).
-Older source export ZIPs still omit the SDK; use this current repository for the
-complete tree. The original `BACKUP_VERIFICATION.json` describes that earlier
-export, not the newly restored SDK.
+Use **Android NDK 25.2.9519653 (r25c)**. `jni/Application.mk` targets
+`arm64-v8a`, Android API 21+, and static libc++; the module uses C++17.
+The owner's genuine original SDK is tracked at `jni/SDK/` (2,391 files).
+All 40 supplied static libraries remain at their original paths.
+No SDK stubs or replacement headers are used.
 
-Existing include paths and `Android.mk` SDK entries are unchanged. This generated
-application SDK is distinct from Google's Android SDK/NDK.
+Output: **`libs/arm64-v8a/libAnoy.so`**. This is a native shared library, not an
+APK. Integrate it through the existing original Android host/loader; no new
+Gradle/Java packaging system is introduced. The module remains `Anoy` for
+compatibility. System dependencies include log, android, OpenSL ES, EGL/GLES,
+zlib and mediandk, as specified in `jni/Android.mk`.
 
-## Build the native library
+## Embedded media and redistribution
 
-Use a desktop host supported by your selected Android NDK distribution, and
-prefer the compatible NDK used for the original application. **The exact NDK
-version is not recorded.** Some supplied objects contain legacy Clang 7.0.0/7.0.2
-tags; these are provenance, not a verified version requirement. Do not invent
-headers or silently change build flags/dependencies to conceal native errors.
+The default complete **private** build links the genuine supplied circular
+logo, Anime movie/still, character metadata and prepared voice recordings via
+`KPH_MEDIA_DIR`. It needs no separate default runtime media installation; only
+the existing private movie cache is created lazily. No foreground Rias cutout
+is restored over the default video. See the exact input hashes, preparation
+commands and resource contract in [EMBEDDED_MEDIA_INTEGRATION.md](EMBEDDED_MEDIA_INTEGRATION.md).
 
-Current `jni/Application.mk` selects:
+Public Git includes the complete integration source and tools, manifests, and
+five previously reviewed **CC0 CiciFyre alternative** WAVs. These are not Rias
+actor recordings; their provenance is in [RUNTIME_ASSET_LICENSES.md](RUNTIME_ASSET_LICENSES.md).
+The supplied third-party video, photo/artwork and original recordings remain
+private because public redistribution rights have not been verified. A public
+clone or default public Actions artifact therefore uses optional external/media
+fallbacks; it is **not a self-contained embedded media binary**. Private inputs
+are necessary to reproduce that complete experience. No fake media are supplied.
 
-- ABI: `arm64-v8a`
-- Platform: `android-21`
-- C++17, `c++_static`, release optimization
+Do not publish a binary linking private inputs merely because the repository is
+public: its assets can be extracted. Original private media and rollback binaries
+are retained outside Git. No Anilxkenny manifest or production archive is changed
+by this source integration.
 
-From the cloned project root:
+## Tests and CI
 
-```sh
-"/path/to/your/android-ndk/ndk-build" \
-  NDK_PROJECT_PATH=. \
-  APP_BUILD_SCRIPT=jni/Android.mk \
-  NDK_APPLICATION_MK=jni/Application.mk \
-  -j2
+```bash
+python3 tests/run_ui_regressions.py --sanitizers
 ```
 
-Windows uses the same arguments with the selected NDK's `ndk-build.cmd`.
-Add `V=1` for verbose diagnostics. All **40 supplied static libraries** are
-included at their original paths, including other ABI variants; all **20**
-currently referenced arm64 libraries contain AArch64 objects. The explicit
-`.gitignore` exceptions retain required libraries and the reviewed original
-`jni/Helper/Login.h`; temporary outputs and private media remain ignored.
+Host tests require Python 3, Pillow, g++, zlib and OpenSSL development libraries.
+Genuine-media tests additionally take `--user-media`, `--presentation-media` and
+`--embedded-media` paths; see [MAIN_INTEGRATION.md](MAIN_INTEGRATION.md).
+The manual GitHub Actions native workflow requires public-source sanitizer tests
+before building with the same NDK. It never uploads plaintext private symbols or
+the private embedded-media binary. The original SDK is unchanged.
 
-## Output and original Android host integration
+Current source retains the owner's main versions of `Helper/bypass.h` and
+`Lua_Buffer.cpp` byte-for-byte. These differ from the reported device-working
+embedded baseline. The UI includes are isolated from inherited structure packing,
+without changing those files or original native behavior. Host/native compilation
+cannot prove this combination works on-device. Keep the original tested binary
+for rollback and verify startup, touch/dragging, all themes, real audio/video,
+GL context recovery and performance on Android before any production release.
 
-Expected output: **`libs/arm64-v8a/libAnoy.so`**. The intermediate library is
-under `obj/local/arm64-v8a/`. The internal module name **Anoy** is intentionally
-unchanged for compatibility; visible branding is KennyPvtHax.
+Recovery tag: `backup/main-before-full-ui-verification-20261014`.
+Known working embedded source: `49e56a7ea335bbf235284131f9c8bfb6cba2c98f`.
 
-This project builds a **shared library, not an APK**. No application-level
-Gradle/Java/AndroidManifest packaging project was supplied. Dear ImGui's Android
-example is third-party sample code, not a replacement application. Use your
-existing original APK/loader/native runtime integration. Compatibility with that
-host, SDK and the selected NDK must be verified on the real build/device.
-
-System libraries are the original `log`, `android`, `OpenSLES`, `EGL`, GLES and
-`z` dependencies, plus the configured C++ runtime. No new audio/image framework
-or game/native functionality was added for this backup.
-
-## Runtime media
-
-Five **CC0 Cici Fyre English alternative** WAVs are included at
-`assets/anime/highschool_dxd_rias/voice/`. They match the C3 runtime bytes and
-cover seven existing events. They are **not Rias / Yoko Hikasa recordings**.
-See [RUNTIME_ASSET_LICENSES.md](RUNTIME_ASSET_LICENSES.md) for creator, license,
-content evidence and mappings. Classic/Aurora UI tones are generated by C1.
-
-In your original APK workflow, package `assets/anime/` under the APK prefix
-**`anime/`**, or install through your original app-private workflow. The native
-code stages approved local files into `<activity.internalDataPath>/assets/anime/`
-once. Files beside the loose `.so` are not automatically loaded. Registry media
-changes require restart; theme/preference changes for loaded packs are immediate.
-Existing private files are preserved by staging.
-
-The six permission-unverified uploaded OGGs, original recording duplicates,
-private media ZIP, preview images/videos, test outputs and asset/model caches
-are **not uploaded**. Local originals are retained. There is no public media
-release. Prior private-workspace notes remain as historical provenance; this
-later public authorization covers only vetted source and the five CC0 clips.
-
-## Verification and current limitations
-
-- Exact source ZIP hash/991-file coverage was checked, including originally
-  untracked dependencies. Source/library bytes are unchanged, except documented
-  publication-only progress/ignore additions. `BACKUP_VERIFICATION.json` records
-  the baseline hashes, deliberate differences and runtime clip hashes.
-- All 12 historical commits and 146 historical blobs, plus source export data,
-  were scanned for credentials/private keys/tokens and suspicious assignments;
-  no high-confidence findings. Original runtime variables/public pins were
-  reviewed. This is a finite scan, not a blanket semantic guarantee.
-- Restored-export host builds/regressions passed: all 37 bindings/ranges, native
-  controls/navigation, dragging, close/reopen, scrolling/viewport, appearance
-  migration/persistence, launcher/audio events, volume/mute/cooldown, approved
-  Aurora physics/clipping and bounded warmed allocations. C2/C3 real loader/PCM
-  checks also pass. Fresh GitHub clone verification is performed after upload
-  and reported separately; host PCM is not Android playback.
-- **Android compilation/linking has not passed or been attempted without the
-  Android NDK.** The genuine original SDK is now included. Exact
-  toolchain/prebuilt/host compatibility,
-  APK asset staging, GLES transparency/resource lifecycle, OpenSL ES playback,
-  app-private restart, real touch and device performance remain unverified.
-- Rias image alpha/quality, launcher and original voice permissions/content
-  remain unresolved. No substitute character assets were generated.
-
-The small `export_support/` headers reproduce the actual host panel/configuration
-fixture and approved Aurora reference without Git history lookup; they are
-**not SDK substitutes or native build inputs**. Compile host menu tests with
-`-I export_support` and keep generated outputs under `.verification/`.
-Some historical fixture scripts still use `git show`; preserved history is
-available in this normal clone. Keep assertions enabled.
-
-Full build commands, supported formats, original packaging limits, first-device
-smoke tests and troubleshooting: [ANDROID_BUILD_INSTRUCTIONS.md](ANDROID_BUILD_INSTRUCTIONS.md).
-Additional records: [tests/README.md](tests/README.md),
-[CODEX_PROGRESS.md](CODEX_PROGRESS.md),
-[ANIME_CHARACTER_ASSETS.md](ANIME_CHARACTER_ASSETS.md),
-[C3_ASSET_VALIDATION.md](C3_ASSET_VALIDATION.md).
-
-Do not invoke the original destructive `ResetLogin` action during an initial
-UI smoke test unless its application-data deletion is intended. No callback
-behavior was changed. Next task: select the compatible NDK and validate the real
-Android build; no new UI, character acquisition or key-entry work is started.
-
-Existing third-party notices remain intact. No blanket license for third-party
-libraries or character IP is introduced by this public backup.
+Build/device instructions: [ANDROID_BUILD_INSTRUCTIONS.md](ANDROID_BUILD_INSTRUCTIONS.md).
+Diagnostics: [KENNY_ANDROID_CRASH_DIAGNOSTICS.md](KENNY_ANDROID_CRASH_DIAGNOSTICS.md).
+Progress: [CODEX_PROGRESS.md](CODEX_PROGRESS.md).
+Existing third-party notices remain intact; no blanket rights over character IP
+or other third-party content are asserted.
