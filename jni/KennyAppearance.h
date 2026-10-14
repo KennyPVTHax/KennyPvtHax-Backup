@@ -41,7 +41,7 @@ inline void DrawStyle(Preferences& p, bool artworkReady=false, const char* stora
     if(KennyPanels::Begin("##themes",3,4.0f)) {
         ImGui::TableNextColumn();ThemeCard(p,Theme::Aurora,"Living crimson light");
         ImGui::TableNextColumn();ThemeCard(p,Theme::Anime,"Your artwork, your atmosphere");
-        ImGui::TableNextColumn();ThemeCard(p,Theme::Classic,"Quiet black and crimson");
+        ImGui::TableNextColumn();ThemeCard(p,Theme::Classic,"Crimson Eclipse / Electric Starfield");
         KennyPanels::End();
     }
     if(KennyPanels::Begin("##appearance",3,12.0f)) {
@@ -170,6 +170,24 @@ inline void DrawSettings(Preferences& preferences, bool& centerRequested, bool a
         ImGui::EndDisabled();
         KennyPanels::Note("Follow theme uses soft Aurora tones or crisp Classic feedback. Anime uses the selected installed voice pack.");
         KennyPanels::EndSection();KennyPanels::End();
+    }
+    if(preferences.theme==Theme::Classic && KennyPanels::Begin("##classic-effects",2,12.0f,"Lightning intensity")) {
+        KennyPanels::Section("Classic Background Effects");
+        KennyControls::Checkbox("Enable Electric Starfield",&preferences.electricStarfield);
+        const auto padding=ImGui::GetStyle().FramePadding;
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding,ImVec2(padding.x,std::max(padding.y,(36.0f-ImGui::GetFontSize())*.5f)));
+        ImGui::TextUnformatted("Star Density");
+        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+        ImGui::Combo("##electric-density",&preferences.electricDensity,"Low\0Medium\0High\0");
+        ImGui::PopStyleVar();
+        KennyControls::Checkbox("Energy Pulses",&preferences.electricPulses);
+        KennyControls::Checkbox("Reduced Motion",&preferences.electricReducedMotion);
+        KennyPanels::Note("Reduced holds stars and filaments; traveling pulses stop.");KennyPanels::EndSection();
+        KennyPanels::Section("Electric atmosphere");
+        KennyControls::SliderFloat("Lightning intensity",&preferences.electricLightning,0,100,"%.0f%%");
+        KennyControls::SliderFloat("Sparkle intensity",&preferences.electricSparkle,0,100,"%.0f%%");
+        KennyControls::SliderFloat("Animation speed",&preferences.electricSpeed,0,100,"%.0f%%");
+        KennyPanels::Note("Classic only. Global Reduced motion also holds this background.");KennyPanels::EndSection();KennyPanels::End();
     }
     if(characters)DrawAnime(preferences,*characters,audioReady);
     Normalize(preferences);

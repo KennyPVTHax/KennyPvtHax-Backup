@@ -8,6 +8,7 @@
 #include "KennyIdentity.h"
 #include "KennyAppearanceStore.h"
 #include "KennyThemeBackground.h"
+#include "KennyElectricStarfield.h"
 #include "imgui/imgui_internal.h"
 #include "ANOY/font_awesome_5.h"
 
@@ -36,6 +37,7 @@ struct State {
     bool centerRequested = false;
     KennyEffects::State effects;
     KennyAurora::State aurora;
+    KennyElectric::State electric;
 
     void Select(Category next, int& tab) {
         category = next;
@@ -260,6 +262,11 @@ inline void Draw(State& state, bool& opened, int& tab, ImVec2 viewport, RenderPa
         } else {
             state.aurora.gesture = false;
             KennyThemeBackground::Surface(draw,origin,l.size,Claude::RadiusWindow*l.scale,l.header,contentY);
+            if(state.appearance.theme == KennyAppearance::Theme::Classic) {
+                state.electric.Advance(ImGui::GetFrameCount(),ImGui::GetIO().DeltaTime,state.appearance);
+                KennyElectric::Draw(draw,origin,l.size,l.scale,Claude::RadiusWindow*l.scale,
+                                    state.electric,state.appearance,l.header,contentY);
+            }
             if(state.appearance.theme == KennyAppearance::Theme::Anime) {
                 state.characters.Prepare(state.appearance,state.audio);
                 state.artwork.Advance(ImGui::GetFrameCount(),ImGui::GetIO().DeltaTime,state.appearance.reducedMotion);

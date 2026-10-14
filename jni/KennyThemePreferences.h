@@ -25,6 +25,9 @@ struct Preferences {
     bool artworkVisible=true, controlVoiceFeedback=true;
     float characterVolume=70;
     int soundProfile = 0; // 0: theme, 1: Aurora soft, 2: Classic crisp.
+    bool electricStarfield=true, electricPulses=true, electricReducedMotion=false;
+    int electricDensity=1; // Low / Medium / High: 32 / 64 / 96 seeded stars.
+    float electricLightning=45, electricSparkle=55, electricSpeed=50;
 };
 inline float Bounded(float value, float low, float high, float fallback) {
     return std::isfinite(value) ? std::clamp(value,low,high) : fallback;
@@ -44,6 +47,10 @@ inline void Normalize(Preferences& p) {
     for(char c:p.characterArtwork)artworkValid&=(c>='a'&&c<='z')||(c>='0'&&c<='9')||c=='_'||c=='-'||c=='.'||c=='/';
     if(!artworkValid)p.characterArtwork="character.png";
     p.characterVolume=Bounded(p.characterVolume,0,100,70);
+    p.electricDensity=std::clamp(p.electricDensity,0,2);
+    p.electricLightning=Bounded(p.electricLightning,0,100,45);
+    p.electricSparkle=Bounded(p.electricSparkle,0,100,55);
+    p.electricSpeed=Bounded(p.electricSpeed,0,100,50);
 }
 inline bool Equal(const Preferences& a, const Preferences& b) {
     return a.theme==b.theme && a.opacity==b.opacity && a.compactRows==b.compactRows &&
@@ -53,6 +60,9 @@ inline bool Equal(const Preferences& a, const Preferences& b) {
         a.uiSounds==b.uiSounds && a.uiVolume==b.uiVolume && a.soundProfile==b.soundProfile && a.characterId==b.characterId && a.voicePack==b.voicePack &&
         a.characterArtwork==b.characterArtwork && a.characterVoice==b.characterVoice &&
         a.characterLauncher==b.characterLauncher && a.characterVolume==b.characterVolume &&
-        a.artworkVisible==b.artworkVisible && a.controlVoiceFeedback==b.controlVoiceFeedback;
+        a.artworkVisible==b.artworkVisible && a.controlVoiceFeedback==b.controlVoiceFeedback &&
+        a.electricStarfield==b.electricStarfield && a.electricPulses==b.electricPulses &&
+        a.electricReducedMotion==b.electricReducedMotion && a.electricDensity==b.electricDensity &&
+        a.electricLightning==b.electricLightning && a.electricSparkle==b.electricSparkle && a.electricSpeed==b.electricSpeed;
 }
 } // namespace KennyAppearance

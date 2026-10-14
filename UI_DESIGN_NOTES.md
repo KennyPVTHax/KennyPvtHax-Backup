@@ -539,3 +539,28 @@ C1 has no runtime audio-asset directory or file decoder: the supported playable 
 - Android native compilation/linking, OpenSL device output/latency/cleanup, overlay touch, real private-path restart, GL texture lifecycle and Android FPS remain unverified because SDK/NDK/device are unavailable. Original embedded-font macro warnings are pre-existing and unchanged.
 
 STOP at C1. After explicit C1 approval, implement C2 voice-pack infrastructure; do not start it or Stage 6 automatically.
+
+
+## Classic — Electric Starfield experiment (14 October 2026)
+
+The attached screen recording shows thin braided, branching connections with
+brief traveling energy and bright white pinpoints. The old Classic surface was
+quiet and flat. The upgrade uses a coherent perimeter network and lower-space
+connections, not a dashboard or playback of the reference. Near-black/crimson
+surfaces retain hierarchy; violet is unnecessary. Tapered red/white cores,
+companion strands and local traveling highlights create depth without a
+full-screen lightning storm. Stars remain sparse, deterministic and bounded.
+
+Actual native captures initially exposed overly faint cores and a clipped
+visible combo label. The final presentation adds a few coherent braids and
+clearer junctions, and puts Star Density above a full-width hidden-label selector.
+The existing audio Settings remain in their original location, with the new
+Classic controls below them. Background geometry stays behind native controls
+and within rounded bounds. No layout or control redesign accompanies this work.
+
+Local/global Reduced motion holds the current scene and removes pulses. Classic
+simulation is isolated from the unchanged approved Aurora and Anime routes.
+Matched baseline/new Aurora and Anime pixels are checked by the preview package.
+See CLASSIC_ELECTRIC_STARFIELD.md and final build verification for actual tests,
+measurements, assets and runtime limitations. The working binary/startup/blank
+bypass correction and private audio recovery remain intact. No production publish.

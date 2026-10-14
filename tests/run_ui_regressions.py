@@ -19,7 +19,7 @@ for engine in (False,True):
 def compile_gui(item):
  engine,name,dest=item;command(flags+(['-DIMGUI_ENABLE_TEST_ENGINE'] if engine else [])+['-c','jni/imgui/'+name+'.cpp','-o',str(dest)],out/(dest.stem+'-build.log'))
 with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:list(pool.map(compile_gui,tasks))
-cases={'menu':('kenny_menu_host_check.cpp',True,True),'launcher':('kenny_c1_check.cpp',True,True),'audio':('kenny_audio_check.cpp',False,False),'theme':('kenny_theme_check.cpp',True,False),'aurora':('kenny_aurora_check.cpp',True,False),'effects':('kenny_effects_check.cpp',True,False),'characters':('kenny_c2_check.cpp',True,False),'media':('kenny_c3_check.cpp',False,False),'diagnostics':('kenny_diagnostics_check.cpp',False,False),'fonts':('../.verification/kenny_font_check.cpp',True,False),'continuation':('kenny_full_continuation_check.cpp',True,False)}
+cases={'menu':('kenny_menu_host_check.cpp',True,True),'launcher':('kenny_c1_check.cpp',True,True),'audio':('kenny_audio_check.cpp',False,False),'theme':('kenny_theme_check.cpp',True,False),'aurora':('kenny_aurora_check.cpp',True,False),'effects':('kenny_effects_check.cpp',True,False),'characters':('kenny_c2_check.cpp',True,False),'media':('kenny_c3_check.cpp',False,False),'diagnostics':('kenny_diagnostics_check.cpp',False,False),'fonts':('../.verification/kenny_font_check.cpp',True,False),'continuation':('kenny_full_continuation_check.cpp',True,False),'electric':('kenny_electric_check.cpp',True,False)}
 if a.user_media:
  cases['supplied']=('kenny_supplied_media_check.cpp',True,True)
  cases['audio-recovery']=('kenny_audio_recovery_check.cpp',True,True)

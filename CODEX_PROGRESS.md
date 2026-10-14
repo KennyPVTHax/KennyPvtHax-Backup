@@ -1,5 +1,52 @@
 PROJECT: KennyPvtHax
 
+CURRENT TASK: Classic / Crimson Eclipse — Electric Starfield experiment.
+BRANCH: ui/classic-electric-starfield.
+OWNER-WORKING BASELINE: 2a54a41 full UI; development parent a374ad0, runtime
+9a3de44 audio recovery. Previous ARM64 binary preserved unchanged. Startup fix
+and blank Helper/bypass.h remain exact. No production loader publication.
+
+COMPLETED:
+- Actual attached 14.387-second H.264 reference inspected at four representative
+  times; electrical/star language adapted procedurally, no embedded reference.
+- Classic-only 17 fixed coherent filaments, braided companions, attached branches,
+  three depth layers, seeded 32/64/96 stars and at most two traveling pulses.
+- Existing Settings adds functional density/intensity/speed/pulse/local-Reduced
+  preferences, below original audio controls. Default values match the task.
+- Safe schema 5 extension reads versions 1–4; no feature/preferences reset.
+- Hidden/inactive clock pause, stable resume, Reduced freeze, rounded geometry
+  clipping, quiet foreground regions; no audio/thread/texture/startup changes.
+
+MODIFIED FILES:
+jni/KennyElectricStarfield.h; jni/KennyMenu.h; jni/KennyThemePreferences.h;
+jni/KennyAppearanceStore.h; jni/KennyAppearance.h; tests/kenny_electric_check.cpp;
+tests/kenny_electric_capture.cpp; tests/kenny_electric_baseline.py;
+tests/kenny_electric_package.py; tests/run_ui_regressions.py; tests/README.md;
+CLASSIC_ELECTRIC_STARFIELD.md; UI_DESIGN_NOTES.md; CODEX_PROGRESS.md;
+CLASSIC_ELECTRIC_BUILD_VERIFICATION.json after build verification.
+
+VERIFICATION:
+14 ASan/UBSan host suites pass; real original 37 bindings/ranges/callback fixture
+passes. Focused final effect/capture/input checks and optimized measurements are
+recorded with the build metadata. Actual original-versus-new renderer captures;
+matched Aurora/Anime pixels unchanged. New previews inspected for clipping,
+contrast and selector layout. No SDK/native/startup/audio/launcher modifications.
+
+KNOWN LIMITATIONS:
+No Android GPU/FPS/power/input/speaker claim; previous private media requirement
+unchanged. GitHub ARM64 result and actual artifact hash are added after build.
+Previews are production ImGui geometry CPU-rasterized, not device screenshots.
+
+NEXT ACTION:
+Build unchanged NDK 25.2.9519653 full arm64-v8a experimental branch; retrieve and
+verify libAnoy.so and optional root libloader.so package; owner device tests
+Classic default/Reduced/off, switches, preferences restart, controls and frame
+pacing before any release promotion. Do not update live Anilxkenny.
+
+--- Previous checkpoints ---
+
+PROJECT: KennyPvtHax
+
 CURRENT CHECKPOINT: A — Audio recovery, diagnostic/audio-recovery-a.
 BASELINE: User-working compiled 2a54a41, source parent 5261a1e runtime-identical.
 Downloaded reference SHA e2fc6995a2741cd51f385c5b54a420eb168c0b6c51ffa1c0bbb9ab6787ca2b3f.

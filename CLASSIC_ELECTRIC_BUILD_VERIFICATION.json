@@ -1,0 +1,113 @@
+{
+  "baseline_documentation_commit": "a374ad0b6b38ef1a9a4bd3cbb231c9c779df3f08",
+  "owner_working_ui_commit": "2a54a41b6ee7de42bf91a34437e66a499e599323",
+  "preserved_library_sha256": "1541f3479db659627da124c448ed7d43e5d3316de817f619a849a3ee5f380f4d",
+  "unchanged_sensitive_paths": [
+    "jni/main.cpp",
+    "jni/Helper/bypass.h",
+    "jni/KennyAndroidAudio.h",
+    "jni/KennyAudio.h",
+    "jni/KennyCharacters.h",
+    "jni/KennyAurora.h",
+    "jni/KennyLauncher.h",
+    "jni/KennyCharacterGL.h",
+    ".github/workflows/build-native.yml",
+    "jni/Android.mk",
+    "jni/Application.mk",
+    "jni/SDK/"
+  ],
+  "host_suites": [
+    {
+      "test": "menu",
+      "result": "PASS",
+      "seconds": 65.95
+    },
+    {
+      "test": "launcher",
+      "result": "PASS",
+      "seconds": 59.05
+    },
+    {
+      "test": "audio",
+      "result": "PASS",
+      "seconds": 20.7
+    },
+    {
+      "test": "theme",
+      "result": "PASS",
+      "seconds": 3.25
+    },
+    {
+      "test": "aurora",
+      "result": "PASS",
+      "seconds": 21.05
+    },
+    {
+      "test": "effects",
+      "result": "PASS",
+      "seconds": 4.9
+    },
+    {
+      "test": "characters",
+      "result": "PASS",
+      "seconds": 11.78
+    },
+    {
+      "test": "media",
+      "result": "PASS",
+      "seconds": 7.04
+    },
+    {
+      "test": "diagnostics",
+      "result": "PASS",
+      "seconds": 1.26
+    },
+    {
+      "test": "fonts",
+      "result": "PASS",
+      "seconds": 4.56
+    },
+    {
+      "test": "continuation",
+      "result": "PASS",
+      "seconds": 7.04
+    },
+    {
+      "test": "supplied",
+      "result": "PASS",
+      "seconds": 23.21
+    },
+    {
+      "test": "audio-recovery",
+      "result": "PASS",
+      "seconds": 16.05
+    },
+    {
+      "test": "electric",
+      "result": "PASS",
+      "seconds": 7.65
+    }
+  ],
+  "final_sanitizer_check": "MEASURE host high density: p50 3697.09 us; p95 31844.91 us; maximum geometry 7503 vertices / 27858 indices. Android performance unverified.\nPASS electric: 30/60/90/120 timing, stalls/hidden gaps, finite inputs, pause/reduced/off, bounded coherent connected paths, pulse bounds, rounded clipping, stable warmed allocations, schema 4 migration/5 roundtrip/corruption/clamps.",
+  "final_native_capture": "PASS actual electric settings input, hidden/theme clock pause/resume, seven routes, real snapshots, small/large viewport, unchanged 37 feature snapshot; consecutive renderer motion frames captured.",
+  "optimized_host_performance": "MEASURE host high density: p50 184.25 us; p95 322.11 us; maximum geometry 7503 vertices / 27858 indices. Android performance unverified.",
+  "previews": {
+    "directory": "previews/classic-electric/",
+    "png_count": 21,
+    "video_frames": 145,
+    "fps": 12,
+    "unchanged_themes": {
+      "aurora": {
+        "changed_bbox": null,
+        "max_channel_delta": 0
+      },
+      "anime": {
+        "changed_bbox": null,
+        "max_channel_delta": 0
+      }
+    }
+  },
+  "android_build": "Pending experimental branch Actions run",
+  "device_performance": "Unverified",
+  "publication": "No live Anilxkenny changes"
+}
