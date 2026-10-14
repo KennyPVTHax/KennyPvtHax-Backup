@@ -58,3 +58,20 @@ previews/phase_c3/
 !assets/anime/highschool_dxd_rias/voice/cici_okay_normal.wav
 !assets/anime/highschool_dxd_rias/voice/cici_no_problem.wav
 # The owner-supplied original jni/SDK/ is tracked in this repository.
+
+# Generated full UI continuation captures
+previews/full-continuation/
+
+# Private supplied-media evidence and Python caches
+previews/supplied-media/
+__pycache__/
+*.pyc
+
+# Generated Checkpoint A voice-diagnostic captures
+previews/audio-recovery-a/
+
+# User-supplied video/logo files and private renderer captures
+assets/presentation/*.png
+assets/presentation/*.jpg
+assets/presentation/*.mp4
+previews/anime-video-logo/

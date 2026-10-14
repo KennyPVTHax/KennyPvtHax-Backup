@@ -1,0 +1,215 @@
+{
+  "files": [
+    {
+      "original_filename": "extrafeatures.ogg",
+      "attachment_filename": "1-extrafeatures.ogg",
+      "role": "event voice",
+      "bytes": 30461,
+      "sha256": "2d7ae84de9b23ca8fb012002c53c87e147d321953c02066c82f325987baf0f35",
+      "authorization": "User supplied for private integration; no public redistribution license asserted",
+      "intended_event": "extra_features_navigation",
+      "source_probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "vorbis",
+            "sample_rate": "44100",
+            "channels": 1
+          }
+        ],
+        "format": {
+          "duration": "2.032449"
+        }
+      },
+      "runtime_path": "assets/anime/highschool_dxd_rias/voice/user_extrafeatures.wav",
+      "runtime_bytes": 195160,
+      "runtime_sha256": "90b3b366a5a79a95437a1e092677b27baa1989b68266a38ce07c4a9e62694205",
+      "runtime_duration": 2.0324583333333335,
+      "channels": 1,
+      "sample_rate": 48000,
+      "sample_format": "PCM signed 16-bit WAV",
+      "source_decoded_peak": 1.029897689819336,
+      "attenuation_gain": 0.9224217214883241,
+      "pcm_peak": 31130,
+      "conversion": "ffmpeg: decode Vorbis, resample 48kHz mono, optional constant attenuation, pcm_s16le; no trimming/pitch/tempo change"
+    },
+    {
+      "original_filename": "bullet.ogg",
+      "attachment_filename": "2-bullet.ogg",
+      "role": "event voice",
+      "bytes": 11669,
+      "sha256": "e4765b9b7289448ad209c708c739cfb2a439fdc7fd538d2c0c1501cf417ebaf8",
+      "authorization": "User supplied for private integration; no public redistribution license asserted",
+      "intended_event": "bullet_track_enabled",
+      "source_probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "vorbis",
+            "sample_rate": "44100",
+            "channels": 1
+          }
+        ],
+        "format": {
+          "duration": "0.616281"
+        }
+      },
+      "runtime_path": "assets/anime/highschool_dxd_rias/voice/user_bullet.wav",
+      "runtime_bytes": 59208,
+      "runtime_sha256": "3b53db65cecfca85c0a2ae528fffa346cc631496b25f569054a6dbcbca75dc7c",
+      "runtime_duration": 0.6162916666666667,
+      "channels": 1,
+      "sample_rate": 48000,
+      "sample_format": "PCM signed 16-bit WAV",
+      "source_decoded_peak": 1.0081589221954346,
+      "attenuation_gain": 0.9423117517337606,
+      "pcm_peak": 31130,
+      "conversion": "ffmpeg: decode Vorbis, resample 48kHz mono, optional constant attenuation, pcm_s16le; no trimming/pitch/tempo change"
+    },
+    {
+      "original_filename": "aimoff.ogg",
+      "attachment_filename": "3-aimoff.ogg",
+      "role": "event voice",
+      "bytes": 55060,
+      "sha256": "81f71aaa83e12084a8186608ddab43dadae1a4d1bf45a13a5369001f42a25f59",
+      "authorization": "User supplied for private integration; no public redistribution license asserted",
+      "intended_event": "aim_disabled",
+      "source_probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "vorbis",
+            "sample_rate": "44100",
+            "channels": 1
+          }
+        ],
+        "format": {
+          "duration": "3.436327"
+        }
+      },
+      "runtime_path": "assets/anime/highschool_dxd_rias/voice/user_aimoff.wav",
+      "runtime_bytes": 329932,
+      "runtime_sha256": "4df9d00684e7404180728c02b39a3159e0ed9c2ce0e8f75c04d5524024d2e177",
+      "runtime_duration": 3.4363333333333332,
+      "channels": 1,
+      "sample_rate": 48000,
+      "sample_format": "PCM signed 16-bit WAV",
+      "source_decoded_peak": 1.0164496898651123,
+      "attenuation_gain": 0.9346256971420489,
+      "pcm_peak": 31130,
+      "conversion": "ffmpeg: decode Vorbis, resample 48kHz mono, optional constant attenuation, pcm_s16le; no trimming/pitch/tempo change"
+    },
+    {
+      "original_filename": "aim.ogg",
+      "attachment_filename": "4-aim.ogg",
+      "role": "event voice",
+      "bytes": 20910,
+      "sha256": "3fd7f106f3f3b493fc2120141144653250a39db14f33fe6e935dc44032275cca",
+      "authorization": "User supplied for private integration; no public redistribution license asserted",
+      "intended_event": "aim_enabled",
+      "source_probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "vorbis",
+            "sample_rate": "44100",
+            "channels": 1
+          }
+        ],
+        "format": {
+          "duration": "1.324807"
+        }
+      },
+      "runtime_path": "assets/anime/highschool_dxd_rias/voice/user_aim.wav",
+      "runtime_bytes": 127226,
+      "runtime_sha256": "c9965463ca327d4bbaf17ee9d83d2aff8e9bae04a76fa0b341780cda3043be32",
+      "runtime_duration": 1.3248125,
+      "channels": 1,
+      "sample_rate": 48000,
+      "sample_format": "PCM signed 16-bit WAV",
+      "source_decoded_peak": 1.016972541809082,
+      "attenuation_gain": 0.9341451818453768,
+      "pcm_peak": 31130,
+      "conversion": "ffmpeg: decode Vorbis, resample 48kHz mono, optional constant attenuation, pcm_s16le; no trimming/pitch/tempo change"
+    },
+    {
+      "original_filename": "images (3).jpg",
+      "attachment_filename": "5-images-3-.jpg",
+      "role": "character source",
+      "bytes": 91764,
+      "sha256": "df6a3f573312dcda8b611505c2320bd5bf73de8fdc29496e344f64c276791524",
+      "authorization": "User supplied for private integration; no public redistribution license asserted",
+      "format": "JPEG",
+      "width": 1035,
+      "height": 1280,
+      "transparency": "none: RGB JPEG with white background",
+      "status": "Original preserved; runtime requires approved alpha cutout"
+    },
+    {
+      "original_filename": "rias-pixel-preserved.png",
+      "role": "User-approved background-removal derivative",
+      "runtime_path": "assets/anime/highschool_dxd_rias/character.png",
+      "width": 1035,
+      "height": 1280,
+      "format": "RGBA8 noninterlaced PNG",
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "sha256": "8eeb6a3d13df41496823ec73773b59ecd13c6be58842cfe69f29b4db1222afc5",
+      "bytes": 962077
+    }
+  ],
+  "missing": [
+    "Separate KennyPvtHax launcher logo",
+    "bt.ogg (bullet.ogg supplied instead)",
+    "btoff.ogg"
+  ],
+  "mapping_confirmation": "User confirmed extrafeatures.ogg: opening Extra features section",
+  "private_only": true,
+  "mask": {
+    "method": "User-authorized Python alpha-only white-background removal",
+    "source_rgb_preserved": true,
+    "seeds": [
+      [
+        774,
+        382
+      ],
+      [
+        725,
+        417
+      ],
+      [
+        820,
+        560
+      ],
+      [
+        177,
+        566
+      ],
+      [
+        855,
+        646
+      ],
+      [
+        636,
+        692
+      ],
+      [
+        279,
+        781
+      ],
+      [
+        477,
+        818
+      ],
+      [
+        436,
+        709
+      ]
+    ],
+    "image_editor_redraw_rejected": true
+  }
+}

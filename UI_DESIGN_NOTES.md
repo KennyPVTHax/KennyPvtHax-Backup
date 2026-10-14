@@ -1,3 +1,50 @@
+## Header identity correction
+
+The supplied full-circle photo now replaces the separate K mark inside the menu,
+using exactly the cached launcher texture. Original header proportions, title,
+input and controls remain. One shared geometry helper; K fallback only if no
+valid photo. See MENU_HEADER_LOGO_FIX.md for tests and source-promotion limits.
+
+## Embedded-media presentation integration
+
+Keep approved full UI, Electric Classic and Aurora unchanged. Default Anime uses
+actual supplied video/still without a second foreground Rias overlay. Video OFF
+may use existing character visibility as static background; no new panel layout.
+New supplied circular logo uses original pixels, cropped outer black padding,
+geometric alpha and full-diameter circular textured geometry. Existing launcher
+input is preserved. PNG/WAV resources decode from linked read-only bytes; only
+movie uses a lazy verified private cache for the existing Android backend.
+No public media distribution or owner bypass/Lua evasion integration.
+See EMBEDDED_MEDIA_INTEGRATION.md and final private build verification.
+
+## Audio recovery checkpoint A
+
+Preserve working full themes, launcher/layout and native startup. Only the existing
+Anime Settings voice section gains a configured event selector, silent Test Voice
+action and truthful diagnostic results. Queued/cooldown/speakers are distinct.
+User installed only the .so; media installation remains an authorized host task.
+The new logo is JPEG, not alpha PNG; video ZIP integrity fails. Checkpoints B/C
+remain separate. See AUDIO_RECOVERY_CHECKPOINT_A.md.
+
+## Supplied media integration — full UI continuation
+
+No theme/layout redesign. User-supplied Rias JPEG converted to a transparent,
+RGB-preserving alpha cutout with explicit user approval. Existing Anime renderer,
+opacity/visibility/contain/clipping and launcher remain. No separate logo provided:
+K emblem fallback remains. Four private named OGGs convert offline to existing PCM
+format and map only to Aim ON/OFF, Bullet ON and Extra navigation (confirmed).
+No user media is published; see SUPPLIED_MEDIA_INTEGRATION.md for installation.
+
+## Full UI continuation — working baseline 7934582
+
+Preserve the owner-confirmed full build and empty Helper/bypass.h. Existing
+Classic/Aurora geometry and physics remain unchanged. Anime Settings adds artwork
+visibility and optional control voice feedback inside the existing character
+section. New optional theme_switch/settings_navigation mappings use the existing
+voice engine and cooldown. Schema 4 preserves prior preferences. No substitute
+Rias media is introduced: installed recordings are the named Cici Fyre alternative;
+Rias artwork/launcher/original recordings remain missing. See FULL_UI_CONTINUATION.md.
+
 # KennyPvtHax — source map and reference design
 
 ## Current C3 — asset validation, 10 October 2026
@@ -511,3 +558,45 @@ C1 has no runtime audio-asset directory or file decoder: the supported playable 
 - Android native compilation/linking, OpenSL device output/latency/cleanup, overlay touch, real private-path restart, GL texture lifecycle and Android FPS remain unverified because SDK/NDK/device are unavailable. Original embedded-font macro warnings are pre-existing and unchanged.
 
 STOP at C1. After explicit C1 approval, implement C2 voice-pack infrastructure; do not start it or Stage 6 automatically.
+
+
+## Classic — Electric Starfield experiment (14 October 2026)
+
+The attached screen recording shows thin braided, branching connections with
+brief traveling energy and bright white pinpoints. The old Classic surface was
+quiet and flat. The upgrade uses a coherent perimeter network and lower-space
+connections, not a dashboard or playback of the reference. Near-black/crimson
+surfaces retain hierarchy; violet is unnecessary. Tapered red/white cores,
+companion strands and local traveling highlights create depth without a
+full-screen lightning storm. Stars remain sparse, deterministic and bounded.
+
+Actual native captures initially exposed overly faint cores and a clipped
+visible combo label. The final presentation adds a few coherent braids and
+clearer junctions, and puts Star Density above a full-width hidden-label selector.
+The existing audio Settings remain in their original location, with the new
+Classic controls below them. Background geometry stays behind native controls
+and within rounded bounds. No layout or control redesign accompanies this work.
+
+Local/global Reduced motion holds the current scene and removes pulses. Classic
+simulation is isolated from the unchanged approved Aurora and Anime routes.
+Matched baseline/new Aurora and Anime pixels are checked by the preview package.
+See CLASSIC_ELECTRIC_STARFIELD.md and final build verification for actual tests,
+measurements, assets and runtime limitations. The working binary/startup/blank
+bypass correction and private audio recovery remain intact. No production publish.
+
+
+## Supplied Anime movie and photo launcher
+
+Use the actual user movie (1024x576 AVC/30fps/40.6 seconds) behind Rias and existing
+controls, muted and clipped with original Cover/Contain/dimming. The source is an
+edited monochrome anime montage; preserve its content/quality and explicit still
+fallback. It is not a seamless source-content loop. Launcher uses the provided
+1280-square JPEG photo with fit/rounded corners, no artificial white background
+or invented transparency. Existing hitbox/drag/tap stays unchanged.
+
+Host captures show actual original pixels through production ImGui; the movie
+frames are decoded by FFmpeg only for host review. Android's native MediaCodec /
+SurfaceTexture/GPU conversion remains separately device-verifiable. New private
+runtime media is installed under the owning activity's assets/presentation; it
+is not bundled by installing only the native library. All audio, Classic/Aurora,
+startup, SDK/offset/hook/input behavior remains preserved. No production publish.

@@ -10,10 +10,7 @@ struct Logo {
     void Clear(){image={};}
     void Draw(ImDrawList* draw,ImVec2 center,float side) const {
         if(!image.Valid()) {KennyIdentity::Emblem(draw,center,side/48.0f);return;}
-        const float fit=std::min(side*.76f/image.width,side*.76f/image.height);
-        const ImVec2 half(image.width*fit*.5f,image.height*fit*.5f);
-        draw->AddImage(image.texture,ImVec2(center.x-half.x,center.y-half.y),
-                       ImVec2(center.x+half.x,center.y+half.y),ImVec2(0,0),ImVec2(1,1));
+        KennyIdentity::Photo(draw,center,side,image.texture,image.width,image.height);
     }
 };
 struct State {
@@ -61,8 +58,8 @@ inline void Draw(State& state,const KennyAppearance::Preferences& p,KennyAudio::
         const ImVec2 center(origin.x+side*.5f,origin.y+side*.5f);
         const float emphasis=KennyMotion::Sample(ImGui::GetItemID(),5,ImGui::IsItemHovered()?1.0f:0.0f);
         const bool classic=p.theme==KennyAppearance::Theme::Classic;
-        KennyPaint::Disc(draw,center,side*.48f,Claude::Hex(classic?0x191217:0x32131E),Claude::Hex(0x070609));
-        draw->AddCircle(center,side*.48f,ImGui::GetColorU32(Claude::Hex(classic?0x88717B:0xE78695,.30f+emphasis*.22f)),40,1);
+        if(!state.logo.image.Valid())KennyPaint::Disc(draw,center,side*.48f,Claude::Hex(classic?0x191217:0x32131E),Claude::Hex(0x070609));
+        if(!state.logo.image.Valid())draw->AddCircle(center,side*.48f,ImGui::GetColorU32(Claude::Hex(classic?0x88717B:0xE78695,.30f+emphasis*.22f)),40,1);
         state.logo.Draw(draw,center,side);
         ImGui::RenderNavHighlight(ImRect(origin,ImVec2(origin.x+side,origin.y+side)),ImGui::GetItemID());
     }

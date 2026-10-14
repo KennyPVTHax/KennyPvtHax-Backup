@@ -1,3 +1,13 @@
+## Current supplied-media checkpoint
+
+The private supplied-media install bundle now contains the user-approved,
+pixel-preserving alpha cutout and four named event recordings converted offline
+from OGG to PCM16 WAV. Separate launcher logo and Bullet OFF recording were not
+supplied. Repository asset media are unchanged; user assets are deliberately absent
+from this public repository. See SUPPLIED_MEDIA_INTEGRATION.md and
+SUPPLIED_MEDIA_MANIFEST.json for exact mappings, inventory, authorization, masking,
+installation and device-test limitations. Earlier sections describe previous phases.
+
 # Anime character integration — current C3 asset status
 
 Parent `6f300ae`, reviewed 10 October 2026. Five real **CC0 Cici Fyre English

@@ -43,7 +43,7 @@ inline unsigned LE16(const uint8_t* p){return unsigned(p[0])|unsigned(p[1])<<8;}
 struct Image {unsigned width=0,height=0;std::vector<uint8_t> rgba;bool transparent=false;};
 // Deliberately narrow PNG support: non-interlaced 8-bit RGBA. Original alpha
 // remains straight/unpremultiplied; no matte/background is added.
-inline bool PNG(const std::vector<uint8_t>& input,Image& image){
+inline bool PNG(const std::vector<uint8_t>& input,Image& image,bool requireTransparency=true){
     image={};constexpr size_t MaxPixels=2097152;
     const uint8_t signature[]={137,80,78,71,13,10,26,10};
     if(input.size()<57 || input.size()>8*1024*1024 || std::memcmp(input.data(),signature,8))return false;
@@ -82,7 +82,7 @@ inline bool PNG(const std::vector<uint8_t>& input,Image& image){
         }
     }
     bool visible=false;for(size_t i=3;i<image.rgba.size();i+=4){visible|=image.rgba[i]>0;image.transparent|=image.rgba[i]<255;}
-    if(!visible || !image.transparent){image={};return false;}image.width=w;image.height=h;return true;
+    if(!visible || (requireTransparency&&!image.transparent)){image={};return false;}image.width=w;image.height=h;return true;
 }
 inline bool WAV(const std::vector<uint8_t>& input,std::vector<int16_t>& output){
     output.clear();if(input.size()<44 || input.size()>1048576 || std::memcmp(input.data(),"RIFF",4)||std::memcmp(input.data()+8,"WAVE",4)||LE(input.data()+4)!=input.size()-8)return false;

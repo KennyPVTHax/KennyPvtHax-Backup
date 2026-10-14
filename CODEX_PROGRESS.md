@@ -1,4 +1,255 @@
 PROJECT: KennyPvtHax
+CURRENT TASK: Replace the remaining menu-header K with supplied circular photo.
+BASE: d37eb87 (compiled source 49e56a7); owner reports UI/audio working.
+BRANCH: release/embedded-media-integration
+
+COMPLETED:
+- Header and launcher share the same cached circular photo renderer/texture.
+- No added asset loads, uploads, startup, audio, theme, feature or input changes.
+- Header reference reset through existing texture/context lifetime handling.
+- All 16 ASan/UBSan suites, original 37 bindings/ranges/callbacks and startup
+  source audit PASS. Actual embedded photo command/fallback and UI capture PASS.
+
+MODIFIED FILES:
+jni/KennyIdentity.h, jni/KennyLauncher.h, jni/KennyMenu.h, jni/main.cpp;
+tests/kenny_embedded_check.cpp, tests/kenny_video_logo_capture.cpp;
+MENU_HEADER_LOGO_FIX.md, HEADER_LOGO_BUILD_REPORT.md,
+HEADER_LOGO_BUILD_VERIFICATION.json, CODEX_PROGRESS.md, UI_DESIGN_NOTES.md.
+
+KNOWN ISSUES / NEXT:
+Clean local NDK 25.2.9519653 ARM64 build PASS for c2ed7e378aa8e84078db13fbdaa809eb7d811440.
+Library SHA-256 cacffe65534e8391b534ea11d8565198bd62ed1130f57f96f2b239480ab5b850.
+All 16 assets exact; private root loader ZIP CRC/hash PASS. Header image inspected.
+Current published media.zip / version 0.8 matches previous 49e56a7 build.
+See HEADER_LOGO_BUILD_REPORT.md / HEADER_LOGO_BUILD_VERIFICATION.json.
+Main restoration choice pending; no production changes in this task.
+Main contains owner native revisions absent from tested source; earlier explicit
+instruction prohibits overwriting them. Public-media rights/comparator/secret
+release gates remain unverified. No main/Anilxkenny promotion until resolved.
+
+--- Previous checkpoints ---
+
+PROJECT: KennyPvtHax
+CURRENT TASK: Private embedded-media presentation integration.
+BRANCH: release/embedded-media-integration
+BASE: 739a2de (runtime 1a944d4); owner-confirmed full UI 2a54a41.
+
+COMPLETED:
+- Prepared 16 validated read-only binary resources from the genuine private pack.
+- Memory PNG/WAV registry loading; automatic bounded hash-checked private movie
+  cache, existing decoder/mixer/input infrastructure retained.
+- Supplied circular JPEG cropped/masked without changing artwork RGB pixels;
+  full-circle launcher presentation, no inset square, unchanged hitbox.
+- Removed default foreground Rias overlay; video OFF retains static fallback.
+- Existing 15 sanitizer suites and focused actual embedded-media checks PASS.
+  Actual private ImGui captures generated and inspected.
+
+EXPLICIT EXCLUSIONS / RELEASE GATES:
+- Requested owner bypass/Lua revisions inspected, not integrated: new constructor,
+  native patches and anti-cheat/crash-report suppression. Existing blank bypass
+  and retained Lua source remain exact. No owner files overwritten on main.
+- Public distribution rights, loader comparison, publishing secret/device gates
+  not established; NOT PUBLISHED. No live kenny.json changes.
+
+MODIFIED FILES:
+jni/Android.mk, KennyEmbeddedMedia.h, KennyEmbeddedVideoCache.h,
+KennyPresentationMedia.h, KennyCharacters.h, KennyLauncher.h, KennyMenu.h,
+KennyAppearance.h; tools/prepare_embedded_media.py,
+tools/verify_embedded_library.py; tests/kenny_embedded_check.cpp,
+tests/kenny_video_logo_capture.cpp, tests/run_ui_regressions.py;
+EMBEDDED_MEDIA_INTEGRATION.md, EMBEDDED_MEDIA_BUILD_REPORT.md,
+EMBEDDED_MEDIA_BUILD_VERIFICATION.json, ANDROID_BUILD_INSTRUCTIONS.md,
+CODEX_PROGRESS.md, UI_DESIGN_NOTES.md.
+
+KNOWN LIMITATIONS:
+Clean local NDK 25.2.9519653 ARM64 build PASS for source 49e56a7ea335bbf235284131f9c8bfb6cba2c98f.
+16 final ASan/UBSan suites PASS. ELF includes all 16 exact payloads; root-only
+loader ZIP verified. Library SHA-256 73843b8fcc29ac624d55f35c7d0fd126e255a85e7aa36f3d6cd4fc2879283340.
+See EMBEDDED_MEDIA_BUILD_REPORT.md / EMBEDDED_MEDIA_BUILD_VERIFICATION.json. No device video/audio/cache/GPU/performance claim.
+No public Actions embedded-media upload. Original private recordings preserved.
+
+NEXT ACTION:
+Owner tests the matching private self-contained build on Android. Public
+publication remains blocked by rights/comparator/secret/device gates. No manual
+evasion source revisions integrated; no live manifest changes. Preserve rollback.
+
+--- Previous checkpoints ---
+
+PROJECT: KennyPvtHax
+
+CURRENT TASK: Supplied Anime video and photo launcher on ui/anime-video-logo.
+BASELINE: 1438e94, preserving full UI/audio recovery/electric Classic and the
+owner-working startup correction; blank Helper/bypass.h remains byte-identical.
+
+COMPLETED:
+- Validated actual 1024x576/30fps/40.634830s AVC movie (original bytes unchanged,
+  runtime audio ignored) and 1280x1280 opaque JPEG photo. Lossless decoded-RGB
+  RGBA PNG for existing logo texture interface; no invented alpha or artwork.
+- Native MediaCodec/SurfaceTexture -> cached 2D GPU texture on existing GL owner,
+  one paced worker/one pending frame, mute/loop/pause/Reduced/context cleanup and
+  real still fallback. Existing Anime composition overlays Rias and controls.
+- Photo replaces default floating K via existing launcher, fit/rounded rendering
+  and cached minification, with safe K/selected character override fallbacks.
+- Existing Settings video toggle/status, safe schema 6 extension, app-private
+  fixed-path asset loader and optional owning-APK staging. No runtime download.
+- Private combined package preserves earlier original/derived voices/artwork and
+  all new media. Accurate installation contract: .so alone cannot install media.
+
+VERIFICATION:
+14 existing ASan/UBSan suites PASS plus real-media loader/persistence/pacing checks
+and genuine ImGui media/launcher/toggle/input captures. Native movie preview
+uses actual supplied frames decoded offline via FFmpeg, not Android MediaCodec.
+37 binding/range/callback fixture and startup source audit PASS. Full ARM64
+Actions 38555323354 SUCCESS, source 1a944d4; artifact 11888797483 digest/ELF/
+source/NDK/dependencies verified. Library SHA-256:
+42c556cafbfc067bf8e847d5159674c35cfd48ce7968cf643697c3431f257852.
+Final focused menu/launcher/presentation sanitizer tests PASS after polish.
+
+KNOWN LIMITATIONS:
+No device decoder/GPU/audio/loop/FPS claim; physical device testing and approved
+host private-pack installation remain necessary. Runtime movie is 30fps; host
+review is 12fps offline. Photo was JPEG, not a transparent PNG. No live publication.
+
+NEXT:
+Owner installs verified matching 1a944d4 artifact and private media pack through
+the actual owning host, then tests video, launcher, pause/resume/loop/Reduced
+and unchanged feature/audio controls. No further development or publication.
+Do not alter live Anilxkenny/kenny.json or redesign internal panels.
+
+--- Previous checkpoints ---
+
+PROJECT: KennyPvtHax
+
+CURRENT TASK: Classic / Crimson Eclipse — Electric Starfield experiment.
+BRANCH: ui/classic-electric-starfield.
+OWNER-WORKING BASELINE: 2a54a41 full UI; development parent a374ad0, runtime
+9a3de44 audio recovery. Previous ARM64 binary preserved unchanged. Startup fix
+and blank Helper/bypass.h remain exact. No production loader publication.
+
+COMPLETED:
+- Actual attached 14.387-second H.264 reference inspected at four representative
+  times; electrical/star language adapted procedurally, no embedded reference.
+- Classic-only 17 fixed coherent filaments, braided companions, attached branches,
+  three depth layers, seeded 32/64/96 stars and at most two traveling pulses.
+- Existing Settings adds functional density/intensity/speed/pulse/local-Reduced
+  preferences, below original audio controls. Default values match the task.
+- Safe schema 5 extension reads versions 1–4; no feature/preferences reset.
+- Hidden/inactive clock pause, stable resume, Reduced freeze, rounded geometry
+  clipping, quiet foreground regions; no audio/thread/texture/startup changes.
+
+MODIFIED FILES:
+jni/KennyElectricStarfield.h; jni/KennyMenu.h; jni/KennyThemePreferences.h;
+jni/KennyAppearanceStore.h; jni/KennyAppearance.h; tests/kenny_electric_check.cpp;
+tests/kenny_electric_capture.cpp; tests/kenny_electric_baseline.py;
+tests/kenny_electric_package.py; tests/run_ui_regressions.py; tests/README.md;
+CLASSIC_ELECTRIC_STARFIELD.md; UI_DESIGN_NOTES.md; CODEX_PROGRESS.md;
+CLASSIC_ELECTRIC_BUILD_VERIFICATION.json after build verification.
+
+VERIFICATION:
+14 ASan/UBSan host suites pass; real original 37 bindings/ranges/callback fixture
+passes. Focused final effect/capture/input checks and optimized measurements are
+recorded with the build metadata. Actual original-versus-new renderer captures;
+matched Aurora/Anime pixels unchanged. New previews inspected for clipping,
+contrast and selector layout. No SDK/native/startup/audio/launcher modifications.
+
+KNOWN LIMITATIONS:
+No Android GPU/FPS/power/input/speaker claim; previous private media requirement
+unchanged. ARM64 Actions 38547335985 SUCCESS for source 571d509, NDK 25.2.9519653.
+Verified artifact 11884648850, ELF64 AArch64 API 21, matching metadata and
+byte-equal root libloader.so ZIP. Library SHA-256:
+96fe87692296ee2d4263b46f402012b7e9e60397811dfc194f79fd4e68de2f4b.
+Previews are production ImGui geometry CPU-rasterized, not device screenshots.
+
+NEXT ACTION:
+Owner installs the verified 571d509 experimental artifact through the existing
+loader; owner device tests
+Classic default/Reduced/off, switches, preferences restart, controls and frame
+pacing before any release promotion. Do not update live Anilxkenny.
+
+--- Previous checkpoints ---
+
+PROJECT: KennyPvtHax
+
+CURRENT CHECKPOINT: A — Audio recovery, diagnostic/audio-recovery-a.
+BASELINE: User-working compiled 2a54a41, source parent 5261a1e runtime-identical.
+Downloaded reference SHA e2fc6995a2741cd51f385c5b54a420eb168c0b6c51ffa1c0bbb9ab6787ca2b3f.
+Original main/startup/input/EGL/SDK/blank Helper/bypass.h unchanged.
+
+CONFIRMED CAUSE: Owner installed only the .so; supplied recordings/private manifest
+were not installed. Android speaker/OpenSL execution is not independently tested.
+Actual Android host/installer source is absent; ImGui examples are not that host.
+
+COMPLETED: Bounded load/voice/OpenSL transport diagnostics; callback-safe atomic
+mailbox (no callback I/O). Existing Anime Settings Test Voice with distinct failure,
+cooldown and queued results, selected configured event, no feature edits or masking
+button tone. Indexed, checksum-validated private installation payload reuses existing
+converted WAVs/cutout/originals, with explicit authorized host import/restart contract.
+New attachments inspected: logo and Rias are JPEG, no alpha; Rias bytes match prior
+source; video ZIP invalid (entry declares ~21MiB in 1.2MiB archive). B/C deferred.
+
+VERIFICATION: All 13 ASan/UBSan suites PASS; focused post-fix test PASS; full
+ARM64 build SUCCESS. Verified root loader ZIP, native ELF/hash, private payload
+and corruption/path rejection checks. See AUDIO_RECOVERY_BUILD_VERIFICATION.json.
+NEXT: Owner installs approved private pack through actual owning host, tests voice
+and shares diagnostics. Do not claim audible Android output before device evidence.
+No video/logo implementation, internal panel redesign or production publication.
+
+--- Previous checkpoints ---
+
+PROJECT: KennyPvtHax
+
+CURRENT TASK: Supplied artwork/event voices on ui/supplied-rias-media.
+BASELINE: Owner-confirmed full build 7934582; continuation parent c0dec26.
+Removed Helper/bypass.h contents remain removed. Recovery branch unused.
+
+COMPLETED: Five supplied attachments inspected/inventoried; four OGG originals
+preserved, converted to existing mono 48kHz PCM16 WAV with measured attenuation.
+User confirmed Extra navigation and pixel-preserving Python white-background mask.
+Actual alpha cutout installed in private test/runtime bundle. Separate logo and
+Bullet OFF clip absent; K/no-dialogue fallbacks retained. Central selected-character
+routing, genuine widget edit guard and bounded per-event cooldown added. Existing
+startup/input/EGL/SDK/Aurora/audio/launcher engines and 37 bindings unchanged.
+
+VERIFICATION: All 12 ASan/UBSan host suites PASS; full ARM64 build SUCCESS.
+Actual artifact/archive/ELF/hash validation PASS; see SUPPLIED_MEDIA_BUILD_VERIFICATION.json.
+PRIVATE MEDIA: .verification/user-media/; never stage original/derived media in Git.
+KNOWN LIMITATIONS: Android GPU/OpenSL playback/host asset installation require
+owner device test. Native .so alone does not package APK media. No supplied logo.
+NEXT ACTION: Owner installs matching 2a54a41 library plus private runtime pack,
+selects supplied voice pack, and tests on Android before promotion.
+No production loader publication.
+
+--- Previous checkpoints ---
+
+PROJECT: KennyPvtHax
+
+CURRENT TASK: Full UI continuation on ui/full-theme-continuation.
+WORKING BASELINE: 793458200ab8906179af0c63d0b0cb1648b7dafa; owner confirms
+full Android build works; Actions 38407512326 succeeded. Removed component:
+jni/Helper/bypass.h contents. Empty header preserved; recovery branch unused.
+
+COMPLETED:
+Existing full feature inventory recorded in FULL_UI_CONTINUATION.md.
+Anime artwork visibility/control voice preferences, optional theme/Settings voice
+mappings, schema-4 migration. Existing licensed media and 37 bindings preserved.
+No startup/input/EGL/SDK/audio-engine/Aurora changes and no production publication.
+
+MODIFIED FILES:
+jni/KennyThemePreferences.h; jni/KennyAppearanceStore.h; jni/KennyCharacters.h;
+jni/KennyAppearance.h; jni/KennyMenu.h; tests/kenny_full_continuation_check.cpp;
+tests/kenny_c3_capture.cpp; FULL_UI_CONTINUATION.md; UI_DESIGN_NOTES.md;
+CODEX_PROGRESS.md.
+
+VERIFICATION: All 10 existing ASan/UBSan host suites + new continuation/capture
+checks PASS. Full ARM64 Actions build SUCCESS; details in FULL_UI_BUILD_VERIFICATION.json.
+KNOWN LIMITATIONS: Rias artwork/launcher/original voice missing. Installed clips
+are the CC0 Cici Fyre alternative. Android GPU/audio/new runtime needs device test.
+NEXT ACTION: Owner device-test the db93cc8 artifact before any promotion.
+Never update production loader before that test.
+
+--- Previous checkpoints ---
+
+PROJECT: KennyPvtHax
 
 FINAL DIAGNOSTIC BUILD VERIFICATION:
 Code commit c975a6d; Actions run 38117222977 SUCCESS using unchanged NDK
@@ -673,3 +924,99 @@ Date: 10 October 2026 (Asia/Calcutta).
 - Files: player-1920.png, world-1920.png, aim-1920.png, bullet-1920.png, extra-1920.png, style-1920.png, settings-1920.png, all-panels-contact-sheet.png, before-after-player.png.
 - Local audited result: .verification/github_preview_upload_result.json; manifest authorization/destination/upload status updated in .verification/github_preview_export_manifest.json. Upload helper remains ignored/local, never uploaded.
 - NEXT ACTION: user opens individual GitHub image links while signed into an account with private-repository access on Android. Wait for user inspection/instruction; do not begin Stage 6.
+
+
+## Verified continuation artifact
+
+Code/build commit: db93cc85f522f8595a9331194bfb81ffe3de6681.
+Actions: https://github.com/KennyPVTHax/KennyPvtHax-Backup/actions/runs/38411971919
+Result SUCCESS, full presentation, unchanged NDK 25.2.9519653.
+Artifact 11823146526: KennyPvtHax-ARM64-SO. Actual ZIP CRC/two-entry contents,
+ELF64 AArch64 and matching embedded build metadata verified after download.
+Library SHA256: 4cd93f9c099f2881f6087fb8ef367e18f51195f3cc4549b27c0c61713c73fb04
+ZIP SHA256: c707d54b3b84c32a77ecbce626d39150c0a22ad6fc9d8d878150a775f2e10929
+BuildID: fc3f77558c7a52228ccf0d309bfec9f227bbe8de.
+
+All ten existing host suites passed with AddressSanitizer/UndefinedBehaviorSanitizer:
+menu, launcher, audio, theme, Aurora, effects, characters, media, diagnostics, fonts.
+New continuation sanitizer test and actual C3 ImGui capture interactions passed.
+Exact 37 binding/range/callback checks and protected runtime/media comparisons pass.
+Existing menu tests cover native interactions, navigation, drag/close/reopen,
+small viewport scrolling, warm allocation stability and repeated theme switches.
+Existing character tests cover 10,000 allocation-free cached dispatch/mix cycles.
+A new test initially advanced event time without draining the simulated audio
+clock; corrected the test, without changing the working single-voice mixer.
+
+Actual CPU-rasterized native ImGui PNGs and offline viewer are generated under
+previews/full-continuation/. Anime Settings and Aurora captures visually inspected.
+No synthetic artwork, Android GPU screenshot or authentic Rias voice claim.
+The subsequent verification checkpoint changes only documentation, test timing
+and generated-preview ignore rules; application sources match the built commit.
+Next: owner tests this artifact on Android before any production promotion.
+
+## Final verification checkpoint
+
+Compiled source: `2a54a41b6ee7de42bf91a34437e66a499e599323`. Full ARM64 run
+https://github.com/KennyPVTHax/KennyPvtHax-Backup/actions/runs/38422703802 succeeded
+with unchanged NDK `25.2.9519653`; artifact `11826799895`.
+Actual downloaded ZIP: CRC/exact two entries, ELF64/AArch64, source/isolation/NDK
+metadata, and matching runtime hash verified.
+Library SHA-256: `e2fc6995a2741cd51f385c5b54a420eb168c0b6c51ffa1c0bbb9ab6787ca2b3f`.
+ZIP SHA-256: `7ddeaef30f88ab5c18ac574879a34c7537faa6743c015d548c28811f9b59ed6b`.
+Build ID: `e38cca0d9be6285cec43e7370e2faf3e4b61e784`.
+
+All twelve host ASan/UBSan suites PASS: menu, launcher, audio, theme, Aurora,
+effects, characters, media, diagnostics, fonts, continuation, supplied media.
+Exact 37 binding/range checks PASS. Protected runtime paths and existing source
+SDK/build configuration match the working full baseline. The supplied test
+uses actual user WAV samples and real native control clicks, verifies all four
+event mappings, rapid-toggle suppression, idle/unrelated/missing-event silence,
+selected-character isolation and 50 theme changes. PNG loader alpha, cached upload,
+visibility and K fallback PASS. Existing suites cover persistence, dragging,
+close/reopen, scrolling, viewport fit, corruption, resource reuse and allocation
+stability. No additional Android playback/GPU/runtime evidence is claimed.
+
+Five actual texture-aware C++/ImGui CPU captures are under previews/supplied-media/;
+Anime player/Settings screenshots and checkerboard alpha cutout visually inspected.
+Contact sheet/offline viewer included in private preview bundle. New host serializer
+embeds the real RGBA texture; it does not paint a mock character onto a screenshot.
+
+Private media bundle: KennyPvtHax-Supplied-Rias-Private-Media.zip, 19 files,
+2079652 bytes; SHA-256 `4c261812a836c0c026bfba37cd5996cc7c6b69ac39d218e891d7b1b4c2a70782`.
+ZIP CRC, each byte-exact original and each converted runtime digest match inventory.
+Rejected image-editor redraw, caches and build outputs are excluded. User media
+remain private; neither Git history nor public artifacts contain them.
+
+The final checkpoint updates documentation only. Runtime sources/assets metadata
+remain identical to the compiled commit above. Next: owner installs the exact .so
+AND private media pack, selects Rias / supplied event clips, and device-tests before
+any production promotion. No Anilxkenny/kenny.json update occurred.
+
+## Verified Checkpoint A delivery
+
+Compiled source `9a3de44c8134a70ecee33465dd46d80c6e8d1c36`; Actions
+https://github.com/KennyPVTHax/KennyPvtHax-Backup/actions/runs/38449668161 SUCCESS,
+NDK 25.2.9519653, ARM64/full. Artifact 11839698728. Downloaded ZIP CRC, exact
+entries, ELF64/AArch64 and matching source/NDK/isolation/binary metadata verified.
+Native SHA-256: `1541f3479db659627da124c448ed7d43e5d3316de817f619a849a3ee5f380f4d`.
+Loader ZIP `kph-audio-a-9a3de44-arm64.zip` contains only libloader.so at root; extracted
+bytes match libAnoy.so exactly. ZIP SHA-256: `9f9b63996ac60186b0c0ace198d98bb4462ebf200e3738399c33194d6bfbb586`.
+Build ID: `b7c5876f535ac5845f7d3d85348cc55a020b9fbd`. NDK module/load code unchanged.
+
+Thirteen ASan/UBSan host suites PASS on 24443ae; focused recovery check PASS again
+after the missing-pack selection diagnostic correction at 9a3de44. Exact 37
+binding/range and protected startup/input/EGL/SDK/blank-header checks pass.
+Private package validates all 12 runtime hashes/formats, rejects corrupt/missing/
+traversing/noncanonical entries, and stages offline without installing on Android.
+All runtime media bytes remain identical to the previous verified conversion.
+Private package SHA-256: `a244ecddf76c3ed9fc4f61142bbf653385697961d99bfe7445d6a4c0ff07146c`.
+Actual ImGui Test Voice/640 captures inspected; they are host CPU output, not Android
+speaker or GPU verification. Callback transport tests exercise the bounded atomic
+mailbox; they do not simulate successful OpenSL playback.
+
+Root cause confirmed by user: only the old .so was installed, not supplied media.
+No actual host source/ADB connection is available. On-device private import and
+audible direct Test Voice remain required before moving beyond A. No source
+media, private symbols, video/logo implementation, main merge, Anilxkenny upload
+or kenny.json update. Final checkpoint after this build changes documentation/
+generated-capture ignore rules only; compiled application bytes remain identical.

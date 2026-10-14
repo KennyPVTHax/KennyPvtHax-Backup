@@ -41,7 +41,7 @@ inline void DrawStyle(Preferences& p, bool artworkReady=false, const char* stora
     if(KennyPanels::Begin("##themes",3,4.0f)) {
         ImGui::TableNextColumn();ThemeCard(p,Theme::Aurora,"Living crimson light");
         ImGui::TableNextColumn();ThemeCard(p,Theme::Anime,"Your artwork, your atmosphere");
-        ImGui::TableNextColumn();ThemeCard(p,Theme::Classic,"Quiet black and crimson");
+        ImGui::TableNextColumn();ThemeCard(p,Theme::Classic,"Crimson Eclipse / Electric Starfield");
         KennyPanels::End();
     }
     if(KennyPanels::Begin("##appearance",3,12.0f)) {
@@ -99,6 +99,8 @@ inline void DrawAnime(Preferences& p,KennyCharacters::Registry& registry,bool au
     }
     KennyPanels::Note(character.series.c_str());KennyPanels::Note(character.status.c_str());
     KennyPanels::Note(character.artworkTexture.Valid()?"Transparent artwork ready.":character.image.rgba.empty()?"Character artwork missing or invalid.":"Artwork decoded; texture rendering unavailable.");
+    KennyControls::Checkbox("Show character artwork",&p.artworkVisible);
+    KennyPanels::Note("Character artwork is the static fallback when video is OFF; no foreground overlay.");
     ImGui::BeginDisabled(!character.launcherTexture.Valid());KennyControls::Checkbox("Character launcher",&p.characterLauncher);ImGui::EndDisabled();
     KennyPanels::Note(character.launcherTexture.Valid()?"Character launcher ready.":"Launcher artwork unavailable; using the K emblem.");KennyPanels::EndSection();
     KennyPanels::Section("Character voice");
@@ -108,13 +110,36 @@ inline void DrawAnime(Preferences& p,KennyCharacters::Registry& registry,bool au
             for(unsigned i=0;i<character.packCount;++i){auto& v=character.packs[i];ImGui::PushID(v.id.c_str());if(ImGui::Selectable(v.name.c_str(),p.voicePack==v.id)){p.voicePack=v.id;KennyAudio::Emit(KennyAudio::Event::ButtonPressed);}ImGui::PopID();}ImGui::EndCombo();}}
     ImGui::BeginDisabled(!audioReady||!available);
     KennyControls::Checkbox("Character voice",&p.characterVoice);
+    KennyControls::Checkbox("Control voice feedback",&p.controlVoiceFeedback);
     KennyControls::SliderFloat("Voice volume",&p.characterVolume,0,100,"%.0f%%");ImGui::EndDisabled();
     KennyPanels::Note(!available?"Voice recordings unavailable. UI tones remain the fallback.":!audioReady?"Voice pack decoded; Android playback unavailable on this host.":"Local voice pack ready. Global UI mute takes precedence.");
     if(available){unsigned events=0;for(const auto& e:pack->events)events+=e.count>0;ImGui::Text("Mapped events: %u / %u",events,KennyCharacters::EventCount);}
+    KennyPanels::Note(registry.mediaStatus);
+    // Diagnostic action stays available with missing assets/engine so failure is
+    // explained, and deliberately emits no generic button tone or feature edit.
+    if(pack){
+        if(!pack->events[unsigned(registry.testEvent)].count&&!pack->mappingDefined[unsigned(registry.testEvent)]){
+            for(unsigned e=0;e<KennyCharacters::EventCount;++e)if(pack->events[e].count){registry.testEvent=static_cast<KennyCharacters::VoiceEvent>(e);break;}
+        }
+        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+        if(ImGui::BeginCombo("##voice-test-event",KennyCharacters::EventNames[unsigned(registry.testEvent)])){
+            for(unsigned e=0;e<KennyCharacters::EventCount;++e)if(pack->events[e].count||pack->mappingDefined[e]){
+                if(ImGui::Selectable(KennyCharacters::EventNames[e],unsigned(registry.testEvent)==e))registry.testEvent=static_cast<KennyCharacters::VoiceEvent>(e);
+            }ImGui::EndCombo();}}
+    if(KennyControls::Button("Test Voice",false))registry.TestVoice(p,audioReady?KennyAudio::current.dispatcher:nullptr,ImGui::GetTime());
+    KennyPanels::Note(KennyAudioDiagnostics::Status(registry.testResult));
+    if(registry.testAttempted&&registry.testResult==KennyAudioDiagnostics::Result::Queued){
+        auto* dispatcher=KennyAudio::current.dispatcher;auto* mix=dispatcher?dispatcher->mixer:nullptr;
+        if(!mix)KennyPanels::Note("Audio engine became unavailable; see playback diagnostics.");
+        else if(!mix->transport.native.load())KennyPanels::Note("Host PCM test sink only; Android speakers unverified.");
+        else if(mix->transport.recordingsStarted.load()>registry.testStartedBefore&&mix->transport.callbacks.load()>registry.testCallbacksBefore)KennyPanels::Note("Recording mixed and OpenSL consumed a subsequent buffer. Verify speakers.");
+        else KennyPanels::Note("Waiting for an OpenSL callback; check playback diagnostics.");
+    }
     KennyPanels::EndSection();KennyPanels::End();ImGui::PopStyleVar(2);
 }
 inline void DrawSettings(Preferences& preferences, bool& centerRequested, bool audioReady=false,
-                         const char* audioStatus="UI audio unavailable in this host preview.", KennyCharacters::Registry* characters=nullptr) {
+                         const char* audioStatus="UI audio unavailable in this host preview.", KennyCharacters::Registry* characters=nullptr,
+                         const char* videoStatus="Native video playback unavailable in this host preview.") {
     if (!KennyPanels::Begin("##general", 2, 12.0f)) return;
     KennyPanels::Section("Menu");
     if (KennyControls::Button("Center window")) centerRequested = true;
@@ -145,7 +170,32 @@ inline void DrawSettings(Preferences& preferences, bool& centerRequested, bool a
             KennyAudio::Emit(KennyAudio::Event::ButtonPressed);
         ImGui::PopStyleVar(2);
         ImGui::EndDisabled();
-        KennyPanels::Note("Follow theme uses soft Aurora tones or crisp Classic feedback. Anime voices await your recordings.");
+        KennyPanels::Note("Follow theme uses soft Aurora tones or crisp Classic feedback. Anime uses the selected installed voice pack.");
+        KennyPanels::EndSection();KennyPanels::End();
+    }
+    if(preferences.theme==Theme::Classic && KennyPanels::Begin("##classic-effects",2,12.0f,"Lightning intensity")) {
+        KennyPanels::Section("Classic Background Effects");
+        KennyControls::Checkbox("Enable Electric Starfield",&preferences.electricStarfield);
+        const auto padding=ImGui::GetStyle().FramePadding;
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding,ImVec2(padding.x,std::max(padding.y,(36.0f-ImGui::GetFontSize())*.5f)));
+        ImGui::TextUnformatted("Star Density");
+        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+        ImGui::Combo("##electric-density",&preferences.electricDensity,"Low\0Medium\0High\0");
+        ImGui::PopStyleVar();
+        KennyControls::Checkbox("Energy Pulses",&preferences.electricPulses);
+        KennyControls::Checkbox("Reduced Motion",&preferences.electricReducedMotion);
+        KennyPanels::Note("Reduced holds stars and filaments; traveling pulses stop.");KennyPanels::EndSection();
+        KennyPanels::Section("Electric atmosphere");
+        KennyControls::SliderFloat("Lightning intensity",&preferences.electricLightning,0,100,"%.0f%%");
+        KennyControls::SliderFloat("Sparkle intensity",&preferences.electricSparkle,0,100,"%.0f%%");
+        KennyControls::SliderFloat("Animation speed",&preferences.electricSpeed,0,100,"%.0f%%");
+        KennyPanels::Note("Classic only. Global Reduced motion also holds this background.");KennyPanels::EndSection();KennyPanels::End();
+    }
+    if(preferences.theme==Theme::Anime && KennyPanels::Begin("##anime-video",1,12.0f,"Anime Video Background")) {
+        KennyPanels::Section("Anime background");
+        KennyControls::Checkbox("Anime Video Background",&preferences.animeVideo);
+        KennyPanels::Note(videoStatus);
+        KennyPanels::Note("Video audio stays muted. Reduced motion holds a still frame.");
         KennyPanels::EndSection();KennyPanels::End();
     }
     if(characters)DrawAnime(preferences,*characters,audioReady);

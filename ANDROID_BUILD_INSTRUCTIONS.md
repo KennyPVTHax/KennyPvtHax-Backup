@@ -1,3 +1,30 @@
+# Latest private embedded-media build
+
+Clean local Android NDK **25.2.9519653** ARM64 build verified for source
+`49e56a7ea335bbf235284131f9c8bfb6cba2c98f`; all 16 linked media payloads and loader ZIP verified.
+The original SDK is present and unchanged. This is a native `.so`, not an APK.
+See [EMBEDDED_MEDIA_INTEGRATION.md](EMBEDDED_MEDIA_INTEGRATION.md) for explicit
+private resource generation / KPH_MEDIA_DIR flags, and
+[EMBEDDED_MEDIA_BUILD_REPORT.md](EMBEDDED_MEDIA_BUILD_REPORT.md) for hashes,
+first-device tests and blocked production gates. This build requires no manually
+installed default media pack: only movie cache storage is created automatically
+in the owning application's private directory. Android video/audio/device behavior
+remains unverified. No private media uploaded to public Actions or loader repo.
+
+--- Historical build instructions ---
+
+## Audio recovery checkpoint A
+
+Continue the working full UI, not recovery stage 1. The library still builds as
+libs/arm64-v8a/libAnoy.so with unchanged NDK 25.2.9519653. The diagnostic deployment
+ZIP aliases it to libloader.so at archive root, without changing the NDK module.
+User-supplied media remain separate/private and need an authorized import into the
+actual NativeActivity's owning private directory; the .so alone does not install
+them. Restart after import and select the supplied pack. See
+AUDIO_RECOVERY_CHECKPOINT_A.md for verified build/checksums, host contract,
+Test Voice, diagnostic retrieval and remaining device verification. Video/logo
+checkpoints are deferred. No production loader manifest update.
+
 # KennyPvtHax — first Android build
 
 Export date: 11 October 2026 (Asia/Calcutta). Application checkpoint: `3436f47`.

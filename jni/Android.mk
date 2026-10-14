@@ -135,6 +135,12 @@ LOCAL_SRC_FILES :=  main.cpp \
         imgui/backends/imgui_impl_android.cpp \
         imgui/backends/imgui_impl_opengl3.cpp \
 
+# Private media are explicit build inputs; no default fetch or public CI upload.
+ifneq ($(KPH_MEDIA_DIR),)
+LOCAL_CPPFLAGS += -DKPH_EMBEDDED_MEDIA=1
+LOCAL_SRC_FILES += $(KPH_MEDIA_DIR)/resources.cpp $(KPH_MEDIA_DIR)/payload.S
+endif
+
 LOCAL_CPP_FEATURES := exceptions
 
 # Diagnostic builds keep matching unstripped obj/ symbols locally. ndk-build
@@ -162,7 +168,7 @@ ifeq ($(KPH_ISOLATION),no_menu)
 LOCAL_CPPFLAGS += -DKPH_DIAGNOSTIC_NO_MENU=1
 endif
 
-LOCAL_LDLIBS := -llog -landroid -lOpenSLES -lEGL -lGLESv2 -lGLESv3 -lGLESv1_CM -lz
+LOCAL_LDLIBS := -llog -landroid -lOpenSLES -lEGL -lGLESv2 -lGLESv3 -lGLESv1_CM -lz -lmediandk
 
 LOCAL_STATIC_LIBRARIES := libdobby libcurl libssl libcrypto And64InlineHook ElfImg fake_dlfcn android_native_app_glue plthook_elf tools base64 SubstrateDebug SubstrateHook hde64 SubstratePosixMemory KittyMemory MemoryPatch MemoryBackup KittyUtils shadowhook
 

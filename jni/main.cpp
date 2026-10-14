@@ -17,6 +17,7 @@
 #include "KennyLauncher.h"
 #include "KennyAndroidAudio.h"
 #include "KennyCharacterGL.h"
+#include "KennyAndroidVideo.h"
 #include "KennyPanels.h"
 #include "Lua_Buffer.cpp"
 
@@ -971,6 +972,7 @@ EGLBoolean _eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
     static EGLDisplay rendererDisplay=EGL_NO_DISPLAY;
     static KennyMenu::State menuState;
     static KennyLauncher::State launcher;
+    static KennyPresentation::AndroidBackend presentation;
     static KennyAudio::AndroidBackend uiAudio;
     static bool stagedCharacters=false,modulesLogged=false,rendererFailed=false;
     ImGuiContext* previous=ImGui::GetCurrentContext();
@@ -986,6 +988,7 @@ EGLBoolean _eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
         if(previous==uiContext)previous=nullptr;
         ImGui::SetCurrentContext(uiContext);
         launcher.logo.Clear();menuState.characters.ClearTextures(true);
+        menuState.animeVideoFrame={};menuState.brandLogo={};presentation.Clear(true);
         ImGui_ImplOpenGL3_ForgetDeviceObjects();ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplAndroid_Shutdown();ImGui::DestroyContext(uiContext);
         uiContext=nullptr;initImGui=false;KennyMenu::Font=nullptr;font2=nullptr;
@@ -1102,6 +1105,7 @@ EGLBoolean _eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
         stagedCharacters=true;
         KennyDiagnostics::Event(16,Severity::Info,0,false,"APK pack staging started");
         const bool staged=KennyCharacters::StageAPK(app->activity->assetManager,privateDirectory);
+        KennyPresentation::StageAPK(app->activity->assetManager,privateDirectory);
         KennyDiagnostics::Once(16,staged?Severity::Info:Severity::Warning,0,staged,staged?"APK pack staging completed":"APK pack unavailable; safe missing-asset fallback");
     }
     if(privateDirectory&&!menuState.characters.configured){
@@ -1126,9 +1130,17 @@ EGLBoolean _eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
         KennyDiagnostics::Event(32,Severity::Info,0,true,"Isolation: audio=%d artwork=%d preferences=%d classic=%d menu=%d",KPH_DIAGNOSTIC_NO_AUDIO,KPH_DIAGNOSTIC_NO_ARTWORK,KPH_DIAGNOSTIC_NO_PREFERENCES,KPH_DIAGNOSTIC_CLASSIC,KPH_DIAGNOSTIC_NO_MENU);
     }
     auto& selectedCharacter=menuState.characters.Selected(menuState.appearance);
+    if(!KPH_DIAGNOSTIC_NO_ARTWORK){
+        presentation.assets.Configure(privateDirectory);
+        const bool videoVisible=menuState.appearance.theme==KennyAppearance::Theme::Anime && menuState.appearance.animeVideo && launcher.DrawMenu() && !KPH_DIAGNOSTIC_NO_MENU;
+        menuState.animeVideoFrame=presentation.Pump(app->activity,videoVisible,!menuState.appearance.reducedMotion);
+        menuState.videoStatus=presentation.Status();
+    }
     if(menuState.appearance.theme==KennyAppearance::Theme::Anime && menuState.appearance.characterLauncher && selectedCharacter.launcherTexture.Valid())
         launcher.logo.Set(selectedCharacter.launcherTexture);
+    else if(!KPH_DIAGNOSTIC_NO_ARTWORK && presentation.assets.logoTexture.Valid())launcher.logo.Set(presentation.assets.logoTexture);
     else launcher.logo.Clear();
+    menuState.brandLogo=KPH_DIAGNOSTIC_NO_ARTWORK?KennyThemeBackground::ArtworkFrame{}:presentation.assets.logoTexture;
     if(!KPH_DIAGNOSTIC_NO_MENU)KennyLauncher::Draw(launcher,menuState.appearance,menuState.audio,
                         ImVec2(static_cast<float>(glWidth),static_cast<float>(glHeight)));
     launcher.Advance(io.DeltaTime,menuState.appearance.reducedMotion);

@@ -12,10 +12,10 @@ inline float Scale() { return ImGui::GetFontSize() / 32.0f; }
 
 // Full-width action with the same rounded artwork as secondary navigation.
 // The native button owns activation and retains the caller's label ID.
-inline bool Button(const char* label) {
+inline bool Button(const char* label,bool emitSound=true) {
     const bool pressed=Claude::PillTab(label, false, ImVec2(ImGui::GetContentRegionAvail().x,
                                               std::max(36.0f, ImGui::GetFrameHeight())));
-    if(pressed)KennyAudio::Emit(KennyAudio::Event::ButtonPressed);
+    if(pressed&&emitSound)KennyAudio::Emit(KennyAudio::Event::ButtonPressed);
     return pressed;
 }
 
@@ -55,8 +55,9 @@ inline bool Checkbox(const char* label, bool* value) {
                           ImGuiCol_NavHighlight})
         ImGui::PushStyleColor(color, ImVec4(0, 0, 0, 0));
     ImGui::PushStyleColor(ImGuiCol_Text, *value ? Claude::Dark::textPrimary : Claude::Dark::textSecondary);
+    const bool oldState=*value;
     const bool changed = ImGui::Checkbox(label, value);
-    if(changed)KennyAudio::Emit(*value ? KennyAudio::Event::CheckboxOn : KennyAudio::Event::CheckboxOff,label);
+    if(changed && oldState!=*value)KennyAudio::Emit(*value ? KennyAudio::Event::CheckboxOn : KennyAudio::Event::CheckboxOff,label);
     ImGui::PopStyleColor(7);
     ImGui::PopStyleVar();
     if (ImGui::IsItemVisible()) {

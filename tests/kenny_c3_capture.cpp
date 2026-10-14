@@ -29,6 +29,7 @@ void InitializeC3Capture() {
     Frame();Frame();Frame();menu.aurora=KennyAurora::State{};Frame();
 }
 
+#ifndef KENNY_C3_CAPTURE_NO_MAIN
 int main(){
     InitializeC3Capture();const auto features=SnapshotFeatures();menu.characters.Configure(".");
     const auto settle=[](){for(int i=0;i<40;++i)Frame();};
@@ -46,6 +47,8 @@ int main(){
     menu.audio=&audio;menu.audioStatus="Host PCM test sink; Android playback unverified.";
     Frame();Frame();Click(NativeCenter("Character voice"));Frame();assert(!menu.appearance.characterVoice&&mixer.voiceVolume==0);
     Click(NativeCenter("Character voice"));Frame();assert(menu.appearance.characterVoice);
+    Click(NativeCenter("Control voice feedback"));Frame();assert(!menu.appearance.controlVoiceFeedback);
+    Click(NativeCenter("Control voice feedback"));Frame();assert(menu.appearance.controlVoiceFeedback);
     auto volume=nativeItems.at(ImHashStr("Voice volume",0,table));auto accepted=audio.accepted;
     Click(NativeSliderPoint(volume,0));Frame();assert(menu.appearance.characterVolume==0&&mixer.voiceVolume==0&&audio.accepted==accepted);
     volume=nativeItems.at(ImHashStr("Voice volume",0,table));Click(NativeSliderPoint(volume,.99f));Frame();assert(menu.appearance.characterVolume==100);
@@ -63,3 +66,5 @@ int main(){
     Primary(3);ResetScroll();Click(NativeCenter("Classic"));Primary(0);Secondary(false);ResetScroll();for(int i=0;i<40;++i)Frame();Save("c3-classic-player");
     assert(features==SnapshotFeatures());ImGui::DestroyContext();std::puts("PASS C3 actual native pack selector, voice checkbox/volume/global mute, disabled host-backend state, minimum small selector height, safe K/artwork fallback, Aurora/Classic captures and unchanged original feature snapshot. PCM test sink is not Android playback.");
 }
+
+#endif
