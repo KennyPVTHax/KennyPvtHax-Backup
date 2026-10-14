@@ -137,8 +137,8 @@ LOCAL_SRC_FILES :=  main.cpp \
 
 # Generate the default complete pack from checked-out, hash-pinned assets.
 # An explicit prepared KPH_MEDIA_DIR remains supported for existing builds.
-ifeq ($(origin KPH_MEDIA_DIR),undefined)
-KPH_MEDIA_DIR := $(abspath $(LOCAL_PATH)/../.build/embedded-media)
+ifeq ($(strip $(KPH_MEDIA_DIR)),)
+override KPH_MEDIA_DIR := $(abspath $(LOCAL_PATH)/../.build/embedded-media)
 KPH_MEDIA_GENERATED := $(shell python3 "$(LOCAL_PATH)/../tools/generate_embedded_media.py" --source "$(LOCAL_PATH)/.." --output "$(KPH_MEDIA_DIR)" >/dev/null && echo OK)
 ifneq ($(KPH_MEDIA_GENERATED),OK)
 $(error Complete embedded media generation failed; check assets/embedded-media-inventory.json and required files)
