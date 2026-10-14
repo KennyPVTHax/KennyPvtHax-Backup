@@ -26,17 +26,21 @@ KennyPresentationMedia.h, KennyCharacters.h, KennyLauncher.h, KennyMenu.h,
 KennyAppearance.h; tools/prepare_embedded_media.py,
 tools/verify_embedded_library.py; tests/kenny_embedded_check.cpp,
 tests/kenny_video_logo_capture.cpp, tests/run_ui_regressions.py;
-EMBEDDED_MEDIA_INTEGRATION.md, CODEX_PROGRESS.md, UI_DESIGN_NOTES.md.
+EMBEDDED_MEDIA_INTEGRATION.md, EMBEDDED_MEDIA_BUILD_REPORT.md,
+EMBEDDED_MEDIA_BUILD_VERIFICATION.json, ANDROID_BUILD_INSTRUCTIONS.md,
+CODEX_PROGRESS.md, UI_DESIGN_NOTES.md.
 
 KNOWN LIMITATIONS:
-Clean ARM64 build and final hashes pending at this source checkpoint; final report
-will record actual results. No device video/audio/cache/GPU/performance claim.
+Clean local NDK 25.2.9519653 ARM64 build PASS for source 49e56a7ea335bbf235284131f9c8bfb6cba2c98f.
+16 final ASan/UBSan suites PASS. ELF includes all 16 exact payloads; root-only
+loader ZIP verified. Library SHA-256 73843b8fcc29ac624d55f35c7d0fd126e255a85e7aa36f3d6cd4fc2879283340.
+See EMBEDDED_MEDIA_BUILD_REPORT.md / EMBEDDED_MEDIA_BUILD_VERIFICATION.json. No device video/audio/cache/GPU/performance claim.
 No public Actions embedded-media upload. Original private recordings preserved.
 
 NEXT ACTION:
-Clean local NDK r25c ARM64 build of this exact source; verify 16 payload bytes in
-ELF, package root libloader.so privately, record hashes/results. Publication must
-remain blocked until all mandatory prerequisites genuinely pass.
+Owner tests the matching private self-contained build on Android. Public
+publication remains blocked by rights/comparator/secret/device gates. No manual
+evasion source revisions integrated; no live manifest changes. Preserve rollback.
 
 --- Previous checkpoints ---
 

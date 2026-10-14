@@ -1,0 +1,266 @@
+{
+  "architecture": "ELF64 AArch64",
+  "library_bytes": 20650016,
+  "library_sha256": "73843b8fcc29ac624d55f35c7d0fd126e255a85e7aa36f3d6cd4fc2879283340",
+  "resources_verified": [
+    {
+      "id": "assets/anime/highschool_dxd_rias/character.png",
+      "size": 962077,
+      "sha256": "8eeb6a3d13df41496823ec73773b59ecd13c6be58842cfe69f29b4db1222afc5",
+      "elf_offset": 3830272
+    },
+    {
+      "id": "assets/anime/highschool_dxd_rias/manifest.json",
+      "size": 3276,
+      "sha256": "e9fe9b1a0addae7801c98571a35504c8ad146ca623928b0040355497ff2da0b6",
+      "elf_offset": 4792352
+    },
+    {
+      "id": "assets/anime/highschool_dxd_rias/voice/cici_hello.wav",
+      "size": 88718,
+      "sha256": "de79185672eb973c67329bb42a24d7837d7a200ddc9030b22bc6748090530a5b",
+      "elf_offset": 4795632
+    },
+    {
+      "id": "assets/anime/highschool_dxd_rias/voice/cici_no_problem.wav",
+      "size": 99802,
+      "sha256": "9a596c74ba05cc5844f1dbd430f5eb2885f2c3c4fb2c9ab453fac6610a94dee8",
+      "elf_offset": 4884352
+    },
+    {
+      "id": "assets/anime/highschool_dxd_rias/voice/cici_okay_happy.wav",
+      "size": 105960,
+      "sha256": "fa05db02a1a82164f7c19a3e91f123e24fb9f52776a55b247aadcbe82adc0763",
+      "elf_offset": 4984160
+    },
+    {
+      "id": "assets/anime/highschool_dxd_rias/voice/cici_okay_normal.wav",
+      "size": 89950,
+      "sha256": "8d90600aa3b8738616ff85669b2dd15cf9c35a37d0ef2624c53fe46287c88def",
+      "elf_offset": 5090128
+    },
+    {
+      "id": "assets/anime/highschool_dxd_rias/voice/cici_see_you_later.wav",
+      "size": 126896,
+      "sha256": "16024ba571bb78b86230594aca317f52c4f819f59397ca82eb42970cf26aaabf",
+      "elf_offset": 5180080
+    },
+    {
+      "id": "assets/anime/highschool_dxd_rias/voice/user_aim.wav",
+      "size": 127226,
+      "sha256": "c9965463ca327d4bbaf17ee9d83d2aff8e9bae04a76fa0b341780cda3043be32",
+      "elf_offset": 5306976
+    },
+    {
+      "id": "assets/anime/highschool_dxd_rias/voice/user_aimoff.wav",
+      "size": 329932,
+      "sha256": "4df9d00684e7404180728c02b39a3159e0ed9c2ce0e8f75c04d5524024d2e177",
+      "elf_offset": 5434208
+    },
+    {
+      "id": "assets/anime/highschool_dxd_rias/voice/user_bullet.wav",
+      "size": 59208,
+      "sha256": "3b53db65cecfca85c0a2ae528fffa346cc631496b25f569054a6dbcbca75dc7c",
+      "elf_offset": 5764144
+    },
+    {
+      "id": "assets/anime/highschool_dxd_rias/voice/user_extrafeatures.wav",
+      "size": 195160,
+      "sha256": "90b3b366a5a79a95437a1e092677b27baa1989b68266a38ce07c4a9e62694205",
+      "elf_offset": 5823360
+    },
+    {
+      "id": "assets/anime/index.json",
+      "size": 50,
+      "sha256": "ade2f265477efd8096bb0ad7f27d96da46bb1af4e02dd2f40df1eaa0989a6f5e",
+      "elf_offset": 6018528
+    },
+    {
+      "id": "assets/presentation/anime-background.mp4",
+      "size": 10113470,
+      "sha256": "9522dacd41adaf6ba5e33c1abc5347735d1ee969b6e3e1711b6b508b9eeacc60",
+      "elf_offset": 6018592
+    },
+    {
+      "id": "assets/presentation/anime-fallback.png",
+      "size": 389742,
+      "sha256": "1e408f055d0e6408d18ba99b870743dc5fb3a7b62fe263971e7da7fa836f465e",
+      "elf_offset": 16132064
+    },
+    {
+      "id": "assets/presentation/launcher.png",
+      "size": 1188051,
+      "sha256": "619524aab390dd3fa47a23817700888697b565d13f94ceee94bec03c6cdede6b",
+      "elf_offset": 16521808
+    },
+    {
+      "id": "assets/presentation/manifest.json",
+      "size": 115,
+      "sha256": "f91f074e5f2b9772790fded86a7e614438d4c77db8cc9e60f13743e87781f45b",
+      "elf_offset": 17709872
+    }
+  ],
+  "android_runtime_verified": false,
+  "public_distribution_authorized": false,
+  "source_commit": "49e56a7ea335bbf235284131f9c8bfb6cba2c98f",
+  "base_commit": "739a2de1ed4710df39a23ac67bab3b680b1bd594",
+  "branch": "release/embedded-media-integration",
+  "ndk": "25.2.9519653",
+  "build_id": "447da74019048de0f8e6ce60451e0eef6fcf437c",
+  "build": "LOCAL CLEAN ARM64 SUCCESS",
+  "github_actions_run": null,
+  "public_publication": "NOT PUBLISHED",
+  "compiled_source_hashes": {
+    "main.cpp": "14f6760dc7b6ea733bdb2b5858ae084155f38126fc36d17f547d7b9d89e5ff13",
+    "Helper/bypass.h": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "Lua_Buffer.cpp": "b92231b93b6de973ba3f86dc4b708d1295e9b1ce92741875eac55a8165bfbebb",
+    "KennyCharacters.h": "6f1efa8e451c3cc97692f13735df3c4b94321fedd50ddc3f3e8ed2a1256df7bd",
+    "KennyPresentationMedia.h": "bbe54df59292e3cce54cb3579a2a98cf41811407aca825fe623418b0c3588582",
+    "KennyLauncher.h": "22f1ea22064eef9b8cc7496f3686b53e0d224d11330ce8a98735a0db7a4b77b4",
+    "KennyMenu.h": "e00b7b030f46544f9ce494d0256293326b8449506bba2004c556268dee704d45"
+  },
+  "manual_revisions_integrated": false,
+  "lua_compiled_once_via_main_include": true,
+  "dependencies": [
+    "liblog.so",
+    "libandroid.so",
+    "libOpenSLES.so",
+    "libEGL.so",
+    "libGLESv2.so",
+    "libGLESv3.so",
+    "libGLESv1_CM.so",
+    "libz.so",
+    "libmediandk.so",
+    "libc.so",
+    "libm.so",
+    "libdl.so"
+  ],
+  "resource_dynamic_initializers": 0,
+  "executable_stack": false,
+  "host_regressions": {
+    "commit": "49e56a7ea335bbf235284131f9c8bfb6cba2c98f",
+    "sanitizers": true,
+    "tests": [
+      {
+        "test": "menu",
+        "result": "PASS",
+        "seconds": 122.142
+      },
+      {
+        "test": "launcher",
+        "result": "PASS",
+        "seconds": 108.84
+      },
+      {
+        "test": "audio",
+        "result": "PASS",
+        "seconds": 28.389
+      },
+      {
+        "test": "theme",
+        "result": "PASS",
+        "seconds": 4.136
+      },
+      {
+        "test": "aurora",
+        "result": "PASS",
+        "seconds": 24.556
+      },
+      {
+        "test": "effects",
+        "result": "PASS",
+        "seconds": 5.211
+      },
+      {
+        "test": "characters",
+        "result": "PASS",
+        "seconds": 16.988
+      },
+      {
+        "test": "media",
+        "result": "PASS",
+        "seconds": 12.605
+      },
+      {
+        "test": "diagnostics",
+        "result": "PASS",
+        "seconds": 2.545
+      },
+      {
+        "test": "fonts",
+        "result": "PASS",
+        "seconds": 6.959
+      },
+      {
+        "test": "continuation",
+        "result": "PASS",
+        "seconds": 12.064
+      },
+      {
+        "test": "electric",
+        "result": "PASS",
+        "seconds": 16.442
+      },
+      {
+        "test": "embedded",
+        "result": "PASS",
+        "seconds": 20.605
+      },
+      {
+        "test": "presentation",
+        "result": "PASS",
+        "seconds": 13.902
+      },
+      {
+        "test": "supplied",
+        "result": "PASS",
+        "seconds": 36.35
+      },
+      {
+        "test": "audio-recovery",
+        "result": "PASS",
+        "seconds": 26.799
+      }
+    ]
+  },
+  "zip": {
+    "name": "KennyPvtHax-49e56a7ea335bbf235284131f9c8bfb6cba2c98f-ARM64.zip",
+    "bytes": 16473855,
+    "sha256": "45bb0f8dae95e443d77dc07c010eb53630ad2b9997d1d63655af43413ae818bf",
+    "entries": [
+      "libloader.so"
+    ],
+    "internal_library_sha256": "73843b8fcc29ac624d55f35c7d0fd126e255a85e7aa36f3d6cd4fc2879283340"
+  },
+  "deployment_checks": {
+    "destination": "KennyPVTHax/Anilxkenny",
+    "visibility": "public",
+    "branch": "main",
+    "write": true,
+    "read_only_checked_commit": "49acabca47ef7e6df645520a496609b5930579ea",
+    "manifest_sha256": "930d927b9bf046089705aad0a8447942efa595ca9cf0b3d5c75d4ccf34d4e8f5",
+    "previous": {
+      "drm": "https://raw.githubusercontent.com/KennyPVTHax/Anilxkenny/main/bypass.zip",
+      "drm_name": "bypass.zip",
+      "drm_verion": "0.7"
+    },
+    "reference_zip_sha256": "298238ef0deade50970f3b14be2ecbe9df5ffb5cfa725d07fb0b794f4b19c2d1",
+    "reference_entries": [
+      "libloader.so"
+    ],
+    "loader_source_candidates": [],
+    "publication": "NOT PUBLISHED",
+    "reason": "media rights/loader comparator/release gates unverified"
+  },
+  "blocking_prerequisites": [
+    "Public media redistribution rights unverified",
+    "Loader version comparator unavailable",
+    "ANILXKENNY_PUBLISH_TOKEN readiness not verifiable (secrets API 403)",
+    "Release pipeline not enabled on the inspected source branch; prepared contract gates unresolved",
+    "New embedded runtime requires Android device verification",
+    "Requested security-evasion manual source revisions deliberately not integrated"
+  ],
+  "introduced_credential_scan": "PASS selected token/private-key signatures; no media tracked in this commit",
+  "protected_startup_sdk_audio_theme_files": "byte-identical to baseline",
+  "static_library_count": 40
+}
